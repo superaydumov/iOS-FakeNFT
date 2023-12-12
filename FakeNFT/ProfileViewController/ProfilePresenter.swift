@@ -9,6 +9,8 @@ protocol ProfilePresenter {
     func updateBio(_ newBio: String)
     func updateName(_ newName: String)
     func updateLink(_ newLink: String)
+    
+    func updateProfile(name: String, bio: String, link: String)
 }
 
 class ProfilePresenterImpl: ProfilePresenter {
@@ -50,4 +52,10 @@ class ProfilePresenterImpl: ProfilePresenter {
           model.link = newLink
           view?.updateUI(with: model)
       }
+    func updateProfile(name: String, bio: String, link: String) {
+            model.name = name
+            model.bio = bio
+            model.link = link
+            view?.updateUI(with: model)
+        }
 }

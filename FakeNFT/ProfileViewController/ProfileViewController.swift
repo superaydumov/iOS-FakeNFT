@@ -7,21 +7,12 @@ protocol ProfileView: AnyObject {
 final class ProfileViewController: UIViewController, ProfileView {
     private var presenter:  ProfilePresenter!
     private var cellTexts = ["Мои NFT", "Избранные NFT", "О разработчике"]
-    /* let servicesAssembly: ServicesAssembly
-     init(servicesAssembly: ServicesAssembly) {
-     self.servicesAssembly = servicesAssembly
-     super.init(nibName: nil, bundle: nil)
-     }
-     required init?(coder: NSCoder) {
-     fatalError("init(coder:) has not been implemented")
-     }
-     @objc
-     func showNft() {
-     let assembly = NftDetailAssembly(servicesAssembler: servicesAssembly)
-     }*/
+
     private var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 35
+        imageView.layer.masksToBounds = true
         return imageView
     }()
     
@@ -63,7 +54,7 @@ final class ProfileViewController: UIViewController, ProfileView {
     }()
     private lazy var editButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem()
-        barButtonItem.image = UIImage(named: "editButton")//(systemName: "square.and.pencil")?.applyingSymbolConfiguration(UIImage.SymbolConfiguration(weight: .bold))
+        barButtonItem.image = UIImage(named: "editButton")
         barButtonItem.tintColor = .black
         barButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 9)
         barButtonItem.action = #selector(editButtonTapped)
@@ -153,7 +144,7 @@ final class ProfileViewController: UIViewController, ProfileView {
         let navigationController = UINavigationController(rootViewController: profileEditViewController)
         present(navigationController, animated: true, completion: nil)
     }
-
+    
 }
 
 extension ProfileViewController: UITableViewDataSource {

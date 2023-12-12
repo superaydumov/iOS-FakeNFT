@@ -1,7 +1,7 @@
 import UIKit
 
 final class ProfileEditViewController: UIViewController {
-  var presenter: ProfilePresenter!
+    var presenter: ProfilePresenter!
     
     private var exitButton: UIButton = {
         let button = UIButton(type: .system)
@@ -15,8 +15,29 @@ final class ProfileEditViewController: UIViewController {
     
     private lazy var changeAvatar: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "avatar")
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 35
+        imageView.layer.masksToBounds = true
         return imageView
+    }()
+    
+    private lazy var editProfileLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = UIColor(named: "NFTBackgroundUniversal")?.withAlphaComponent(0.6)
+        label.text = "Сменить фото"
+        label.textAlignment = .center
+        label.textColor = UIColor(named:"NFTWhite")
+        label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+        label.layer.cornerRadius = 35
+        label.layer.masksToBounds = true
+        label.numberOfLines = 0
+        let tapAction = UITapGestureRecognizer(target: self, action: #selector(profileImageEdit(_:)))
+        
+        label.addGestureRecognizer(tapAction)
+        label.isUserInteractionEnabled = true
+        return label
     }()
     
     private lazy var name: UILabel = {
@@ -90,12 +111,14 @@ final class ProfileEditViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
+        
         setupUI()
         setupConstraints()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        view.bringSubviewToFront(editProfileLabel)
     }
     
     private func setupUI() {
@@ -107,6 +130,7 @@ final class ProfileEditViewController: UIViewController {
         view.addSubview(userWebsite)
         view.addSubview(changeAvatar)
         view.addSubview(exitButton)
+        view.addSubview(editProfileLabel)
     }
     
     private func setupConstraints() {
@@ -145,17 +169,33 @@ final class ProfileEditViewController: UIViewController {
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             exitButton.widthAnchor.constraint(equalToConstant: 42),
             exitButton.heightAnchor.constraint(equalToConstant: 42),
+            
+            changeAvatar.heightAnchor.constraint(equalToConstant: 70),
+            changeAvatar.widthAnchor.constraint(equalToConstant: 70),
+            changeAvatar.topAnchor.constraint(equalTo: view.topAnchor, constant: 94),
+            changeAvatar.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            
+            editProfileLabel.heightAnchor.constraint(equalToConstant: 70),
+            editProfileLabel.widthAnchor.constraint(equalToConstant: 70),
+            editProfileLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 94),
+            editProfileLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            
+            
         ])
+        
     }
     
     @objc func exitButtonTapped() {
-        presenter.updateName(nameDescription.text)
-        presenter.updateBio(userDescription.text)
-        presenter.updateLink(userWebsite.text)
+        presenter.updateProfile(name: nameDescription.text, bio: userDescription.text, link: userWebsite.text)
         dismiss(animated: true, completion: nil)
     }
     
+    
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    @objc func profileImageEdit(_ sender: UITapGestureRecognizer) {
+        print("Image change")
     }
 }
