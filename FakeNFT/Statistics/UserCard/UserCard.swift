@@ -20,7 +20,6 @@ class UserCard: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // UI элементы
     private let avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -33,7 +32,6 @@ class UserCard: UIViewController {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-//        label.text = "Andrey"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.boldSystemFont(ofSize: 18)
         return label
@@ -41,9 +39,8 @@ class UserCard: UIViewController {
 
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-//        label.text = "Omnomnom"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.font = UIFont.caption2 //UIFont.systemFont(ofSize: 13, weight: .regular)
         label.numberOfLines = 0
         return label
     }()
@@ -52,7 +49,8 @@ class UserCard: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Перейти на сайт пользователя", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        button.titleLabel?.font = UIFont.caption1 //UIFont.systemFont(ofSize: 15, weight: .regular)
+        button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 20
         button.layer.masksToBounds = true
         button.layer.borderWidth = 1
@@ -61,28 +59,44 @@ class UserCard: UIViewController {
         return button
     }()
     
-    private let nftButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Устанавливаем текст кнопки
-        button.setTitle("Коллекция NFT", for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-        button.setTitleColor(.black, for: .normal)
+    private lazy var nftButton: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
 
-        // Задаем изображение для значка
-        let arrowImage = UIImage(systemName: "chevron.right")
-        button.setImage(arrowImage?.withTintColor(.black), for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
+        let titleLabel = UILabel()
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        titleLabel.textColor = .black
 
-        // Отступ для изображения от левого края
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
-        
-        // Устанавливаем отступы
-        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
+        let arrowImage = UIImage(systemName: "chevron.right",
+                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 17, weight: .semibold))
+        let tintedImage = arrowImage?.withRenderingMode(.alwaysTemplate)
+        let imageView = UIImageView(image: tintedImage)
+        imageView.tintColor = .black
 
-        button.addTarget(self, action: #selector(nftButtonTapped), for: .touchUpInside)
-        return button
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(imageView)
+
+        if let nftCount = user.nftCount {
+            titleLabel.text = "Коллекция NFT (\(nftCount))"
+        } else {
+            titleLabel.text = "Коллекция NFT (0)"
+        }
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(nftButtonTapped))
+        stackView.addGestureRecognizer(tapGesture)
+
+        return stackView
+    }()
+
+    private lazy var backBarButtonItem: UIBarButtonItem = {
+        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"),
+                                        style: .plain, target: self,
+                                        action: #selector(leftBarButtonItemTapped))
+        backButton.tintColor = .black
+        return backButton
     }()
 
     override func viewDidLoad() {
@@ -90,6 +104,7 @@ class UserCard: UIViewController {
 
         setupUI()
         setupConstraints()
+        navigationItem.leftBarButtonItem = backBarButtonItem
     }
 
     private func setupUI() {
@@ -135,9 +150,9 @@ class UserCard: UIViewController {
 
         // Кнопка "Коллекция NFT"
             nftButton.topAnchor.constraint(equalTo: websiteButton.bottomAnchor, constant: 40),
-            nftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            nftButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            nftButton.heightAnchor.constraint(equalToConstant: 54)
+            nftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            nftButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            nftButton.heightAnchor.constraint(equalToConstant: 54),
         ])
     }
 
@@ -147,14 +162,21 @@ class UserCard: UIViewController {
             webViewController.url = websiteURL
             navigationController?.pushViewController(webViewController, animated: true)
         } else {
-            // Обработка случаев, когда websiteString или URL не могут быть созданы
             print("Invalid website URL")
         }
     }
-
-
-
+    
     @objc private func nftButtonTapped() {
-        // Обработка нажатия на кнопку "Коллекция NFT"
+        UIView.animate(withDuration: 0.2, animations: {
+            self.nftButton.alpha = 0.5
+        }) { _ in
+            UIView.animate(withDuration: 0.2) {
+                self.nftButton.alpha = 1.0
+            }
+        }
+    }
+    
+    @objc private func leftBarButtonItemTapped() {
+        navigationController?.popViewController(animated: true)
     }
 }

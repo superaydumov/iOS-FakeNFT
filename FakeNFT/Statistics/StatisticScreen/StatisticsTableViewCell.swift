@@ -11,7 +11,7 @@ class StatisticsTableViewCell: UITableViewCell {
     private let rankLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        label.font = UIFont.caption1 //UIFont.systemFont(ofSize: 15, weight: .regular)
         label.textColor = .black
         label.textAlignment = .center
         return label
@@ -98,13 +98,6 @@ class StatisticsTableViewCell: UITableViewCell {
             nftCountLabel.centerYAnchor.constraint(equalTo: grayBackgroundView.centerYAnchor),
         ])
     }
-
-//    func configure(with user: UserModel, at index: Int) {     //если вернут base64
-//        rankLabel.text = "\(index + 1)"
-//        avatarImageView.image = user.decodeAvatar() ?? UIImage(named: "userplaceholder")
-//        usernameLabel.text = user.username
-//        nftCountLabel.text = "\(user.nftCount)"
-//    }
     
     func configure(with user: UserModel, at index: Int) {
         rankLabel.text = "\(index + 1)"
@@ -116,6 +109,11 @@ class StatisticsTableViewCell: UITableViewCell {
         }
 
         usernameLabel.text = user.username
-        nftCountLabel.text = "\(user.nftCount)"
+        if let nftCount = user.nftCount {
+            nftCountLabel.text = "\(nftCount)"
+        } else {
+            nftCountLabel.text = "N/A"
+            
+        }
     }
 }

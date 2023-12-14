@@ -1,5 +1,5 @@
 //
-//  RatingViewController.swift
+//  StatisticsViewController.swift
 //  FakeNFT
 //
 //  Created by Андрей Асланов on 10.12.23.
@@ -20,14 +20,14 @@ class StatisticsViewController: UIViewController, UINavigationControllerDelegate
         return tableView
     }()
     
-    private let sortButton: UIButton = {
-        let button = UIButton(type: .system)
+    private lazy var sortBarButtonItem: UIBarButtonItem = {
         let sortImage = UIImage(named: "sort")
-        button.setBackgroundImage(sortImage, for: .normal)
-        button.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        let sortButton = UIButton(type: .system)
+        sortButton.setBackgroundImage(sortImage, for: .normal)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
 
-        return button
+        let barButtonItem = UIBarButtonItem(customView: sortButton)
+        return barButtonItem
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
@@ -37,20 +37,21 @@ class StatisticsViewController: UIViewController, UINavigationControllerDelegate
         return indicator
     }()
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter = StatisticsPresenter(view: self)
         setupTableView()
         setupConstraints()
         presenter.fetchData()
+        
+        navigationItem.rightBarButtonItem = sortBarButtonItem
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         if let navigationBar = navigationController?.navigationBar {
-            navigationBar.tintColor = .black
+            navigationBar.tintColor = .white
         }
     }
     
@@ -66,20 +67,14 @@ class StatisticsViewController: UIViewController, UINavigationControllerDelegate
         tableView.separatorStyle = .none
         tableView.register(StatisticsTableViewCell.self, forCellReuseIdentifier: "UserCell")
         view.addSubview(tableView)
-        view.addSubview(sortButton)
         view.addSubview(activityIndicator)
     }
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            sortButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
-            sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
-            sortButton.widthAnchor.constraint(equalToConstant: 42),
-            sortButton.heightAnchor.constraint(equalToConstant: 42),
-
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            tableView.topAnchor.constraint(equalTo: sortButton.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -111,15 +106,18 @@ extension StatisticsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return presenter.numberOfUsers()
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath) as! StatisticsTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath) as? StatisticsTableViewCell else {
+            return UITableViewCell()
+        }
         let user = presenter.user(at: indexPath.row)
-        cell.configure(with: user, at: indexPath.row)  // Уберите at: indexPath.row
+        cell.configure(with: user, at: indexPath.row)
         print("Configuring cell for row: \(indexPath.row)")
         cell.selectionStyle = .none
         return cell
     }
+
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let user = presenter.user(at: indexPath.row)

@@ -59,7 +59,7 @@ class StatisticsPresenter {
 
                     print("Dummy users: \(dummyUsers)")
                     
-                    DispatchQueue.main.async {      //сортировка по рейтингу по умолчанию
+                    DispatchQueue.main.async {      // Сортировка по рейтингу по умолчанию
                         let sortedUsers = dummyUsers.sorted { (user1, user2) -> Bool in
                             if let rating1 = user1.rating, let rating2 = user2.rating {
                                 return rating1 > rating2

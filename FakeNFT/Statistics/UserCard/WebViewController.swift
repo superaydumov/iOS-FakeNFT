@@ -17,12 +17,22 @@ class WebViewController: UIViewController {
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()
+    
+    private lazy var backBarButtonItem: UIBarButtonItem = {
+        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"),
+                                        style: .plain, target: self,
+                                        action: #selector(leftBarButtonItemTapped))
+        backButton.tintColor = .black
+        return backButton
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .white
         view.addSubview(webView)
+        
+        navigationItem.leftBarButtonItem = backBarButtonItem
 
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -34,5 +44,8 @@ class WebViewController: UIViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
+    
+    @objc private func leftBarButtonItemTapped() {
+        navigationController?.popViewController(animated: true)
+    }
 }
-
