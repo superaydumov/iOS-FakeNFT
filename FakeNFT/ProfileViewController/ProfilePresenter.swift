@@ -1,61 +1,73 @@
-import UIKit
+import Foundation
 
-protocol ProfilePresenter {
-    func viewDidLoad()
-    func numberOfRows(in section: Int) -> Int
-    func configure(cell: UITableViewCell, at indexPath: IndexPath)
-    func getAvatarImage() -> UIImage
-    
-    func updateBio(_ newBio: String)
-    func updateName(_ newName: String)
-    func updateLink(_ newLink: String)
-    
-    func updateProfile(name: String, bio: String, link: String)
+protocol ProfilePresenter: AnyObject {
+    func updateUser(user: [ProfileModelImpl])
 }
 
-class ProfilePresenterImpl: ProfilePresenter {
-    weak var view: ProfileView?
-    var model: ProfileModel
-
-    init(view: ProfileView, model: ProfileModel) {
+class ProfilePresenterImpl {
+    // MARK: - Public Properties
+    var user: [ProfileModelImpl] = []
+    var defaultNetworkClient = DefaultNetworkClient()
+    // MARK: - Private Properties
+    private weak var view: ProfilePresenter?
+    // MARK: - Initializers
+    init(view: ProfilePresenter) {
         self.view = view
-        self.model = model
     }
-
-    func viewDidLoad() {
-        view?.updateUI(with: model)
-    }
-
-    func numberOfRows(in section: Int) -> Int {
-        return model.cellTexts.count
-    }
-
-    func configure(cell: UITableViewCell, at indexPath: IndexPath) {
-        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 17)
-        cell.textLabel?.text = model.cellTexts[indexPath.row]
-        cell.textLabel?.textColor = .black
-    }
-
-    func getAvatarImage() -> UIImage {
-        return model.avatarImage
-    }
-    func updateBio(_ newBio: String) {
-          model.bio = newBio
-          view?.updateUI(with: model)
-      }
     
-    func updateName(_ newName: String) {
-          model.name = newName
-          view?.updateUI(with: model)
-      }
-    func updateLink(_ newLink: String) {
-          model.link = newLink
-          view?.updateUI(with: model)
-      }
-    func updateProfile(name: String, bio: String, link: String) {
-            model.name = name
-            model.bio = bio
-            model.link = link
-            view?.updateUI(with: model)
+    // MARK: - Prublic Methods
+    func fetchData() {
+        _ = getDataUser { [weak self] result in
+            switch result {
+            case .success(let data):
+                do {
+                    let usersList = try JSONDecoder().decode(ProfileList.self, from: data)
+                    let dummyUsers = usersList.enumerated().map { index, element in
+                        let nfts = element.nfts.compactMap { $0.value as? String }
+                        
+                        let profileModel = ProfileModelImpl(
+                            name: element.name,
+                            description: element.description.rawValue,
+                            website: element.website,
+                            avatarImage: element.avatar, nfts: nfts
+                        )
+                        return profileModel
+                    }
+                    self?.user = dummyUsers
+                    let nftCount = dummyUsers.compactMap { $0.nfts }.count
+                    DispatchQueue.main.async {
+                        self?.view?.updateUser(user: dummyUsers)
+                    }
+                } catch {
+                    print("Error decoding JSON: \(error)")
+                }
+            case .failure(let error):
+                print("Error fetching data: \(error)")
+            }
         }
+    }
+    
+    func getDataUser(completion: @escaping (Result<Data, Error>) -> Void) -> URLRequest? {
+        guard let url = URL(string: "\(RequestConstants.baseURL)/api/v1/users") else {
+            return nil
+        }
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            if let data = data {
+                completion(.success(data))
+            } else {
+                let noDataError = NSError(domain: "NoData", code: 0, userInfo: nil)
+                completion(.failure(noDataError))
+            }
+        }
+        task.resume()
+        return urlRequest
+    }
 }

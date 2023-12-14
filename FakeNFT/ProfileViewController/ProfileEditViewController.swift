@@ -1,16 +1,23 @@
 import UIKit
+import ProgressHUD
 
 final class ProfileEditViewController: UIViewController {
-    var presenter: ProfilePresenter!
     
-    private var exitButton: UIButton = {
+    // MARK: - Public Properties
+    var currentUser: ProfileModelImpl?
+    var avatarImageURL: URL?
+    var onProfileUpdate: ((String, String, String) -> Void)?
+    
+    // MARK: - Private Properties
+    private lazy var exitButton: UIBarButtonItem = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         let closeImage = UIImage(named: "closeButton")
         button.setImage(closeImage, for: .normal)
         button.tintColor = .black
         button.addTarget(self, action: #selector(exitButtonTapped), for: .touchUpInside)
-        return button
+        let barButtonItem = UIBarButtonItem(customView: button)
+        return barButtonItem
     }()
     
     private lazy var changeAvatar: UIImageView = {
@@ -34,7 +41,6 @@ final class ProfileEditViewController: UIViewController {
         label.layer.masksToBounds = true
         label.numberOfLines = 0
         let tapAction = UITapGestureRecognizer(target: self, action: #selector(profileImageEdit(_:)))
-        
         label.addGestureRecognizer(tapAction)
         label.isUserInteractionEnabled = true
         return label
@@ -59,7 +65,6 @@ final class ProfileEditViewController: UIViewController {
         textView.layer.masksToBounds = true
         textView.backgroundColor = UIColor(named: "NFTLightGray")
         textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
-        
         return textView
     }()
     
@@ -107,10 +112,10 @@ final class ProfileEditViewController: UIViewController {
         return textView
     }()
     
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
         
         setupUI()
         setupConstraints()
@@ -118,9 +123,19 @@ final class ProfileEditViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
-        view.bringSubviewToFront(editProfileLabel)
+        
+        navigationItem.rightBarButtonItem = exitButton
+        
+        nameDescription.text = currentUser?.name
+        userDescription.text = currentUser?.description
+        userWebsite.text = currentUser?.website
+        
+        if let imageURL = avatarImageURL {
+            changeAvatar.kf.setImage(with: imageURL)
+        }
     }
     
+    // MARK: - Private Methods
     private func setupUI() {
         view.addSubview(name)
         view.addSubview(nameDescription)
@@ -129,7 +144,6 @@ final class ProfileEditViewController: UIViewController {
         view.addSubview(website)
         view.addSubview(userWebsite)
         view.addSubview(changeAvatar)
-        view.addSubview(exitButton)
         view.addSubview(editProfileLabel)
     }
     
@@ -165,11 +179,6 @@ final class ProfileEditViewController: UIViewController {
             userWebsite.topAnchor.constraint(equalTo: website.bottomAnchor, constant: 8),
             userWebsite.heightAnchor.constraint(equalToConstant: 44),
             
-            exitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
-            exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            exitButton.widthAnchor.constraint(equalToConstant: 42),
-            exitButton.heightAnchor.constraint(equalToConstant: 42),
-            
             changeAvatar.heightAnchor.constraint(equalToConstant: 70),
             changeAvatar.widthAnchor.constraint(equalToConstant: 70),
             changeAvatar.topAnchor.constraint(equalTo: view.topAnchor, constant: 94),
@@ -179,23 +188,40 @@ final class ProfileEditViewController: UIViewController {
             editProfileLabel.widthAnchor.constraint(equalToConstant: 70),
             editProfileLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 94),
             editProfileLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            
-            
         ])
-        
     }
     
-    @objc func exitButtonTapped() {
-        presenter.updateProfile(name: nameDescription.text, bio: userDescription.text, link: userWebsite.text)
+    @objc private func exitButtonTapped() {
+        onProfileUpdate?(nameDescription.text, userDescription.text, userWebsite.text)
         dismiss(animated: true, completion: nil)
     }
     
-    
-    @objc func dismissKeyboard() {
+    @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
     
-    @objc func profileImageEdit(_ sender: UITapGestureRecognizer) {
-        print("Image change")
+    @objc private func profileImageEdit(_ sender: UITapGestureRecognizer) {
+        guard let currentAvatarURL = currentUser?.avatarImage else {
+            return
+        }
+        print("Старая ссылка на аватар: \(currentAvatarURL)")
+        // Имитация загрузки
+        ProgressHUD.show()
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
+            let randomString = String(Int(Date().timeIntervalSince1970))
+            var components = URLComponents(string: currentAvatarURL)
+            components?.path = "/avatars/\(randomString).jpg"
+            guard let newAvatarURL = components?.url else {
+                DispatchQueue.main.async {
+                    ProgressHUD.dismiss()
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                print("Новая ссылка на аватар: \(newAvatarURL)")
+                self?.changeAvatar.kf.setImage(with: newAvatarURL)
+                ProgressHUD.dismiss()
+            }
+        }
     }
 }
