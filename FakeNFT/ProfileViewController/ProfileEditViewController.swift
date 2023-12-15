@@ -49,7 +49,7 @@ final class ProfileEditViewController: UIViewController {
     private lazy var name: UILabel = {
         let label = UILabel()
         label.text = "Имя"
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.font = UIFont.boldSystemFont(ofSize: 22)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -58,7 +58,7 @@ final class ProfileEditViewController: UIViewController {
     private lazy var nameDescription: UITextView = {
         let textView = UITextView()
         textView.text = "Joaquin Phoenix"
-        textView.textColor = .black
+        textView.textColor = .textPrimary
         textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.cornerRadius = 12
@@ -71,7 +71,7 @@ final class ProfileEditViewController: UIViewController {
     private lazy var descriptionUser: UILabel = {
         let label = UILabel()
         label.text = "Описание"
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.font = UIFont.boldSystemFont(ofSize: 22)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -80,7 +80,7 @@ final class ProfileEditViewController: UIViewController {
     private lazy var userDescription: UITextView = {
         let textView = UITextView()
         textView.text = "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям."
-        textView.textColor = .black
+        textView.textColor = .textPrimary
         textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.cornerRadius = 12
@@ -93,7 +93,7 @@ final class ProfileEditViewController: UIViewController {
     private lazy var website: UILabel = {
         let label = UILabel()
         label.text = "Сайт"
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.font = UIFont.boldSystemFont(ofSize: 22)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -102,7 +102,7 @@ final class ProfileEditViewController: UIViewController {
     private lazy var userWebsite: UITextView = {
         let textView = UITextView()
         textView.text = "Joaquin Phoenix.com"
-        textView.textColor = .black
+        textView.textColor = .textPrimary
         textView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.cornerRadius = 12

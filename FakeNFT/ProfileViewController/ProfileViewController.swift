@@ -19,7 +19,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     
     private var nameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.font = UIFont.boldSystemFont(ofSize: 22)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     private var bioLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         return label
