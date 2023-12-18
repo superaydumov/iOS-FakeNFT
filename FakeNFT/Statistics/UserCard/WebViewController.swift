@@ -5,7 +5,7 @@
 //  Created by Андрей Асланов on 12.12.23.
 //
 
-import UIKit
+import UIKit        //Это относится к части statistics3-3, сверстал чтобы проверить работу перехода
 import WebKit
 
 class WebViewController: UIViewController {

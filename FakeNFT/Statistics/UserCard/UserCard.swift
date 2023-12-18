@@ -5,7 +5,7 @@
 //  Created by Андрей Асланов on 12.12.23.
 //
 
-import UIKit
+import UIKit                  //Это относится к части statistics2-3, сверстал чтобы проверить работу перехода
 
 class UserCard: UIViewController {
 
@@ -40,7 +40,7 @@ class UserCard: UIViewController {
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.caption2 //UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.font = UIFont.caption2
         label.numberOfLines = 0
         return label
     }()
@@ -49,7 +49,7 @@ class UserCard: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Перейти на сайт пользователя", for: .normal)
-        button.titleLabel?.font = UIFont.caption1 //UIFont.systemFont(ofSize: 15, weight: .regular)
+        button.titleLabel?.font = UIFont.caption1
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 20
         button.layer.masksToBounds = true

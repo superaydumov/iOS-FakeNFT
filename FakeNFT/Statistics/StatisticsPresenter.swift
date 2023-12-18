@@ -50,7 +50,7 @@ class StatisticsPresenter {
                             avatar: element.avatar,
                             username: element.name,
                             nftCount: "\(element.nfts.count)",
-                            description: element.description.rawValue,
+                            description: element.description,
                             website: element.website,
                             rating: element.rating
                         )

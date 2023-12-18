@@ -39,6 +39,7 @@ class StatisticsViewController: UIViewController, UINavigationControllerDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .NFTWhite
         presenter = StatisticsPresenter(view: self)
         setupTableView()
         setupConstraints()

@@ -11,7 +11,7 @@ class StatisticsTableViewCell: UITableViewCell {
     private let rankLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.caption1 //UIFont.systemFont(ofSize: 15, weight: .regular)
+        label.font = UIFont.caption1
         label.textColor = .black
         label.textAlignment = .center
         return label
@@ -60,7 +60,6 @@ class StatisticsTableViewCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        // Устанавливаем закругление ячейки
         grayBackgroundView.layer.cornerRadius = 12
         grayBackgroundView.layer.masksToBounds = true
     }
