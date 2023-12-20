@@ -55,6 +55,8 @@
 		E75E85D72B28C23500208AAE /* UserCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85D62B28C23500208AAE /* UserCard.swift */; };
 		E75E85D92B28DF1E00208AAE /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85D82B28DF1E00208AAE /* WebViewController.swift */; };
 		E75E85E82B2CB3CD00208AAE /* StatisticsDecomposition.md in Resources */ = {isa = PBXBuildFile; fileRef = E75E85E72B2CB3CD00208AAE /* StatisticsDecomposition.md */; };
+		E75E85EA2B32F89300208AAE /* TabBarImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85E92B32F89300208AAE /* TabBarImages.swift */; };
+		E75E85EC2B3319A500208AAE /* StatisticsNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85EB2B3319A500208AAE /* StatisticsNetworkClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +128,8 @@
 		E75E85D62B28C23500208AAE /* UserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCard.swift; sourceTree = "<group>"; };
 		E75E85D82B28DF1E00208AAE /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		E75E85E72B2CB3CD00208AAE /* StatisticsDecomposition.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = StatisticsDecomposition.md; sourceTree = "<group>"; };
+		E75E85E92B32F89300208AAE /* TabBarImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarImages.swift; sourceTree = "<group>"; };
+		E75E85EB2B3319A500208AAE /* StatisticsNetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsNetworkClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +219,7 @@
 			children = (
 				3F478ECE29DB474E00F6D39E /* Colors.swift */,
 				3F478ED029DB476500F6D39E /* Fonts.swift */,
+				E75E85E92B32F89300208AAE /* TabBarImages.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -405,6 +410,7 @@
 				E75E85C52B2621F800208AAE /* UserModel.swift */,
 				E75E85C92B2622BC00208AAE /* StatisticsPresenter.swift */,
 				E75E85D22B27ABAF00208AAE /* UsersListDecoding.swift */,
+				E75E85EB2B3319A500208AAE /* StatisticsNetworkClient.swift */,
 			);
 			path = Statistics;
 			sourceTree = "<group>";
@@ -630,10 +636,12 @@
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,
+				E75E85EA2B32F89300208AAE /* TabBarImages.swift in Sources */,
 				0CF2C2E12A784C7000FDC837 /* LinePageControl.swift in Sources */,
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				E75E85D32B27ABAF00208AAE /* UsersListDecoding.swift in Sources */,
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
+				E75E85EC2B3319A500208AAE /* StatisticsNetworkClient.swift in Sources */,
 				C9A42D9E2B27ABBC004D85B2 /* CatalogViewController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,

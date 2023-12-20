@@ -26,20 +26,20 @@ extension UIColor {
     }
 
     // Цвета из Figma
-    
-    static var NFTBlack = UIColor(named: "NFTBlack")
-    static var NFTWhite = UIColor(named: "NFTWhite")
-    static var NFTLightGray = UIColor(named: "NFTLightGray")
-    
-    static var NFTGrayUniversal = UIColor(named: "NFTGrayUniversal")
-    static var NFTRedUniversal = UIColor(named: "NFTRedUniversal")
-    static var NFTBackgroundUniversal = UIColor(named: "NFTBackgroundUniversal")
-    static var NFTGreenUniversal = UIColor(named: "NFTGreenUniversal")
-    static var NFTBlueUniversal = UIColor(named: "NFTBlueUniversal")
-    static var NFTBlackUniversal = UIColor(named: "NFTBlackUniversal")
-    static var NFTWhiteUniversal = UIColor(named: "NFTWhiteUniversal")
-    static var NFTYellowUniversal = UIColor(named: "NFTYellowUniversal")
-    
+    enum NFTColor {
+        static let black = UIColor(named: "NFTBlack")
+        static let white = UIColor(named: "NFTWhite")
+        static let lightGray = UIColor(named: "NFTLightGray")
+        
+        static let grayUniversal = UIColor(named: "NFTGrayUniversal")
+        static let redUniversal = UIColor(named: "NFTRedUniversal")
+        static let backgroundUniversal = UIColor(named: "NFTBackgroundUniversal")
+        static let greenUniversal = UIColor(named: "NFTGreenUniversal")
+        static let blueUniversal = UIColor(named: "NFTBlueUniversal")
+        static let blackUniversal = UIColor(named: "NFTBlackUniversal")
+        static let whiteUniversal = UIColor(named: "NFTWhiteUniversal")
+        static let yellowUniversal = UIColor(named: "NFTYellowUniversal")
+    }
 
     // Background Colors
     static let background = UIColor.white

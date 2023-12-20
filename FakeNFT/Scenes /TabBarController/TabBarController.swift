@@ -1,22 +1,10 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-    
-    private struct ImageKeys {
-        static let profileTabBarOn = UIImage(named: "profileTabBarActive")
-        static let profileTabBarOff = UIImage(named: "profileTabBarInactive")
-        static let catalogTabBarOn = UIImage(named: "catalogTabBarActive")
-        static let catalogTabBarOff = UIImage(named: "catalogTabBarInactive")
-        static let cartTabBarOn = UIImage(named: "basketTabBarActive")
-        static let cartTabBarOff = UIImage(named: "basketTabBarInactive")
-        static let statisticsTabBarOn = UIImage(named: "statisticsTabBarActive")
-        static let statisticsTabBarOff = UIImage(named: "statisticsTabBarInactive")
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tabBar.unselectedItemTintColor = .NFTBlack
+        tabBar.unselectedItemTintColor = UIColor.NFTColor.black
         view.backgroundColor = .systemBackground
     }
     
@@ -28,10 +16,10 @@ final class TabBarController: UITabBarController {
         let cartViewController = UINavigationController(rootViewController: CartViewController())
         let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
         
-        profileViewController.tabBarItem = UITabBarItem(title: "Профиль", image: ImageKeys.profileTabBarOff, selectedImage: ImageKeys.profileTabBarOn)
-        catalogViewController.tabBarItem = UITabBarItem(title: "Каталог", image: ImageKeys.catalogTabBarOff, selectedImage: ImageKeys.catalogTabBarOn)
-        cartViewController.tabBarItem = UITabBarItem(title: "Корзина", image: ImageKeys.cartTabBarOff, selectedImage: ImageKeys.cartTabBarOn)
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: ImageKeys.statisticsTabBarOff, selectedImage: ImageKeys.statisticsTabBarOn)
+        profileViewController.tabBarItem = UITabBarItem(title: "Профиль", image: ImageAssets.profileTabBarOff, selectedImage: ImageAssets.profileTabBarOn)
+        catalogViewController.tabBarItem = UITabBarItem(title: "Каталог", image: ImageAssets.catalogTabBarOff, selectedImage: ImageAssets.catalogTabBarOn)
+        cartViewController.tabBarItem = UITabBarItem(title: "Корзина", image: ImageAssets.cartTabBarOff, selectedImage: ImageAssets.cartTabBarOn)
+        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: ImageAssets.statisticsTabBarOff, selectedImage: ImageAssets.statisticsTabBarOn)
         
         self.viewControllers = [profileViewController, catalogViewController, cartViewController, statisticsViewController]
     }

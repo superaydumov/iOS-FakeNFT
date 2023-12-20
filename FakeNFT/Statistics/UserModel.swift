@@ -8,13 +8,13 @@
 import Foundation
 
 struct UserModel: Decodable {
-    var avatar: String?
-    var username: String?
-    var nftCount: String?
-    var description: String?
-    var website: String?
-    var rating: String?
-
+    let avatar: String?
+    let username: String?
+    let nftCount: String?
+    let description: String?
+    let website: String?
+    let rating: String?
+    
     private enum CodingKeys: String, CodingKey {
         case avatar
         case username
@@ -23,7 +23,7 @@ struct UserModel: Decodable {
         case website
         case rating
     }
-
+    
     init(avatar: String?, username: String?, nftCount: String?, description: String?, website: String?, rating: String?) {
         self.avatar = avatar
         self.username = username
