@@ -51,7 +51,7 @@ final class UserCard: UIViewController {
         button.layer.masksToBounds = true
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.black.cgColor
-        button.addTarget(UserCard.self, action: #selector(websiteButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(websiteButtonTapped), for: .touchUpInside)
         return button
     }()
     
