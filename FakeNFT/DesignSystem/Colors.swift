@@ -24,7 +24,7 @@ extension UIColor {
             alpha: CGFloat(alpha) / 255
         )
     }
-
+    
     // Цвета из Figma
     
     static var NFTBlack = UIImage(named: "NFTBlack")
@@ -40,33 +40,34 @@ extension UIColor {
     static var NFTWhiteUniversal = UIImage(named: "NFTWhiteUniversal")
     static var NFTYellowUniversal = UIImage(named: "NFTYellowUniversal")
     
-
+    
     // Background Colors
     static let background = UIColor.white
-
+    
     // Text Colors
     static let textPrimary = UIColor.black
     static let textSecondary = UIColor.gray
     static let textOnPrimary = UIColor.white
     static let textOnSecondary = UIColor.black
-
+    static let blueUniversal = UIColor(hexString: "#0A84FF")
+    
     private static let yaBlackLight = UIColor(hexString: "1A1B22")
     private static let yaBlackDark = UIColor.white
     private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
     private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
-
+    
     static let segmentActive = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? .yaBlackDark
         : .yaBlackLight
     }
-
+    
     static let segmentInactive = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? .yaLightGrayDark
         : .yaLightGrayLight
     }
-
+    
     static let closeButton = UIColor { traits in
         return traits.userInterfaceStyle == .dark
         ? .yaBlackDark

@@ -1,25 +1,31 @@
 import Foundation
 
-struct ProfileModelImpl: Decodable {
-    var name: String?
+struct Profile: Decodable, Encodable {
+    var name: String
     var description: String?
     var website: String?
-    var avatarImage: String?
-    var nfts: [String]?
+    var avatar: String?
+    var nfts: [Nft]?
+    var likes: [String]?
+    var id: String
     
     private enum CodingKeys: String, CodingKey {
         case name
         case description
         case website
-        case avatarImage
+        case avatar
         case nfts
+        case likes
+        case id
     }
     
-    init(name: String?, description: String?, website: String?, avatarImage: String?, nfts: [String]) {
+    init(name: String, description: String?, website: String?, avatar: String?, nfts: [Nft]?, likes: [String]?, id: String) {
         self.name = name
         self.description = description
         self.website = website
-        self.avatarImage = avatarImage
+        self.avatar = avatar
         self.nfts = nfts
+        self.likes = likes
+        self.id = id
     }
 }

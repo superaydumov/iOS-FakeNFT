@@ -1,5 +1,6 @@
 
 import UIKit
+import SafariServices
 
 final class ProfileViewController: UIViewController, ProfilePresenter {
     
@@ -7,9 +8,9 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     private var presenter:  ProfilePresenterImpl!
     private var cellTexts = ["Мои NFT", "Избранные NFT", "О разработчике"]
     private var nftCount: Int?
-    private var currentDisplayedUser: ProfileModelImpl?
+    private var currentDisplayedUser: Profile?
     
-    private var avatarImageView: UIImageView = {
+    private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 35
@@ -17,7 +18,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         return imageView
     }()
     
-    private var nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .textPrimary
         label.font = UIFont.boldSystemFont(ofSize: 22)
@@ -25,7 +26,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         return label
     }()
     
-    private var bioLabel: UILabel = {
+    private lazy var bioLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .textPrimary
@@ -38,7 +39,8 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         let label = UILabel()
         label.isUserInteractionEnabled = true
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .blue
+        label.textColor = .blueUniversal
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         label.frame = label.frame.inset(by: UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(linkLabelTapped))
         label.addGestureRecognizer(tapGesture)
@@ -84,15 +86,15 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     }
     
     // MARK: - Public Methods
-    func updateUser(user: [ProfileModelImpl]) {
-        guard let currentUser = user.randomElement() else { return }
+    func updateUser(user: [Profile]) {
+        guard let currentUser = user.first else { return }
         
         currentDisplayedUser = currentUser
         nameLabel.text = currentUser.name
         bioLabel.text = currentUser.description
         linkLabel.text = currentUser.website
         
-        if let imageURL = URL(string: currentUser.avatarImage ?? "") {
+        if let imageURL = URL(string: currentUser.avatar ?? "") {
             avatarImageView.kf.setImage(with: imageURL)
         }
         
@@ -140,25 +142,27 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         ])
     }
     
+    
     private func createChevronImageView() -> UIImageView {
         let chevronImage = UIImage(systemName: "chevron.right")?.withTintColor(.black, renderingMode: .alwaysOriginal)
         let chevronImageView = UIImageView(image: chevronImage)
         return chevronImageView
     }
     
-    @objc func editButtonTapped() {
+    @objc private func editButtonTapped() {
         let profileEditViewController = ProfileEditViewController()
         profileEditViewController.currentUser = currentDisplayedUser
-        profileEditViewController.avatarImageURL = URL(string: currentDisplayedUser?.avatarImage ?? "")
+        profileEditViewController.avatarImageURL = URL(string: currentDisplayedUser?.avatar ?? "")
         
         profileEditViewController.onProfileUpdate = { [weak self] name, description, website in
             self?.currentDisplayedUser?.name = name
             self?.currentDisplayedUser?.description = description
             self?.currentDisplayedUser?.website = website
-            
-            self?.nameLabel.text = name
-            self?.bioLabel.text = description
-            self?.linkLabel.text = website
+            DispatchQueue.main.async { [weak self] in
+                self?.nameLabel.text = name
+                self?.bioLabel.text = description
+                self?.linkLabel.text = website
+            }
         }
         
         let navigationController = UINavigationController(rootViewController: profileEditViewController)
@@ -166,9 +170,10 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     }
     
     @objc private func linkLabelTapped() {
-        if let websiteURL = linkLabel.text, !websiteURL.isEmpty {
-            let websiteViewController = WebsiteViewController(websiteURL: websiteURL)
-            navigationController?.pushViewController(websiteViewController, animated: true)
+        if let websiteURL = linkLabel.text, !websiteURL.isEmpty,
+           let url = URL(string: websiteURL) {
+            let safariViewController = SFSafariViewController(url: url)
+            present(safariViewController, animated: true, completion: nil)
         }
     }
 }
@@ -186,7 +191,11 @@ extension ProfileViewController: UITableViewDataSource {
         cell.accessoryView = chevronImageView
         cell.textLabel?.text = cellTexts[indexPath.row]
         if indexPath.row == 0 {
-            cell.textLabel?.text = "\(cellTexts[indexPath.row]) (\(nftCount ?? 0))"
+            if let count = nftCount {
+                cell.textLabel?.text = "\(cellTexts[indexPath.row]) (\(count))"
+            } else {
+                cell.textLabel?.text = "\(cellTexts[indexPath.row])"
+            }
         } else {
             cell.textLabel?.text = cellTexts[indexPath.row]
         }

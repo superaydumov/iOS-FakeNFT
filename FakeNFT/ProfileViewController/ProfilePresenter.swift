@@ -1,12 +1,13 @@
 import Foundation
+import ProgressHUD
 
 protocol ProfilePresenter: AnyObject {
-    func updateUser(user: [ProfileModelImpl])
+    func updateUser(user: [Profile])
 }
 
 class ProfilePresenterImpl {
     // MARK: - Public Properties
-    var user: [ProfileModelImpl] = []
+    var user: [Profile] = []
     var defaultNetworkClient = DefaultNetworkClient()
     // MARK: - Private Properties
     private weak var view: ProfilePresenter?
@@ -16,40 +17,37 @@ class ProfilePresenterImpl {
     }
     
     // MARK: - Prublic Methods
+    
     func fetchData() {
-        _ = getDataUser { [weak self] result in
+        ProgressHUD.show()
+        _ = defaultNetworkClient.send(request: ProfileRequest(), completionQueue: .main) { [weak self] result in
             switch result {
             case .success(let data):
                 do {
-                    let usersList = try JSONDecoder().decode(ProfileList.self, from: data)
-                    let dummyUsers = usersList.enumerated().map { index, element in
-                        let nfts = element.nfts.compactMap { $0.value as? String }
-                        
-                        let profileModel = ProfileModelImpl(
-                            name: element.name,
-                            description: element.description.rawValue,
-                            website: element.website,
-                            avatarImage: element.avatar, nfts: nfts
-                        )
-                        return profileModel
-                    }
-                    self?.user = dummyUsers
-                    let nftCount = dummyUsers.compactMap { $0.nfts }.count
+                    let profile = try JSONDecoder().decode(Profile.self, from: data)
+                    print("Decoded profile model: \(profile)")
+                    
                     DispatchQueue.main.async {
-                        self?.view?.updateUser(user: dummyUsers)
+                        self?.view?.updateUser(user: [profile])
+                        ProgressHUD.dismiss()
                     }
                 } catch {
+                    print("Failed JSON data: \(String(data: data, encoding: .utf8) ?? "Unable to convert data to string")")
                     print("Error decoding JSON: \(error)")
+                    ProgressHUD.dismiss()
                 }
             case .failure(let error):
                 print("Error fetching data: \(error)")
+                ProgressHUD.dismiss()
             }
         }
     }
     
-    func getDataUser(completion: @escaping (Result<Data, Error>) -> Void) -> URLRequest? {
-        guard let url = URL(string: "\(RequestConstants.baseURL)/api/v1/users") else {
-            return nil
+    
+    func getDataUser(completion: @escaping (Result<Data, Error>) -> Void) {
+        guard let url = URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1") else {
+            completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
+            return
         }
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
@@ -68,6 +66,37 @@ class ProfilePresenterImpl {
             }
         }
         task.resume()
-        return urlRequest
+        // return urlRequest
+    }
+    
+    
+    func updateProfileData(updatedProfile: Profile, completion: @escaping (Result<Data, Error>) -> Void) {
+        do {
+            let putRequest = PutProfileRequest(updatedProfile: updatedProfile)
+            guard let endpoint = putRequest.endpoint else {
+                completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
+                return
+            }
+            var urlRequest = URLRequest(url: endpoint)
+            urlRequest.httpMethod = putRequest.httpMethod.rawValue
+            urlRequest.httpBody = putRequest.httpBody
+            urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
+            print("URL запроса:", urlRequest.url?.absoluteString ?? "")
+            print("Тело запроса:", String(data: urlRequest.httpBody ?? Data(), encoding: .utf8) ?? "")
+
+            defaultNetworkClient.send(request: putRequest, completionQueue: .main) { result in
+                switch result {
+                case .success(let data):
+                    print("Профиль успешно обновлен на сервере.")
+                    completion(.success(data))
+                case .failure(let error):
+                    print("Ошибка при обновлении профиля на сервере: \(error)")
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            print("Ошибка кодирования данных профиля: \(error)")
+            completion(.failure(error))
+        }
     }
 }

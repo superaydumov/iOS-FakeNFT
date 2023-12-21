@@ -1,13 +1,20 @@
 import UIKit
 import ProgressHUD
 
-final class ProfileEditViewController: UIViewController {
+final class ProfileEditViewController: UIViewController, ProfilePresenter {
+    func updateUser(user: [Profile]) {
+        if let currentUser = user.first {
+            nameDescription.text = currentUser.name
+            userDescription.text = currentUser.description
+            userWebsite.text = currentUser.website
+        }
+    }
     
     // MARK: - Public Properties
-    var currentUser: ProfileModelImpl?
+    var currentUser: Profile?
     var avatarImageURL: URL?
     var onProfileUpdate: ((String, String, String) -> Void)?
-    
+    var presenter: ProfilePresenterImpl?
     // MARK: - Private Properties
     private lazy var exitButton: UIBarButtonItem = {
         let button = UIButton(type: .system)
@@ -116,7 +123,7 @@ final class ProfileEditViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
+        presenter = ProfilePresenterImpl(view: self)
         setupUI()
         setupConstraints()
         
@@ -191,17 +198,64 @@ final class ProfileEditViewController: UIViewController {
         ])
     }
     
-    @objc private func exitButtonTapped() {
-        onProfileUpdate?(nameDescription.text, userDescription.text, userWebsite.text)
-        dismiss(animated: true, completion: nil)
+    func updateProfile() {
+        
+        let updatedName = nameDescription.text ?? ""
+        let updatedDescription = userDescription.text ?? ""
+        let updatedWebsite = userWebsite.text ?? ""
+        
+        onProfileUpdate?(updatedName, updatedDescription, updatedWebsite)
     }
+    
+    /*   @objc private func exitButtonTapped() {
+     onProfileUpdate?(nameDescription.text, userDescription.text, userWebsite.text)
+     updateProfile()
+     dismiss(animated: true, completion: nil)
+     }*/
+    
+    @objc private func exitButtonTapped() {
+        guard let updatedProfile = createUpdatedProfile() else {
+            return
+        }
+        
+        presenter?.updateProfileData(updatedProfile: updatedProfile) { result in
+            switch result {
+            case .success(let data):
+                print("Профиль успешно обновлен на сервере:", String(data: data, encoding: .utf8) ?? "")
+                
+                self.updateUser(user: [updatedProfile])
+            case .failure(let error):
+                print("Ошибка при обновлении профиля на сервере:", error)
+            }
+            
+            DispatchQueue.main.async {
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
+        updateProfile()
+    }
+    
+    private func createUpdatedProfile() -> Profile? {
+        guard let updatedName = nameDescription.text,
+              let updatedDescription = userDescription.text,
+              let updatedWebsite = userWebsite.text,
+              let userId = currentUser?.id,
+              let likes = currentUser?.likes else {
+            return nil
+        }
+        print("Updated Name: \(updatedName)")
+        print("Updated Description: \(updatedDescription)")
+        print("Updated Website: \(updatedWebsite)")
+        return Profile(name: updatedName, description: updatedDescription, website: updatedWebsite, avatar: nil, nfts: nil, likes: likes, id: userId)
+    }
+    
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
     
     @objc private func profileImageEdit(_ sender: UITapGestureRecognizer) {
-        guard let currentAvatarURL = currentUser?.avatarImage else {
+        guard let currentAvatarURL = currentUser?.avatar else {
             return
         }
         print("Старая ссылка на аватар: \(currentAvatarURL)")
