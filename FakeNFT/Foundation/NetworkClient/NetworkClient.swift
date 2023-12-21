@@ -39,7 +39,7 @@ extension NetworkClient {
 struct DefaultNetworkClient: NetworkClient {
     private let session: URLSession
     private let decoder: JSONDecoder
-    private let encoder: JSONEncoder
+     let encoder: JSONEncoder
 
     init(session: URLSession = URLSession.shared,
          decoder: JSONDecoder = JSONDecoder(),
