@@ -2,12 +2,12 @@ import Foundation
 import ProgressHUD
 
 protocol ProfilePresenter: AnyObject {
-    func updateUser(user: [Profile])
+    func updateUser(user: Profile?)
 }
 
 class ProfilePresenterImpl {
     // MARK: - Public Properties
-    var user: [Profile] = []
+    var user: Profile?
     var defaultNetworkClient = DefaultNetworkClient()
     // MARK: - Private Properties
     private weak var view: ProfilePresenter?
@@ -25,14 +25,11 @@ class ProfilePresenterImpl {
             case .success(let data):
                 do {
                     let profile = try JSONDecoder().decode(Profile.self, from: data)
-                    print("Decoded profile model: \(profile)")
-                    
                     DispatchQueue.main.async {
-                        self?.view?.updateUser(user: [profile])
+                        self?.view?.updateUser(user: profile)
                         ProgressHUD.dismiss()
                     }
                 } catch {
-                    print("Failed JSON data: \(String(data: data, encoding: .utf8) ?? "Unable to convert data to string")")
                     print("Error decoding JSON: \(error)")
                     ProgressHUD.dismiss()
                 }

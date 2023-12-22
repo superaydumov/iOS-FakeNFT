@@ -87,8 +87,8 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     }
     
     // MARK: - Public Methods
-    func updateUser(user: [Profile]) {
-        guard let currentUser = user.first else { return }
+    func updateUser(user: Profile?) {
+        guard let currentUser = user else { return }
         DispatchQueue.main.async {
             self.currentDisplayedUser = currentUser
             self.nameLabel.text = currentUser.name

@@ -136,9 +136,9 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
         }
     }
     // MARK: - Public Methods
-    func updateUser(user: [Profile]) {
+    func updateUser(user: Profile?) {
         DispatchQueue.main.async {
-            if let currentUser = user.first {
+            if let currentUser = user {
                 self.nameDescription.text = currentUser.name
                 self.userDescription.text = currentUser.description
                 self.userWebsite.text = currentUser.website
@@ -193,7 +193,7 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
             changeAvatar.heightAnchor.constraint(equalToConstant: 70),
             changeAvatar.widthAnchor.constraint(equalToConstant: 70),
             changeAvatar.bottomAnchor.constraint(equalTo: name.topAnchor, constant: -24),
-
+            
             changeAvatar.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             
             editProfileLabel.heightAnchor.constraint(equalToConstant: 70),
@@ -228,15 +228,12 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
         presenter?.updateProfileData(updatedProfile: updatedProfile) { [weak self ] result in
             switch result {
             case .success(let data):
-                print("Профиль успешно обновлен на сервере:", String(data: data, encoding: .utf8) ?? "")
-                
-                self?.updateUser(user: [updatedProfile])
+                self?.updateUser(user: updatedProfile)
             case .failure(let error):
                 print("Ошибка при обновлении профиля на сервере:", error)
             }
-            
             DispatchQueue.main.async {
-                self?.updateUser(user: [updatedProfile])
+                self?.updateUser(user: updatedProfile)
                 self?.dismiss(animated: true, completion: nil)
             }
         }
