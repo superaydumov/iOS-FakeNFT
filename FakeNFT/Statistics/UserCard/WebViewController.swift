@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import WebKit           //Это относится к части statistics2-3, сверстал чтобы проверить работу перехода
+import WebKit
 
 class WebViewController: UIViewController, WKNavigationDelegate {
     

@@ -7,25 +7,26 @@
 
 import Foundation
 
-protocol StatisticsViewInPut: AnyObject {
+protocol StatisticsViewInput: AnyObject {
     func updateUsers(users: [UserModel])
-    func showActivityIndicator()
+    func showActivityIndicator(isFirstLoad: Bool)
     func hideActivityIndicator()
+    func showErrorAlert()
 }
 
 final class StatisticsPresenter: StatisticsViewOutput {
-    private weak var view: StatisticsViewInPut?
+    private weak var view: StatisticsViewInput?
     private var users: [UserModel] = []
     private var networkClient: StatisticsNetworkClientProtocol
     
-    init(view: StatisticsViewInPut, networkClient: StatisticsNetworkClientProtocol = StatisticsNetworkClient()) {
+    init(view: StatisticsViewInput, networkClient: StatisticsNetworkClientProtocol = StatisticsNetworkClient()) {
         self.view = view
         self.networkClient = networkClient
     }
     
-    func fetchData() {
+    func fetchData(isFirstLoad: Bool) {
         DispatchQueue.main.async { [weak self] in
-            self?.view?.showActivityIndicator()
+            self?.view?.showActivityIndicator(isFirstLoad: isFirstLoad)
         }
         
         guard let url = URL(string: "\(RequestConstants.baseURL)/api/v1/users") else {
@@ -82,10 +83,9 @@ final class StatisticsPresenter: StatisticsViewOutput {
     
     private func handleFailure(error: Error) {
         print("Error fetching data: \(error)")
-        
-        // TODO: Реализовать логику отображения Alert с ошибкой
+        view?.showErrorAlert()
     }
-    
+
     func sortUsersByRating() {
         users.sort { (user1, user2) -> Bool in
             if let rating1 = user1.rating, let rating2 = user2.rating {

@@ -6,7 +6,7 @@
 //
 
 protocol StatisticsViewOutput: AnyObject {
-    func fetchData()
+    func fetchData(isFirstLoad: Bool)
     func sortUsersByRating()
     func sortUsersByName()
     func numberOfUsers() -> Int
@@ -18,6 +18,8 @@ import UIKit
 
 final class StatisticsViewController: UIViewController, UINavigationControllerDelegate {
     private var output: StatisticsViewOutput?
+    private let refreshControl = UIRefreshControl()
+    private var isFirstLoad = true
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -52,9 +54,12 @@ final class StatisticsViewController: UIViewController, UINavigationControllerDe
         output = StatisticsPresenter(view: self)
         setupTableView()
         setupConstraints()
-        output?.fetchData()
+        output?.fetchData(isFirstLoad: true)
         
         navigationItem.rightBarButtonItem = sortBarButtonItem
+        
+        refreshControl.addTarget(self, action: #selector(refreshData(_:)), for: .valueChanged)
+        tableView.refreshControl = refreshControl
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,6 +115,10 @@ final class StatisticsViewController: UIViewController, UINavigationControllerDe
         
         present(alertController, animated: true, completion: nil)
     }
+    
+    @objc private func refreshData(_ sender: Any) {
+        output?.fetchData(isFirstLoad: false)
+    }
 }
 
 extension StatisticsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -145,12 +154,41 @@ extension StatisticsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension StatisticsViewController: StatisticsViewInPut {
-    func showActivityIndicator() {
-        activityIndicator.startAnimating()
+extension StatisticsViewController: StatisticsViewInput {
+    func showActivityIndicator(isFirstLoad: Bool) {
+        if isFirstLoad {
+            activityIndicator.startAnimating()
+        } else {
+            refreshControl.beginRefreshing()
+        }
     }
     
     func hideActivityIndicator() {
         activityIndicator.stopAnimating()
+        refreshControl.endRefreshing()
+        tableView.reloadData()
+    }
+    
+    func showErrorAlert() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            let alertController = UIAlertController(
+                title: "Не удалось получить\nданные",
+                message: nil,
+                preferredStyle: .alert
+            )
+            
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+            alertController.addAction(cancelAction)
+            
+            let retryAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+                self?.output?.fetchData(isFirstLoad: true)
+            }
+            
+            alertController.addAction(retryAction)
+            alertController.preferredAction = retryAction
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
 }

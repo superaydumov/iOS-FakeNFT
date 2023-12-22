@@ -5,15 +5,18 @@
 //  Created by Андрей Асланов on 12.12.23.
 //
 
-import UIKit                  //Это относится к части statistics2-3, сверстал чтобы проверить работу перехода
+protocol UserCardView: AnyObject {
+    func updateUI(avatarURL: String, username: String, description: String)
+}
 
-final class UserCard: UIViewController {
-    
-    private let user: UserModel
+import UIKit
+
+class UserCard: UIViewController, UserCardView {
+    private var presenter: UserCardPresenterProtocol?
     
     init(user: UserModel) {
-        self.user = user
         super.init(nibName: nil, bundle: nil)
+        self.presenter = UserCardPresenter(user: user, view: self)
     }
     
     required init?(coder: NSCoder) {
@@ -74,11 +77,8 @@ final class UserCard: UIViewController {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(imageView)
         
-        if let nftCount = user.nftCount {
-            titleLabel.text = "Коллекция NFT (\(nftCount))"
-        } else {
-            titleLabel.text = "Коллекция NFT (0)"
-        }
+        let nftCount = presenter?.nftCount() ?? "0"
+        titleLabel.text = "Коллекция NFT (\(nftCount))"
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(nftButtonTapped))
         stackView.addGestureRecognizer(tapGesture)
@@ -108,15 +108,7 @@ final class UserCard: UIViewController {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        
-        if let avatarURL = URL(string: user.avatar ?? "") {
-            avatarImageView.kf.setImage(with: avatarURL, placeholder: UIImage(named: "placeholder"))
-        } else {
-            avatarImageView.image = UIImage(named: "placeholder")
-        }
-        
-        nameLabel.text = user.username
-        descriptionLabel.text = user.description
+        presenter?.updateUI()
     }
     
     private func setupConstraints() {
@@ -145,8 +137,19 @@ final class UserCard: UIViewController {
         ])
     }
     
+    func updateUI(avatarURL: String, username: String, description: String) {
+        if let avatarURL = URL(string: avatarURL) {
+            avatarImageView.kf.setImage(with: avatarURL, placeholder: UIImage(named: "placeholder"))
+        } else {
+            avatarImageView.image = UIImage(named: "placeholder")
+        }
+        
+        nameLabel.text = username
+        descriptionLabel.text = description
+    }
+    
     @objc private func websiteButtonTapped() {
-        if let websiteString = user.website, let websiteURL = URL(string: websiteString) {
+        if let websiteString = presenter?.website(), let websiteURL = URL(string: websiteString) {
             let webViewController = WebViewController()
             webViewController.url = websiteURL
             navigationController?.pushViewController(webViewController, animated: true)
@@ -156,12 +159,15 @@ final class UserCard: UIViewController {
     }
     
     @objc private func nftButtonTapped() {
-        UIView.animate(withDuration: 0.2, animations: {
-            self.nftButton.alpha = 0.5
-        }) { _ in
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.nftButton.alpha = 0.5
+        }) { [weak self] _ in
             UIView.animate(withDuration: 0.2) {
-                self.nftButton.alpha = 1.0
+                self?.nftButton.alpha = 1.0
             }
+            
+            let userNftCollectionVC = UserNftCollectionViewController()
+            self?.navigationController?.pushViewController(userNftCollectionVC, animated: true)
         }
     }
     
