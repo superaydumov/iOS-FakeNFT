@@ -43,8 +43,29 @@ class ProfilePresenterImpl {
         }
     }
     
+    func updateProfileData(updatedProfile: Profile, completion: @escaping (Result<Data, Error>) -> Void) {
+        let putRequest = PutProfileRequest(updatedProfile: updatedProfile)
+        
+        guard let urlRequest = createURLRequest(for: putRequest, with: updatedProfile) else {
+            completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
+            return
+        }
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            if let data = data {
+                completion(.success(data))
+            } else {
+                let noDataError = NSError(domain: "NoData", code: 0, userInfo: nil)
+                completion(.failure(noDataError))
+            }
+        }
+        task.resume()
+    }
     
-    func getDataUser(completion: @escaping (Result<Data, Error>) -> Void) {
+    private func getDataUser(completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1") else {
             completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
             return
@@ -66,37 +87,32 @@ class ProfilePresenterImpl {
             }
         }
         task.resume()
-        // return urlRequest
     }
     
-    
-    func updateProfileData(updatedProfile: Profile, completion: @escaping (Result<Data, Error>) -> Void) {
-        do {
-            let putRequest = PutProfileRequest(updatedProfile: updatedProfile)
-            guard let endpoint = putRequest.endpoint else {
-                completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
-                return
-            }
-            var urlRequest = URLRequest(url: endpoint)
-            urlRequest.httpMethod = putRequest.httpMethod.rawValue
-            urlRequest.httpBody = putRequest.httpBody
-            urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
-            print("URL запроса:", urlRequest.url?.absoluteString ?? "")
-            print("Тело запроса:", String(data: urlRequest.httpBody ?? Data(), encoding: .utf8) ?? "")
-
-            defaultNetworkClient.send(request: putRequest, completionQueue: .main) { result in
-                switch result {
-                case .success(let data):
-                    print("Профиль успешно обновлен на сервере.")
-                    completion(.success(data))
-                case .failure(let error):
-                    print("Ошибка при обновлении профиля на сервере: \(error)")
-                    completion(.failure(error))
-                }
-            }
-        } catch {
-            print("Ошибка кодирования данных профиля: \(error)")
-            completion(.failure(error))
+    private  func createURLRequest(for request: NetworkRequest, with profile: Profile) -> URLRequest? {
+        guard let endpointURL = request.endpoint else {
+            return nil
         }
+        var urlRequest = URLRequest(url: endpointURL)
+        urlRequest.httpMethod = request.httpMethod.rawValue
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue(RequestConstants.accessToken, forHTTPHeaderField: "X-Practicum-Mobile-Token")
+        
+        if let parameters = createParameters(for: profile) {
+            let parameterString = parameters
+                .map { "\($0.key)=\($0.value)" }
+                .joined(separator: "&")
+            urlRequest.httpBody = parameterString.data(using: .utf8)
+        }
+        return urlRequest
+    }
+    
+    private func createParameters(for profile: Profile) -> [String: Any]? {
+        let parameters: [String: Any] = [
+            "name": profile.name,
+            "description": profile.description ?? "",
+            "website": profile.website ?? "",
+        ]
+        return parameters
     }
 }

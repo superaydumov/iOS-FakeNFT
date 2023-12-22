@@ -88,12 +88,12 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
     // MARK: - Public Methods
     func updateUser(user: [Profile]) {
         guard let currentUser = user.first else { return }
-        
-        currentDisplayedUser = currentUser
-        nameLabel.text = currentUser.name
-        bioLabel.text = currentUser.description
-        linkLabel.text = currentUser.website
-        
+        DispatchQueue.main.async {
+            self.currentDisplayedUser = currentUser
+            self.nameLabel.text = currentUser.name
+            self.bioLabel.text = currentUser.description
+            self.linkLabel.text = currentUser.website
+        }
         if let imageURL = URL(string: currentUser.avatar ?? "") {
             avatarImageView.kf.setImage(with: imageURL)
         }

@@ -2,13 +2,6 @@ import UIKit
 import ProgressHUD
 
 final class ProfileEditViewController: UIViewController, ProfilePresenter {
-    func updateUser(user: [Profile]) {
-        if let currentUser = user.first {
-            nameDescription.text = currentUser.name
-            userDescription.text = currentUser.description
-            userWebsite.text = currentUser.website
-        }
-    }
     
     // MARK: - Public Properties
     var currentUser: Profile?
@@ -133,12 +126,22 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
         
         navigationItem.rightBarButtonItem = exitButton
         
-        nameDescription.text = currentUser?.name
-        userDescription.text = currentUser?.description
-        userWebsite.text = currentUser?.website
+        nameDescription.text = currentUser?.name ?? ""
+        userDescription.text = currentUser?.description ?? ""
+        userWebsite.text = currentUser?.website ?? ""
         
         if let imageURL = avatarImageURL {
             changeAvatar.kf.setImage(with: imageURL)
+        }
+    }
+    // MARK: - Public Methods
+    func updateUser(user: [Profile]) {
+        DispatchQueue.main.async {
+            if let currentUser = user.first {
+                self.nameDescription.text = currentUser.name
+                self.userDescription.text = currentUser.description
+                self.userWebsite.text = currentUser.website
+            }
         }
     }
     
@@ -198,26 +201,28 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
         ])
     }
     
-    func updateProfile() {
-        
+    private func updateProfile() {
         let updatedName = nameDescription.text ?? ""
         let updatedDescription = userDescription.text ?? ""
         let updatedWebsite = userWebsite.text ?? ""
-        
         onProfileUpdate?(updatedName, updatedDescription, updatedWebsite)
     }
     
-    /*   @objc private func exitButtonTapped() {
-     onProfileUpdate?(nameDescription.text, userDescription.text, userWebsite.text)
-     updateProfile()
-     dismiss(animated: true, completion: nil)
-     }*/
+    private func createUpdatedProfile() -> Profile? {
+        guard let updatedName = nameDescription.text,
+              let updatedDescription = userDescription.text,
+              let updatedWebsite = userWebsite.text,
+              let userId = currentUser?.id,
+              let likes = currentUser?.likes else {
+            return nil
+        }
+        return Profile(name: updatedName, description: updatedDescription, website: updatedWebsite, avatar: nil, nfts: nil, likes: likes, id: userId)
+    }
     
     @objc private func exitButtonTapped() {
         guard let updatedProfile = createUpdatedProfile() else {
             return
         }
-        
         presenter?.updateProfileData(updatedProfile: updatedProfile) { result in
             switch result {
             case .success(let data):
@@ -229,26 +234,12 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
             }
             
             DispatchQueue.main.async {
+                self.updateUser(user: [updatedProfile])
                 self.dismiss(animated: true, completion: nil)
             }
         }
         updateProfile()
     }
-    
-    private func createUpdatedProfile() -> Profile? {
-        guard let updatedName = nameDescription.text,
-              let updatedDescription = userDescription.text,
-              let updatedWebsite = userWebsite.text,
-              let userId = currentUser?.id,
-              let likes = currentUser?.likes else {
-            return nil
-        }
-        print("Updated Name: \(updatedName)")
-        print("Updated Description: \(updatedDescription)")
-        print("Updated Website: \(updatedWebsite)")
-        return Profile(name: updatedName, description: updatedDescription, website: updatedWebsite, avatar: nil, nfts: nil, likes: likes, id: userId)
-    }
-    
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
