@@ -225,19 +225,19 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
         guard let updatedProfile = createUpdatedProfile() else {
             return
         }
-        presenter?.updateProfileData(updatedProfile: updatedProfile) { result in
+        presenter?.updateProfileData(updatedProfile: updatedProfile) { [weak self ] result in
             switch result {
             case .success(let data):
                 print("Профиль успешно обновлен на сервере:", String(data: data, encoding: .utf8) ?? "")
                 
-                self.updateUser(user: [updatedProfile])
+                self?.updateUser(user: [updatedProfile])
             case .failure(let error):
                 print("Ошибка при обновлении профиля на сервере:", error)
             }
             
             DispatchQueue.main.async {
-                self.updateUser(user: [updatedProfile])
-                self.dismiss(animated: true, completion: nil)
+                self?.updateUser(user: [updatedProfile])
+                self?.dismiss(animated: true, completion: nil)
             }
         }
         updateProfile()
