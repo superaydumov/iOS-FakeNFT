@@ -26,6 +26,7 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 35
         imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -191,12 +192,13 @@ final class ProfileEditViewController: UIViewController, ProfilePresenter {
             
             changeAvatar.heightAnchor.constraint(equalToConstant: 70),
             changeAvatar.widthAnchor.constraint(equalToConstant: 70),
-            changeAvatar.topAnchor.constraint(equalTo: view.topAnchor, constant: 94),
+            changeAvatar.bottomAnchor.constraint(equalTo: name.topAnchor, constant: -24),
+
             changeAvatar.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             
             editProfileLabel.heightAnchor.constraint(equalToConstant: 70),
             editProfileLabel.widthAnchor.constraint(equalToConstant: 70),
-            editProfileLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 94),
+            editProfileLabel.bottomAnchor.constraint(equalTo: name.topAnchor, constant: -24),
             editProfileLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
         ])
     }
