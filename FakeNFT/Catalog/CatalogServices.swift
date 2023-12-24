@@ -14,19 +14,24 @@ enum CatalogServiceError: Error {
 
 final class CatalogServices {
     
-    let baseURL = RequestConstants.baseURL
     var collections: [NFTCollectionInfo] = []
     
     private let defaultNetworkClient = DefaultNetworkClient()
     private let loadLimit = 10
     private var isCurrentlyLoading: Bool = false
     private var areAllCollectionsDownloaded: Bool = false
+    var isAllCollectionsDownloaded: Bool {
+        return areAllCollectionsDownloaded
+    }
+    var currentlyLoading: Bool {
+        return isCurrentlyLoading
+    }
     
     // MARK: Fetch Collections
     func fetchCollections(completion: @escaping (Result<Bool, Error>) -> Void) {
         guard !isCurrentlyLoading, !areAllCollectionsDownloaded else { return }
-                
-        if let url = URL(string: "\(baseURL)/api/v1/collections") {
+        
+        if let url = URL(string: "\(RequestConstants.baseURL)/api/v1/collections") {
             let catalogRequest = CatalogRequest(endpoint: url, httpMethod: .get)
             
             isCurrentlyLoading = true
@@ -55,18 +60,16 @@ final class CatalogServices {
     // MARK: Handle Network Response
     private func handleNetworkResponse(_ result: Result<[NFTCollection], Error>,
                                        completion: @escaping (Result<Bool, Error>) -> Void) {
-        switch result {
-        case .success(let collections):
-            DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async {
+            [weak self] in
+            switch result {
+            case .success(let collections):
                 self?.updateCollections(collections, completion: completion)
-            }
-        case .failure(let error):
-            DispatchQueue.main.async {
+            case .failure(let error):
                 completion(.failure(error))
-                print(error)
             }
+            self?.isCurrentlyLoading = false
         }
-        isCurrentlyLoading = false
     }
     
     // MARK: Update Collections
@@ -81,18 +84,3 @@ final class CatalogServices {
         NotificationCenter.default.post(name: CatalogPresenter.didChangeCollectionsListNotification, object: self)
     }
 }
-
-struct CatalogRequest: NetworkRequest {
-    var endpoint: URL?
-    var httpMethod: HttpMethod
-    var dto: Encodable?
-    var headers: [String: String]?
-
-    init(endpoint: URL? = nil, httpMethod: HttpMethod = .get, dto: Encodable? = nil, headers: [String: String]? = nil) {
-        self.endpoint = endpoint
-        self.httpMethod = httpMethod
-        self.dto = dto
-        self.headers = headers
-    }
-}
-

@@ -8,5 +8,5 @@
 import UIKit
 
 final class CollectionNFTViewController: UIViewController {
-    
+    // TODO: реализовать во второй части дипломной работы
 }

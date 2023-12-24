@@ -10,7 +10,7 @@ import UIKit
 final class CatalogPresenter: CatalogPresenterProtocol {
     
     // MARK: - Public Properties
-    weak var catalogView: CatalogView?
+    weak var view: CatalogView?
     private (set) var collections: [NFTCollectionInfo] = []
     static let didChangeCollectionsListNotification = Notification.Name(rawValue: "ChangeCollectionsList")
     
@@ -19,33 +19,45 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     private let userDefaults = UserDefaults.standard
     private let catalogFilterTypeKey = "CatalogFilterType"
     
-    // MARK: - Public methods
+    // MARK: - Initializer
+    init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCollectionsList), name: CatalogPresenter.didChangeCollectionsListNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Public Methods
     func onViewDidLoad() {
-        // MARK: View Lifecycle - onViewDidLoad
         UIBlockingProgressHUD.show()
-        NotificationCenter.default
-            .addObserver(forName: CatalogPresenter.didChangeCollectionsListNotification, object: nil, queue: .main) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateTableView(animated: true)
-                self.applyFiltering()
-                UIBlockingProgressHUD.dismiss()
-            }
         loadCollections()
     }
     
+    func viewDidDisappear() {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: CatalogPresenter.didChangeCollectionsListNotification,
+                                                  object: nil)
+    }
+    
     func applyFiltering() {
-        // MARK: Filtering
         let filterTypeInt = userDefaults.integer(forKey: catalogFilterTypeKey)
         let filterType = FilterType(rawValue: filterTypeInt)
         switch filterType {
         case .byName:
-            self.collections = collections.sorted(by: { $0.name < $1.name })
+            self.collections.sort { $0.name < $1.name }
         case .NFTcount:
-            self.collections = collections.sorted(by: { $0.nfts.count > $1.nfts.count })
+            self.collections.sort { $0.nfts.count > $1.nfts.count }
         default:
+            let alertController = UIAlertController(title: "Ошибка",
+                                                    message: "Неизвестный тип фильтра",
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK",
+                                                    style: .default,
+                                                    handler: nil))
             break
         }
-        updateTableView(animated: false)
+        view?.reloadCatalogTableView()
     }
     
     func handleFilterButtonTap() {
@@ -53,49 +65,41 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     }
     
     func willDisplayCell(_ indexPath: IndexPath) {
-        if indexPath.row == (self.collections.count) - 1 {
+        if indexPath.row == (collections.count - 1) {
             loadCollections()
         }
     }
     
     func setUserDefaultsData(by type: Int, for key: String) {
-        self.userDefaults.setValue(type, forKey: catalogFilterTypeKey)
+        userDefaults.set(type, forKey: catalogFilterTypeKey)
     }
     
-    // MARK: - Private methods
-    private func updateTableView(animated: Bool) {
-        guard animated else {
-            catalogView?.reloadCatalogTableView()
-            return
-        }
-        let oldCount = collections.count
-        let newCount = service.collections.count
-        collections = service.collections
-        if oldCount != newCount {
-            let indexPaths = (oldCount..<newCount).map { row in
-                IndexPath(row: row, section: 0)
-            }
-            catalogView?.addRowsToCatalogTableView(indexPaths: indexPaths)
-        }
-    }
-    
+    // MARK: - Private Methods
     private func loadCollections() {
         service.fetchCollections { [weak self] result in
-            switch result {
-            case .success(_):
-                break
-            case .failure(let errorForAlert):
-                let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-                    // Перезагрузка коллекции после нажатия на кнопку "OK"
-                    self?.loadCollections()
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.dismiss()
+                switch result {
+                case .success(_):
+                    // Обработка успешной загрузки
+                    self?.view?.reloadCatalogTableView()
+                case .failure(let error):
+                    // Обработка ошибки
+                    self?.view?.displayAlert(title: "Error",
+                                             message: error.localizedDescription,
+                                             actions: [UIAlertAction(title: "OK", style: .default)])
                 }
-                self?.catalogView?.displayAlert(title: "Error", message: errorForAlert.localizedDescription, actions: [okAction])
             }
         }
+    }
+    
+    @objc private func updateCollectionsList() {
+        collections = service.collections
+        view?.reloadCatalogTableView()
     }
 }
 
-// MARK: - Enums
+// MARK: - FilterType Enum
 enum FilterType: Int {
     case byName
     case NFTcount

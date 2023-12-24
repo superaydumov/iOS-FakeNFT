@@ -9,15 +9,32 @@ import UIKit
 import ProgressHUD
 import Kingfisher
 
-final class CatalogViewController: UIViewController {
+// Протоколы для взаимодействия между View и Presenter
+protocol CatalogView: AnyObject {
+    func reloadCatalogTableView()
+    func addRowsToCatalogTableView(indexPaths: [IndexPath])
+    func displayAlert(title: String, message: String?, actions: [UIAlertAction])
+}
+
+protocol CatalogPresenterProtocol: AnyObject {
+    var view: CatalogView? { get set }
+    var collections: [NFTCollectionInfo] { get }
+    func onViewDidLoad()
+    func viewDidDisappear()
+    func handleFilterButtonTap()
+    func willDisplayCell(_ indexPath: IndexPath)
+    func setUserDefaultsData(by type: Int, for key: String)
+}
+
+final class CatalogViewController: UIViewController, CatalogView {
     
     // MARK: - Public Properties
-    var catalogPresenter: CatalogPresenterProtocol
+    var catalogPresenter: CatalogPresenterProtocol?
     
-    init(presenter: CatalogPresenterProtocol = CatalogPresenter()) {
+    init(presenter: CatalogPresenterProtocol) {
         self.catalogPresenter = presenter
         super.init(nibName: nil, bundle: nil)
-        self.catalogPresenter.catalogView = self
+        self.catalogPresenter?.view = self
     }
     
     required init?(coder: NSCoder) {
@@ -33,21 +50,26 @@ final class CatalogViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // MARK: Setup Methods
         setupTransparentNavigationBar()
         setupTabBarAppearance()
-        catalogPresenter.onViewDidLoad()
+        catalogPresenter?.onViewDidLoad()
         setupScreen()
         setupTableView()
         setupNavigationBar()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        catalogPresenter?.viewDidDisappear()
+    }
+    
     // MARK: Screen Setup
     private func setupScreen() {
         view.backgroundColor = .white
-
+        
         addSubviews()
-        contstraintSubviews()
+        constraintSubviews()
     }
     
     // MARK: TableView Setup
@@ -71,7 +93,7 @@ final class CatalogViewController: UIViewController {
     }
     
     // MARK: Subviews Constraints
-    private func contstraintSubviews() {
+    private func constraintSubviews() {
         NSLayoutConstraint.activate([
             catalogTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             catalogTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -104,22 +126,21 @@ final class CatalogViewController: UIViewController {
     }
     
     private func configCell(for cell: CatalogCell, indexPath: IndexPath) {
-        let collection = catalogPresenter.collections[indexPath.row]
+        guard let collection = catalogPresenter?.collections[indexPath.row] else { return }
         cell.collectionImageView.kf.indicatorType = .activity
         cell.collectionImageView.kf.setImage(with: collection.cover)
         cell.collectionLabelView.text = "\(collection.name) (\(collection.nfts.count))"
     }
     
-    @objc
-    private func displayFilterOptions() {
+    @objc private func displayFilterOptions() {
         let alert = AlertPresenter(delegate: self)
         let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
-            self?.catalogPresenter.setUserDefaultsData(by: FilterType.byName.rawValue, for: "CatalogFilterType")
-            self?.catalogPresenter.handleFilterButtonTap()
+            self?.catalogPresenter?.setUserDefaultsData(by: FilterType.byName.rawValue, for: "CatalogFilterType")
+            self?.catalogPresenter?.handleFilterButtonTap()
         }
         let sortByCountAction = UIAlertAction(title: "По количеству NFT", style: .default) { [weak self] _ in
-            self?.catalogPresenter.setUserDefaultsData(by: FilterType.NFTcount.rawValue, for: "CatalogFilterType")
-            self?.catalogPresenter.handleFilterButtonTap()
+            self?.catalogPresenter?.setUserDefaultsData(by: FilterType.NFTcount.rawValue, for: "CatalogFilterType")
+            self?.catalogPresenter?.handleFilterButtonTap()
         }
         let closeButton = UIAlertAction(title: "Закрыть", style: .cancel)
         let model = AlertModel(alertControllerStyle: .actionSheet, alertTitle: "Сортировка", alertMessage: nil, alertActions: [sortByNameAction, sortByCountAction, closeButton])
@@ -128,7 +149,7 @@ final class CatalogViewController: UIViewController {
 }
 
 // MARK: - Public methods
-extension CatalogViewController: CatalogView{
+extension CatalogViewController {
     func reloadCatalogTableView() {
         catalogTableView.reloadData()
     }
@@ -153,14 +174,14 @@ extension CatalogViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        catalogPresenter.willDisplayCell(indexPath)
+        catalogPresenter?.willDisplayCell(indexPath)
     }
 }
 
 // MARK: - UITableViewDataSource
 extension CatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        catalogPresenter.collections.count
+        return catalogPresenter?.collections.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
