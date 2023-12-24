@@ -5,7 +5,7 @@
 //  Created by Андрей Асланов on 22.12.23.
 //
 
-import UIKit        //Это относится к части statistics2-3, сверстал чтобы проверить работу перехода
+import UIKit        //Это относится к части statistics3-3, сверстал чтобы проверить работу перехода
 
 final class UserNftCollectionViewController: UIViewController {
     
