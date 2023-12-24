@@ -82,7 +82,6 @@ final class StatisticsPresenter: StatisticsViewOutput {
     }
     
     private func handleFailure(error: Error) {
-        print("Error fetching data: \(error)")
         view?.showErrorAlert()
     }
 

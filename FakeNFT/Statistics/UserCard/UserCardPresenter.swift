@@ -5,20 +5,19 @@
 //  Created by Андрей Асланов on 22.12.23.
 //
 
-protocol UserCardPresenterProtocol {
+protocol UserCardViewOutput {
     func updateUI()
-    func website() -> String
-    func nftCount() -> String
+    func getUserInfo() -> UserModel
 }
 
 import Foundation
 
-final class UserCardPresenter: UserCardPresenterProtocol {
+final class UserCardPresenter: UserCardViewOutput {
     
-    private weak var view: UserCardView?
+    private weak var view: UserCardViewInput?
     private let user: UserModel
     
-    init(user: UserModel, view: UserCardView) {
+    init(user: UserModel, view: UserCardViewInput) {
         self.user = user
         self.view = view
         self.updateUI()
@@ -26,29 +25,13 @@ final class UserCardPresenter: UserCardPresenterProtocol {
     
     func updateUI() {
         view?.updateUI(
-            avatarURL: avatarURL(),
-            username: username(),
-            description: description()
+            avatarURL: getUserInfo().avatar ?? "",
+            username: getUserInfo().username ?? "",
+            description: getUserInfo().description ?? ""
         )
     }
     
-    func nftCount() -> String {
-        return user.nftCount ?? ""
-    }
-    
-    func avatarURL() -> String {
-        return user.avatar ?? ""
-    }
-    
-    func username() -> String {
-        return user.username ?? ""
-    }
-    
-    func description() -> String {
-        return user.description ?? ""
-    }
-    
-    func website() -> String {
-        return user.website ?? ""
+    func getUserInfo() -> UserModel {
+        return user
     }
 }

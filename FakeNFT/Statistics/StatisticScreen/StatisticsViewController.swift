@@ -139,8 +139,8 @@ extension StatisticsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let user = output?.user(at: indexPath.row) {
-            let userCard = UserCard(user: user)
-            navigationController?.pushViewController(userCard, animated: true)
+            let userCardVC = UserCardViewController(user: user)
+            navigationController?.pushViewController(userCardVC, animated: true)
         }
     }
     

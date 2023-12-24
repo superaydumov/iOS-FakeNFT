@@ -7,7 +7,7 @@
 
 import UIKit    //Это относится к части statistics3-3, сверстал чтобы проверить работу перехода
 
-class NftCollectionViewCell: UICollectionViewCell {
+final class NftCollectionViewCell: UICollectionViewCell {
     
     private let nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -52,6 +52,7 @@ class NftCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -59,22 +60,19 @@ class NftCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        addSubview(nftImageView)
-        addSubview(ratingView)
-        addSubview(titleLabel)
-        addSubview(priceLabel)
-        addSubview(cartButton)
-        addSubview(likeButton)
-        
-        nftImageView.translatesAutoresizingMaskIntoConstraints = false
-        ratingView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        cartButton.translatesAutoresizingMaskIntoConstraints = false
-        likeButton.translatesAutoresizingMaskIntoConstraints = false
-        
+        [nftImageView,
+        ratingView,
+        titleLabel,
+        priceLabel,
+        cartButton,
+        likeButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            addSubview($0)
+        }
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
-            
             nftImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             nftImageView.topAnchor.constraint(equalTo: topAnchor),
             nftImageView.trailingAnchor.constraint(equalTo: trailingAnchor),

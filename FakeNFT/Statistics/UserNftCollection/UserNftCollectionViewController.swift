@@ -7,7 +7,7 @@
 
 import UIKit        //Это относится к части statistics2-3, сверстал чтобы проверить работу перехода
 
-class UserNftCollectionViewController: UIViewController {
+final class UserNftCollectionViewController: UIViewController {
     
     private lazy var backButton: UIBarButtonItem = {
         let button = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"),

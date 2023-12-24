@@ -5,14 +5,14 @@
 //  Created by Андрей Асланов on 12.12.23.
 //
 
-protocol UserCardView: AnyObject {
+protocol UserCardViewInput: AnyObject {
     func updateUI(avatarURL: String, username: String, description: String)
 }
 
 import UIKit
 
-class UserCard: UIViewController, UserCardView {
-    private var presenter: UserCardPresenterProtocol?
+final class UserCardViewController: UIViewController, UserCardViewInput {
+    private var presenter: UserCardViewOutput?
     
     init(user: UserModel) {
         super.init(nibName: nil, bundle: nil)
@@ -77,7 +77,7 @@ class UserCard: UIViewController, UserCardView {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(imageView)
         
-        let nftCount = presenter?.nftCount() ?? "0"
+        let nftCount = presenter?.getUserInfo().nftCount ?? "0"
         titleLabel.text = "Коллекция NFT (\(nftCount))"
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(nftButtonTapped))
@@ -149,7 +149,7 @@ class UserCard: UIViewController, UserCardView {
     }
     
     @objc private func websiteButtonTapped() {
-        if let websiteString = presenter?.website(), let websiteURL = URL(string: websiteString) {
+        if let websiteString = presenter?.getUserInfo().website, let websiteURL = URL(string: websiteString) {
             let webViewController = WebViewController()
             webViewController.url = websiteURL
             navigationController?.pushViewController(webViewController, animated: true)
