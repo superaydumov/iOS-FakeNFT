@@ -8,6 +8,16 @@ final class PaymentTypeViewController: UIViewController {
     private var selectedCell: String? = nil
     weak var delegate: PaymentTypeViewControllerDelegate?
     
+    // MARK: - Localized Strings
+    
+    private let paymentButtonText = NSLocalizedString("paymentButtonText", comment: "")
+    private let informationLabelText = NSLocalizedString("informationLabelText", comment: "")
+    private let webViewLabelText = NSLocalizedString("webViewLabelText", comment: "")
+    private let topTitleText = NSLocalizedString("topTitleText", comment: "")
+    private let alertMessageText = NSLocalizedString("alertMessageText", comment: "")
+    private let alertCancelButtonText = NSLocalizedString("alertCancelButtonText", comment: "")
+    private let alertRetryButtonText = NSLocalizedString("alertRetryButtonText", comment: "")
+    
     // MARK: - Computed Properties
     
     private lazy var collectionView: UICollectionView = {
@@ -32,7 +42,7 @@ final class PaymentTypeViewController: UIViewController {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Оплатить", for: .normal)
+        button.setTitle(paymentButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack
@@ -47,7 +57,7 @@ final class PaymentTypeViewController: UIViewController {
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .nftBlack
         label.textAlignment = .left
-        label.text = "Совершая покупку, вы соглашаетесь с условиями"
+        label.text = informationLabelText
         
         return label
     }()
@@ -57,7 +67,7 @@ final class PaymentTypeViewController: UIViewController {
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .nftBlueUniversal
         label.textAlignment = .left
-        label.text = "Пользовательского соглашения"
+        label.text = webViewLabelText
         
         label.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(webViewLabelTapped))
@@ -85,7 +95,7 @@ final class PaymentTypeViewController: UIViewController {
     
     private func navBarSetup() {
         if (navigationController?.navigationBar) != nil {
-            title = "Выберите способ оплаты"
+            title = topTitleText
             
             let backButton = UIButton(type: .custom)
             backButton.setImage(UIImage(named: "chevronBackward"), for: .normal)
@@ -156,9 +166,9 @@ final class PaymentTypeViewController: UIViewController {
             self.navigationController?.pushViewController(viewController, animated: true)
             tabBarController?.tabBar.isHidden = true
         } else {
-            let alert = UIAlertController(title: nil, message: "Не удалось произвести оплату", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
-            let retryAction = UIAlertAction(title: "Повторить", style: .default) { _ in
+            let alert = UIAlertController(title: nil, message: alertMessageText, preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: alertCancelButtonText, style: .cancel)
+            let retryAction = UIAlertAction(title: alertRetryButtonText, style: .default) { _ in
                 self.dismiss(animated: true)
             }
             

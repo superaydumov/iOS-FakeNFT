@@ -1,0 +1,38 @@
+"Tab.catalog" = "Catalog";
+"Catalog.openNft" = "Open Nft";
+"Error.network" = "Network error occured";
+"Error.unknown" = "Unknown error occured";
+"Error.repeat" = "Retry";
+"Error.title" = "Error";
+
+//Cart
+//CartViewController
+
+"emptyLabelText" = "Cart is empty";
+"proceedPaymentButtonText" = "Proceed payment";
+"sortingText" = "Sorting";
+"sortByPriceText" = "by Price";
+"sortByRatingText" = "by Rating";
+"sortByNameText" = "by Name";
+"closeSortingText" = "Close";
+
+//DeleteFromCartViewController
+
+"deleteLabelText" = "Are you sure you want to\ndelete item from cart?";
+"deleteButtonText" = "Delete";
+"cancelButtonText" = "Cancel";
+
+//PaymentTypeViewController
+
+"paymentButtonText" = "Pay";
+"informationLabelText" = "By making a purchase, you confirm the terms of the";
+"webViewLabelText" = "User agreement";
+"topTitleText" = "Choose payment type";
+"alertMessageText" = "Payment failed";
+"alertCancelButtonText" = "Cancel";
+"alertRetryButtonText" = "Retry";
+
+//SuccessPaymentViewController
+
+"successLabelText" = "Success! Payment has passed,\ncongratulations on your purchase!";
+"successButtonText" = "Return to catalog";

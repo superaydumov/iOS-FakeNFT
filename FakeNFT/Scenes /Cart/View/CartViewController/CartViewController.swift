@@ -8,6 +8,16 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let refreshControl = UIRefreshControl()
     
+    // MARK: - Localized Strings
+    
+    private let emptyLabelText = NSLocalizedString("emptyLabelText", comment: "")
+    private let proceedPaymentButtonText = NSLocalizedString("proceedPaymentButtonText", comment: "")
+    private let sortingText = NSLocalizedString("sortingText", comment: "")
+    private let sortByPriceText = NSLocalizedString("sortByPriceText", comment: "")
+    private let sortByRatingText = NSLocalizedString("sortByRatingText", comment: "")
+    private let sortByNameText = NSLocalizedString("sortByNameText", comment: "")
+    private let closeSortingText = NSLocalizedString("closeSortingText", comment: "")
+    
     // MARK: - Computed Properties
     
     private lazy var emptyLabel: UILabel = {
@@ -15,7 +25,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .nftBlack
         label.textAlignment = .center
-        label.text = "Корзина пуста"
+        label.text = emptyLabelText
         
         return label
     }()
@@ -64,7 +74,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton()
-        button.setTitle("К оплате", for: .normal)
+        button.setTitle(proceedPaymentButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack
@@ -212,18 +222,18 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     @objc func sortButtonDidTap() {
         guard let presenter else { return }
-        let alert = UIAlertController(title: nil, message: "Сортировка", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: sortingText, preferredStyle: .actionSheet)
         
-        let sortByPriceAction = UIAlertAction(title: "По цене", style: .default) { _ in
+        let sortByPriceAction = UIAlertAction(title: sortByPriceText, style: .default) { _ in
             presenter.sortByPrice()
         }
-        let sortByRatingAction = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+        let sortByRatingAction = UIAlertAction(title: sortByRatingText, style: .default) { _ in
             presenter.sortByRating()
         }
-        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { _ in
+        let sortByNameAction = UIAlertAction(title: sortByNameText, style: .default) { _ in
             presenter.sortByName()
         }
-        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: closeSortingText, style: .cancel, handler: nil)
         
         alert.addAction(sortByPriceAction)
         alert.addAction(sortByRatingAction)
