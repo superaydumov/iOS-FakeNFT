@@ -8,12 +8,6 @@ final class DeleteFromCartViewController: UIViewController {
     private let itemIndex: Int
     weak var delegate: DeleteFromCartViewControllerDelegate?
     
-    // MARK: - Localized Strings
-    
-    private let deleteLabelText = NSLocalizedString("deleteLabelText", comment: "")
-    private let deleteButtonText = NSLocalizedString("deleteButtonText", comment: "")
-    private let cancelButtonText = NSLocalizedString("cancelButtonText", comment: "")
-    
     // MARK: - Computed Properties
     
     private lazy var blurView: UIView = {
@@ -51,7 +45,7 @@ final class DeleteFromCartViewController: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .nftBlack
-        label.text = deleteLabelText
+        label.text = LocalisedStrings.deleteLabelText
         label.textAlignment = .center
         label.numberOfLines = 2
         
@@ -69,7 +63,7 @@ final class DeleteFromCartViewController: UIViewController {
     
     private lazy var deleteButton: UIButton = {
         let button = UIButton()
-        button.setTitle(deleteButtonText, for: .normal)
+        button.setTitle(LocalisedStrings.deleteButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.setTitleColor(.nftRedUniversal, for: .normal)
         button.backgroundColor = .nftBlack
@@ -81,7 +75,7 @@ final class DeleteFromCartViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle(cancelButtonText, for: .normal)
+        button.setTitle(LocalisedStrings.cancelButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack

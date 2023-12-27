@@ -2,11 +2,6 @@ import UIKit
 
 final class SuccessPaymentViewController: UIViewController {
     
-    // MARK: - Localized Strings
-    
-    private let successLabelText = NSLocalizedString("successLabelText", comment: "")
-    private let successButtonText = NSLocalizedString("successButtonText", comment: "")
-    
     //MARK: - Computed properties
     
     private lazy var imageView: UIImageView = {
@@ -19,7 +14,7 @@ final class SuccessPaymentViewController: UIViewController {
     
     private lazy var successLabel: UILabel = {
         let label = UILabel()
-        label.text = successLabelText
+        label.text = LocalisedStrings.successLabelText
         label.numberOfLines = 2
         label.font = .systemFont(ofSize: 22, weight: .bold)
         label.textColor = .nftBlack
@@ -30,7 +25,7 @@ final class SuccessPaymentViewController: UIViewController {
     
     private lazy var successButton: UIButton = {
         let button = UIButton()
-        button.setTitle(successButtonText, for: .normal)
+        button.setTitle(LocalisedStrings.successButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack
