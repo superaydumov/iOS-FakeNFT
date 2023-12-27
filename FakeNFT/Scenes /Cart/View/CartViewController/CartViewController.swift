@@ -6,15 +6,16 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     private var presenter: CartPresenterProtocol?
     private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let refreshControl = UIRefreshControl()
     
     // MARK: - Computed Properties
     
     private lazy var emptyLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .NFTBlack
+        label.textColor = .nftBlack
         label.textAlignment = .center
-        label.text = "Корзина пуста"
+        label.text = LocalisedStrings.emptyLabelText
         
         return label
     }()
@@ -24,17 +25,18 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: CartTableViewCell.reuseIndentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = .NFTWhite
+        tableView.backgroundColor = .nftWhite
         tableView.separatorStyle = .none
         tableView.isUserInteractionEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 80, right: 0)
+        tableView.refreshControl = self.refreshControl
         
         return tableView
     }()
     
     private lazy var paymentLayerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .NFTLightGray
+        view.backgroundColor = .nftLightGray
         view.layer.cornerRadius = 12
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
@@ -45,7 +47,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         let label = UILabel()
         label.text = "0 NFT"
         label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = .NFTBlack
+        label.textColor = .nftBlack
         label.textAlignment = .left
         
         return label
@@ -54,7 +56,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private lazy var totalPriceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .NFTGreenUniversal
+        label.textColor = .nftGreenUniversal
         label.textAlignment = .left
         
         return label
@@ -62,10 +64,10 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton()
-        button.setTitle("К оплате", for: .normal)
+        button.setTitle(LocalisedStrings.proceedPaymentButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
-        button.setTitleColor(.NFTWhite, for: .normal)
-        button.backgroundColor = .NFTBlack
+        button.setTitleColor(.nftWhite, for: .normal)
+        button.backgroundColor = .nftBlack
         button.layer.cornerRadius = 16
         button.addTarget(nil, action: #selector(paymentButtonDidTap), for: .touchUpInside)
         
@@ -77,9 +79,10 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .NFTWhite
+        view.backgroundColor = .nftWhite
         
         activityIndicator.layer.zPosition = 50
+        refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         
         presenter = CartPresenter(viewController: self)
         
@@ -89,6 +92,12 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         labelsUpdate()
         elementsSetup()
         updateSorting()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        elementsSetup()
     }
     
     // MARK: - Private methods
@@ -177,7 +186,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         emptyLabel.isHidden = !nftIsEmpty
         tableView.isHidden = nftIsEmpty
         paymentLayerView.isHidden = nftIsEmpty
-        navigationController?.navigationBar.isHidden = nftIsEmpty
+        navigationController?.setNavigationBarHidden(nftIsEmpty, animated: false)
         tabBarController?.tabBar.isHidden = false
     }
     
@@ -203,18 +212,18 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     @objc func sortButtonDidTap() {
         guard let presenter else { return }
-        let alert = UIAlertController(title: nil, message: "Сортировка", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: LocalisedStrings.sortingText, preferredStyle: .actionSheet)
         
-        let sortByPriceAction = UIAlertAction(title: "По цене", style: .default) { _ in
+        let sortByPriceAction = UIAlertAction(title: LocalisedStrings.sortByPriceText, style: .default) { _ in
             presenter.sortByPrice()
         }
-        let sortByRatingAction = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+        let sortByRatingAction = UIAlertAction(title: LocalisedStrings.sortByRatingText, style: .default) { _ in
             presenter.sortByRating()
         }
-        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { _ in
+        let sortByNameAction = UIAlertAction(title: LocalisedStrings.sortByNameText, style: .default) { _ in
             presenter.sortByName()
         }
-        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: LocalisedStrings.closeSortingText, style: .cancel, handler: nil)
         
         alert.addAction(sortByPriceAction)
         alert.addAction(sortByRatingAction)
@@ -225,7 +234,15 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     @objc func paymentButtonDidTap() {
-        //TODO: add code to jump to PaymentViewController
+        let viewController = PaymentTypeViewController()
+        viewController.hidesBottomBarWhenPushed = true
+        viewController.delegate = self
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc func refreshTableView() {
+        tableViewUpdate()
+        refreshControl.endRefreshing()
     }
 }
 
@@ -257,6 +274,17 @@ extension CartViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140
     }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            guard let cell = tableView.cellForRow(at: indexPath) as? CartTableViewCell else { return }
+            cell.deleteFromCartButtonDidTap()
+        }
+    }
 }
 
     // MARK: - CartTableViewCellDelegate
@@ -284,5 +312,15 @@ extension CartViewController: DeleteFromCartViewControllerDelegate {
     
     func showTabBar() {
         tabBarController?.tabBar.isHidden = false
+    }
+}
+
+// MARK: - DeleteFromCartViewControllerDelegate
+
+extension CartViewController: PaymentTypeViewControllerDelegate {
+    func cleanCart() {
+        presenter?.cleanCart()
+        labelsUpdate()
+        elementsSetup()
     }
 }

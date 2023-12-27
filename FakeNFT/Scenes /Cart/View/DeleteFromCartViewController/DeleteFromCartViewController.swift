@@ -16,7 +16,7 @@ final class DeleteFromCartViewController: UIViewController {
         let blurEffect = UIBlurEffect(style: .regular)
         let customBlurEffectView = CustomVisualEffectView(effect: blurEffect, intensity: 0.5)
         customBlurEffectView.frame = self.view.bounds
-        dimmedView.backgroundColor = .NFTWhite?.withAlphaComponent(0.1)
+        dimmedView.backgroundColor = .nftWhite?.withAlphaComponent(0.1)
         dimmedView.frame = self.view.bounds
         view.addSubview(customBlurEffectView)
         view.addSubview(dimmedView)
@@ -44,8 +44,8 @@ final class DeleteFromCartViewController: UIViewController {
     private lazy var deleteLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .NFTBlack
-        label.text = "Вы уверены, что хотите\nудалить объект из корзины?"
+        label.textColor = .nftBlack
+        label.text = LocalisedStrings.deleteLabelText
         label.textAlignment = .center
         label.numberOfLines = 2
         
@@ -63,10 +63,10 @@ final class DeleteFromCartViewController: UIViewController {
     
     private lazy var deleteButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Удалить", for: .normal)
+        button.setTitle(LocalisedStrings.deleteButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
-        button.setTitleColor(.NFTRedUniversal, for: .normal)
-        button.backgroundColor = .NFTBlack
+        button.setTitleColor(.nftRedUniversal, for: .normal)
+        button.backgroundColor = .nftBlack
         button.layer.cornerRadius = 12
         button.addTarget(nil, action: #selector(deleteButtonDidTap), for: .touchUpInside)
         
@@ -75,10 +75,10 @@ final class DeleteFromCartViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Вернуться", for: .normal)
+        button.setTitle(LocalisedStrings.cancelButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
-        button.setTitleColor(.NFTWhite, for: .normal)
-        button.backgroundColor = .NFTBlack
+        button.setTitleColor(.nftWhite, for: .normal)
+        button.backgroundColor = .nftBlack
         button.layer.cornerRadius = 12
         button.addTarget(nil, action: #selector(cancelButtonDidTap), for: .touchUpInside)
         
