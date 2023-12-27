@@ -243,9 +243,10 @@
 			isa = PBXGroup;
 			children = (
 				3F478ECE29DB474E00F6D39E /* Colors.swift */,
-				3F478ED029DB476500F6D39E /* Fonts.swift */,
-				C95E10042B33937A00276081 /* TabBarImageAssets.swift */,
 				C9B8DD8B2B35CB3500483AFE /* CurrencyAssets.swift */,
+				3F478ED029DB476500F6D39E /* Fonts.swift */,
+				C9FBF0982B3C71DE00AACF35 /* LocalisedStrings.swift */,
+				C95E10042B33937A00276081 /* TabBarImageAssets.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -406,7 +407,6 @@
 				C9CA12B12B28E3A500E8161C /* CartNFTModel.swift */,
 				C9B8DD8D2B35D12100483AFE /* Currency.swift */,
 				C974EA8C2B38CDAB006485F8 /* GeometricParams.swift */,
-				C9FBF0982B3C71DE00AACF35 /* LocalisedStrings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
