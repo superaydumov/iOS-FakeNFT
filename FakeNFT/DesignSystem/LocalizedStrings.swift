@@ -1,6 +1,6 @@
 import Foundation
 
-struct LocalisedStrings {
+struct LocalizedStrings {
     
     //MARK: - CartViewController
     

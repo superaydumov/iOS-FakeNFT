@@ -45,7 +45,7 @@ final class DeleteFromCartViewController: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .nftBlack
-        label.text = LocalisedStrings.deleteLabelText
+        label.text = LocalizedStrings.deleteLabelText
         label.textAlignment = .center
         label.numberOfLines = 2
         
@@ -63,7 +63,7 @@ final class DeleteFromCartViewController: UIViewController {
     
     private lazy var deleteButton: UIButton = {
         let button = UIButton()
-        button.setTitle(LocalisedStrings.deleteButtonText, for: .normal)
+        button.setTitle(LocalizedStrings.deleteButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.setTitleColor(.nftRedUniversal, for: .normal)
         button.backgroundColor = .nftBlack
@@ -75,7 +75,7 @@ final class DeleteFromCartViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle(LocalisedStrings.cancelButtonText, for: .normal)
+        button.setTitle(LocalizedStrings.cancelButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack

@@ -14,7 +14,7 @@ final class SuccessPaymentViewController: UIViewController {
     
     private lazy var successLabel: UILabel = {
         let label = UILabel()
-        label.text = LocalisedStrings.successLabelText
+        label.text = LocalizedStrings.successLabelText
         label.numberOfLines = 2
         label.font = .systemFont(ofSize: 22, weight: .bold)
         label.textColor = .nftBlack
@@ -25,7 +25,7 @@ final class SuccessPaymentViewController: UIViewController {
     
     private lazy var successButton: UIButton = {
         let button = UIButton()
-        button.setTitle(LocalisedStrings.successButtonText, for: .normal)
+        button.setTitle(LocalizedStrings.successButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack

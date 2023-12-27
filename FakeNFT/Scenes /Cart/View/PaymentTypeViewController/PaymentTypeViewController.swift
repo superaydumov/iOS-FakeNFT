@@ -32,7 +32,7 @@ final class PaymentTypeViewController: UIViewController {
     
     private lazy var paymentButton: UIButton = {
         let button = UIButton()
-        button.setTitle(LocalisedStrings.paymentButtonText, for: .normal)
+        button.setTitle(LocalizedStrings.paymentButtonText, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         button.setTitleColor(.nftWhite, for: .normal)
         button.backgroundColor = .nftBlack
@@ -47,7 +47,7 @@ final class PaymentTypeViewController: UIViewController {
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .nftBlack
         label.textAlignment = .left
-        label.text = LocalisedStrings.informationLabelText
+        label.text = LocalizedStrings.informationLabelText
         
         return label
     }()
@@ -57,7 +57,7 @@ final class PaymentTypeViewController: UIViewController {
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .nftBlueUniversal
         label.textAlignment = .left
-        label.text = LocalisedStrings.webViewLabelText
+        label.text = LocalizedStrings.webViewLabelText
         
         label.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(webViewLabelTapped))
@@ -85,7 +85,7 @@ final class PaymentTypeViewController: UIViewController {
     
     private func navBarSetup() {
         if (navigationController?.navigationBar) != nil {
-            title = LocalisedStrings.topTitleText
+            title = LocalizedStrings.topTitleText
             
             let backButton = UIButton(type: .custom)
             backButton.setImage(UIImage(named: "chevronBackward"), for: .normal)
@@ -156,9 +156,9 @@ final class PaymentTypeViewController: UIViewController {
             self.navigationController?.pushViewController(viewController, animated: true)
             tabBarController?.tabBar.isHidden = true
         } else {
-            let alert = UIAlertController(title: nil, message: LocalisedStrings.alertMessageText, preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: LocalisedStrings.alertCancelButtonText, style: .cancel)
-            let retryAction = UIAlertAction(title: LocalisedStrings.alertRetryButtonText, style: .default) { _ in
+            let alert = UIAlertController(title: nil, message: LocalizedStrings.alertMessageText, preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: LocalizedStrings.alertCancelButtonText, style: .cancel)
+            let retryAction = UIAlertAction(title: LocalizedStrings.alertRetryButtonText, style: .default) { _ in
                 self.dismiss(animated: true)
             }
             
