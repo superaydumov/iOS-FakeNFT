@@ -4,3 +4,10 @@
 "Error.unknown" = "Произошла неизвестная ошибка";
 "Error.repeat" = "Повторить";
 "Error.title" = "Ошибка";
+
+//TabBarController
+
+"profileTabBarText" = "Профиль";
+"catalogTabBarText" = "Каталог";
+"cartTabBarText" = "Корзина";
+"statisticsTabBarText" = "Статистика";

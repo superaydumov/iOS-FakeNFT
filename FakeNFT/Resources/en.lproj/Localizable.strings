@@ -1,0 +1,13 @@
+"Tab.catalog" = "Catalog";
+"Catalog.openNft" = "Open Nft";
+"Error.network" = "Network error occurred";
+"Error.unknown" = "Unknown error occured";
+"Error.repeat" = "Retry";
+"Error.title" = "Error";
+
+//TabBarController
+
+"profileTabBarText" = "Profile";
+"catalogTabBarText" = "Catalog";
+"cartTabBarText" = "Cart";
+"statisticsTabBarText" = "Statistics";

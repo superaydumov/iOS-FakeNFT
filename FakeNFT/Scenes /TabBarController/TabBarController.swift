@@ -17,10 +17,10 @@ final class TabBarController: UITabBarController {
         let cartViewController = UINavigationController(rootViewController: CartViewController())
         let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
         
-        profileViewController.tabBarItem = UITabBarItem(title: "Профиль", image: TabBarImageAssets.profileTabBarOff, selectedImage: TabBarImageAssets.profileTabBarOn)
-        catalogViewController.tabBarItem = UITabBarItem(title: "Каталог", image: TabBarImageAssets.catalogTabBarOff, selectedImage: TabBarImageAssets.catalogTabBarOn)
-        cartViewController.tabBarItem = UITabBarItem(title: "Корзина", image: TabBarImageAssets.cartTabBarOff, selectedImage: TabBarImageAssets.cartTabBarOn)
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: TabBarImageAssets.statisticsTabBarOff, selectedImage: TabBarImageAssets.statisticsTabBarOn)
+        profileViewController.tabBarItem = UITabBarItem(title: LocalizedStrings.profileTabBarText, image: TabBarImageAssets.profileTabBarOff, selectedImage: TabBarImageAssets.profileTabBarOn)
+        catalogViewController.tabBarItem = UITabBarItem(title: LocalizedStrings.catalogTabBarText, image: TabBarImageAssets.catalogTabBarOff, selectedImage: TabBarImageAssets.catalogTabBarOn)
+        cartViewController.tabBarItem = UITabBarItem(title: LocalizedStrings.cartTabBarText, image: TabBarImageAssets.cartTabBarOff, selectedImage: TabBarImageAssets.cartTabBarOn)
+        statisticsViewController.tabBarItem = UITabBarItem(title: LocalizedStrings.statisticsTabBarText, image: TabBarImageAssets.statisticsTabBarOff, selectedImage: TabBarImageAssets.statisticsTabBarOn)
         
         self.viewControllers = [profileViewController, catalogViewController, cartViewController, statisticsViewController]
     }
