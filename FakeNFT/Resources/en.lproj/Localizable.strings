@@ -5,6 +5,13 @@
 "Error.repeat" = "Retry";
 "Error.title" = "Error";
 
+//TabBarController
+
+"profileTabBarText" = "Profile";
+"catalogTabBarText" = "Catalog";
+"cartTabBarText" = "Cart";
+"statisticsTabBarText" = "Statistics";
+
 //Cart
 //CartViewController
 

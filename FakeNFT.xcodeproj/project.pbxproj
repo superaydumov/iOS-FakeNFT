@@ -247,6 +247,7 @@
 				3F478ED029DB476500F6D39E /* Fonts.swift */,
 				C9FBF0982B3C71DE00AACF35 /* LocalizedStrings.swift */,
 				C95E10042B33937A00276081 /* TabBarImageAssets.swift */,
+				C9FBF09A2B3CA80000AACF35 /* LocalizedStrings.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -734,6 +735,7 @@
 				C9A42D9E2B27ABBC004D85B2 /* CatalogViewController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,
+				C9FBF09B2B3CA80000AACF35 /* LocalizedStrings.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
