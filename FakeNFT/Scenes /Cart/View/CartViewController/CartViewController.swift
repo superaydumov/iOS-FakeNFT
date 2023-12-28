@@ -315,7 +315,7 @@ extension CartViewController: DeleteFromCartViewControllerDelegate {
     }
 }
 
-// MARK: - DeleteFromCartViewControllerDelegate
+    // MARK: - DeleteFromCartViewControllerDelegate
 
 extension CartViewController: PaymentTypeViewControllerDelegate {
     func cleanCart() {
