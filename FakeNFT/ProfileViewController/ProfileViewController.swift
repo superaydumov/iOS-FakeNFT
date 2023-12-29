@@ -84,7 +84,21 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         setupUI()
         setupConstraints()
         presenter.fetchData()
+        
+        setupNFTPresenter()
     }
+    
+    private func setupNFTPresenter() {
+        let updateNFTCountClosure: (Int) -> Void = { [weak self] count in
+            self?.nftCount = count
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
+        }
+        let myNFTPresenter = MyNFTPresenter(onNFTCountUpdate: updateNFTCountClosure)
+        myNFTPresenter.viewDidLoad()
+    }
+    
     
     // MARK: - Public Methods
     func updateUser(user: Profile?) {
@@ -99,9 +113,6 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
             avatarImageView.kf.setImage(with: imageURL)
         }
         
-        if let nftsCount = currentUser.nfts?.count {
-            nftCount = nftsCount
-        }
         tableView.reloadData()
     }
     
@@ -215,6 +226,8 @@ extension ProfileViewController: UITableViewDelegate {
         switch indexPath.row {
         case 0:
             // "Мои NFT"
+            let myNFTViewController = MyNFTViewController()
+            navigationController?.pushViewController(myNFTViewController, animated: true)
             break
         case 1:
             // "Избранные NFT"
