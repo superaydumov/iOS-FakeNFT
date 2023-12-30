@@ -84,7 +84,10 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         activityIndicator.layer.zPosition = 50
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         
-        presenter = CartPresenter(viewController: self)
+        presenter = CartPresenter(
+            cartViewController: self,
+            paymentViewController: nil
+        )
         
         addSubviews()
         constraintsSetup()

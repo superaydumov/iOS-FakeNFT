@@ -6,13 +6,34 @@ final class CartPresenter: CartPresenterProtocol {
     
     var visibleNFT: [CartNFTModel] = CartMockData.mockNFT {
         didSet {
-            viewController?.tableViewUpdate()
+            cartViewController?.tableViewUpdate()
         }
     }
-    private weak var viewController: CartViewControllerProtocol?
     
-    init(viewController: CartViewControllerProtocol?) {
-        self.viewController = viewController
+    var currencyArray = [CurrencyResultModel]() {
+        didSet {
+            paymentViewController?.collectionViewUpdate()
+        }
+    }
+    
+    private weak var cartViewController: CartViewControllerProtocol?
+    private weak var paymentViewController: PaymentTypeViewControllerProtocol?
+    
+    init(
+        cartViewController: CartViewControllerProtocol?,
+        paymentViewController: PaymentTypeViewControllerProtocol?
+    ) {
+        self.cartViewController = cartViewController
+        self.paymentViewController = paymentViewController
+    }
+    
+    // MARK: - Private methods
+    
+    private func loadCurrencies(completion: @escaping (Result<[CurrencyNetworkModel], Error>) -> Void) {
+        let request = CurrencyRequest()
+        let networkClient = DefaultNetworkClient()
+        
+        networkClient.send(request: request, type: [CurrencyNetworkModel].self, completionQueue: .main, onResponse: completion)
     }
     
     // MARK: - Public methods
@@ -48,5 +69,29 @@ final class CartPresenter: CartPresenterProtocol {
     
     func cleanCart() {
         visibleNFT.removeAll()
+    }
+    
+    func fetchCurrencies() {
+        self.paymentViewController?.setLoaderIsHidden(false)
+        loadCurrencies { result in
+            switch result {
+            case .success(let currencyNetworkModel):
+                currencyNetworkModel.forEach { currency in
+                    let loadedCurrency = CurrencyResultModel(
+                        title: currency.title,
+                        name: currency.name,
+                        image: currency.image,
+                        id: currency.id)
+                    self.currencyArray.append(loadedCurrency)
+                    
+                    if self.currencyArray.count == currencyNetworkModel.count {
+                        self.paymentViewController?.setLoaderIsHidden(true)
+                    }
+                }
+            case .failure(let error):
+                assertionFailure(error.localizedDescription)
+                self.paymentViewController?.setLoaderIsHidden(true)
+            }
+        }
     }
 }

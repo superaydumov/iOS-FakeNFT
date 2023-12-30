@@ -1,11 +1,13 @@
 import UIKit
 
-final class PaymentTypeViewController: UIViewController {
+final class PaymentTypeViewController: UIViewController, PaymentTypeViewControllerProtocol {
     
     // MARK: - Stored Properties
     
     private let params = GeometricParams(cellCount: 2, cellHeight: 46, cellSpacing: 7, lineSpacing: 7)
     private var selectedCell: String? = nil
+    private var presenter: CartPresenterProtocol?
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     weak var delegate: PaymentTypeViewControllerDelegate?
     
     // MARK: - Computed Properties
@@ -76,6 +78,15 @@ final class PaymentTypeViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        activityIndicator.layer.zPosition = 50
+        
+        presenter = CartPresenter(
+            cartViewController: nil,
+            paymentViewController: self
+        )
+        
+        presenter?.fetchCurrencies()
+        
         addSubviews()
         constraintsSetup()
         navBarSetup()
@@ -99,7 +110,8 @@ final class PaymentTypeViewController: UIViewController {
     
     private func addSubviews() {
         [paymentLayerView,
-         collectionView
+         collectionView,
+         activityIndicator
         ].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
@@ -121,6 +133,9 @@ final class PaymentTypeViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             collectionView.heightAnchor.constraint(equalToConstant: 205),
             
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             paymentLayerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             paymentLayerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             paymentLayerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -141,6 +156,20 @@ final class PaymentTypeViewController: UIViewController {
             webViewLabel.topAnchor.constraint(equalTo: informationLabel.bottomAnchor, constant: 0),
             webViewLabel.heightAnchor.constraint(equalToConstant: 26)
         ])
+    }
+    
+    // MARK: - Public methods
+
+    func collectionViewUpdate() {
+        self.collectionView.reloadData()
+    }
+    
+    func setLoaderIsHidden(_ isHidden: Bool) {
+        if isHidden {
+            activityIndicator.stopAnimating()
+        } else {
+            activityIndicator.startAnimating()
+        }
     }
     
     // MARK: - Handlers
@@ -181,17 +210,22 @@ final class PaymentTypeViewController: UIViewController {
 
 extension PaymentTypeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Currency.allCases.count
+        guard let presenter else { return .zero }
+        return presenter.currencyArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentTypeCollectionViewCell.reuseIdentifier, for: indexPath) as? PaymentTypeCollectionViewCell else { return UICollectionViewCell() }
         
-        let currencyName = Currency.allCases[indexPath.item].rawValue
-        let shortCurrencyName = Currency.allCases[indexPath.item].shortNames
-        let currencyImage = Currency.allCases[indexPath.item].currencyImages
+        guard let presenter else { return UICollectionViewCell() }
         
-        cell.configureCell(fullName: currencyName, shortName: shortCurrencyName, image: currencyImage)
+        let currencyName = presenter.currencyArray[indexPath.item].title
+        let shortCurrencyName = presenter.currencyArray[indexPath.item].id
+        
+        //TODO: maintain using plug image
+        let currencyImage = presenter.currencyArray[indexPath.item].image
+        
+        cell.configureCell(fullName: currencyName, shortName: shortCurrencyName, image: UIImage())
         
         return cell
     }
@@ -220,7 +254,7 @@ extension PaymentTypeViewController: UICollectionViewDelegateFlowLayout {
 
 extension PaymentTypeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedCell = Currency.allCases[indexPath.item].rawValue
+        selectedCell = presenter?.currencyArray[indexPath.item].title
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
