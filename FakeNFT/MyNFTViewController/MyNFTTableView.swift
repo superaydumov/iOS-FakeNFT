@@ -1,7 +1,7 @@
 import UIKit
 
 final class MyNFTTableViewCell: UITableViewCell {
-    
+    var presenter: MyNFTPresenter?
     private lazy var nftStack: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -145,6 +145,10 @@ final class MyNFTTableViewCell: UITableViewCell {
     
     @objc private func didTapFavoriteButton(sender: FavouriteButton) {
         sender.isFavorite.toggle()
+        
+        if let presenter = presenter, let nftID = sender.nftID {
+            presenter.toggleLike(for: nftID)
+        }
     }
 }
 

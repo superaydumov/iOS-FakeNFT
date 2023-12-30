@@ -7,7 +7,7 @@ struct MyNFTViewModel:  Decodable, Encodable {
     let rating: Int
     let author: URL
     let price: Double
-    let isFavorite: Bool?
+    var isFavorite: Bool?
     let id: String
     
     init(images: [URL], name: String, rating: Int, author: URL, price: Double, isFavorite: Bool, id: String) {

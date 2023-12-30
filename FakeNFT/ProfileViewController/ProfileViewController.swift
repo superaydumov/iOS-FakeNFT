@@ -96,7 +96,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
             }
         }
         let myNFTPresenter = MyNFTPresenter(onNFTCountUpdate: updateNFTCountClosure)
-        myNFTPresenter.viewDidLoad()
+        myNFTPresenter.loadNFTData()
     }
     
     

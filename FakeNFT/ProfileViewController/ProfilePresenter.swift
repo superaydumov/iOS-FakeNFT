@@ -24,7 +24,13 @@ class ProfilePresenterImpl {
             switch result {
             case .success(let data):
                 do {
-                    let profile = try JSONDecoder().decode(Profile.self, from: data)
+                    var profile = try JSONDecoder().decode(Profile.self, from: data)
+                    if let likes = profile.likes {
+                        print("Liked NFTs IDs: \(likes)")
+                    } else {
+                        print("Liked NFTs IDs is nil")
+                    }
+                    
                     DispatchQueue.main.async {
                         self?.view?.updateUser(user: profile)
                         ProgressHUD.dismiss()
@@ -105,7 +111,7 @@ class ProfilePresenterImpl {
     }
     
     private func createParameters(for profile: Profile) -> [String: Any]? {
-        let parameters: [String: Any] = [
+        var parameters: [String: Any] = [
             "name": profile.name,
             "description": profile.description ?? "",
             "website": profile.website ?? "",

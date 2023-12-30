@@ -37,7 +37,7 @@ final class MyNFTViewController: UIViewController, MyNFTViewProtocol {
         super.viewDidLoad()
         view.backgroundColor = .white
         presenter = MyNFTPresenter(view: self)
-        presenter.viewDidLoad()
+        presenter.loadNFTData()
         myNFTTable.register(MyNFTTableViewCell.self, forCellReuseIdentifier: "MyNFTTableViewCell")
         setupConstraints()
         setupNavigationBar()
@@ -149,6 +149,7 @@ extension MyNFTViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyNFTTableViewCell", for: indexPath) as! MyNFTTableViewCell
         let item = viewModel[indexPath.row]
         cell.configureCell(with: item)
+        cell.presenter = self.presenter
         return cell
     }
     
