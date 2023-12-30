@@ -26,7 +26,7 @@ final class MyNFTViewController: UIViewController, MyNFTViewProtocol {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.textAlignment = .center
         label.text = "У Вас еще нет NFT"
         label.isHidden = true
@@ -54,7 +54,6 @@ final class MyNFTViewController: UIViewController, MyNFTViewProtocol {
     }
     
     func updateNFT(viewModel: [MyNFTViewModel]) {
-        print("Updating NFT with \(viewModel.count) items")
         self.viewModel = viewModel
         myNFTTable.reloadData()
         

@@ -24,7 +24,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .black
+        label.textColor = .textPrimary
         return label
     }()
     
@@ -39,7 +39,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .black
+        label.textColor = .textPrimary
         return label
     }()
     
@@ -57,7 +57,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.text = "Цена"
         return label
     }()
@@ -66,7 +66,7 @@ final class MyNFTTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.text = "0 ETH"
         return label
     }()

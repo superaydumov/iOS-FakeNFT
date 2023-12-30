@@ -121,7 +121,7 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     }
     
     private func createParameters(for profile: Profile) -> [String: Any]? {
-        var parameters: [String: Any] = [
+        let parameters: [String: Any] = [
             "likes": likedNFTs,
         ]
         return parameters
@@ -139,7 +139,7 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
         )
         updateProfileData(updatedProfile: updatedProfile) { result in
             switch result {
-            case .success(let data):
+            case .success:
                 print("Updated likes on the server: \(self.likedNFTs)")
             case .failure(let error):
                 print("Error updating the profile: \(error)")
