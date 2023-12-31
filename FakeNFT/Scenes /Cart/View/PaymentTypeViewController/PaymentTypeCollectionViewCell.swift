@@ -1,8 +1,10 @@
 import UIKit
+import Kingfisher
 
 final class PaymentTypeCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "PaymentTypeCollectionViewCell"
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
     
     //MARK: - Computed properties
     
@@ -76,6 +78,8 @@ final class PaymentTypeCollectionViewCell: UICollectionViewCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
             layerView.addSubview($0)
         }
+        
+        imageView.addSubview(activityIndicator)
     }
     
     private func constraintsSetup() {
@@ -98,16 +102,33 @@ final class PaymentTypeCollectionViewCell: UICollectionViewCell {
             shortNameLabel.leadingAnchor.constraint(equalTo: fullNameLabel.leadingAnchor),
             shortNameLabel.topAnchor.constraint(equalTo: fullNameLabel.bottomAnchor),
             shortNameLabel.heightAnchor.constraint(equalToConstant: 18),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
         ])
     }
     
     //MARK: - Public methods
     
-    func configureCell(fullName: String, shortName: String, image: UIImage?) {
-        if let image {
-            fullNameLabel.text = fullName
-            shortNameLabel.text = shortName
-            imageView.image = image
+    func configureCell(fullName: String, shortName: String) {
+        fullNameLabel.text = fullName
+        shortNameLabel.text = shortName
+    }
+    
+    func updateCellImage(at indexPath: IndexPath, with presenter: CartPresenter) {
+        if presenter.currencyArray.count > 0 {
+            self.activityIndicator.startAnimating()
+            let processor = DownsamplingImageProcessor(size: CGSize(width: 36, height: 36))
+            imageView.kf.setImage(with: presenter.currencyArray[indexPath.row].image, options: [.processor(processor)]) { result in
+                self.activityIndicator.stopAnimating()
+                switch result {
+                case .success(_):
+                    return
+                case .failure(_):
+                    self.imageView.image = UIImage(systemName: "snowflake.circle") ?? UIImage()
+                    self.imageView.tintColor = .nftBlack
+                }
+            }
         }
     }
 }

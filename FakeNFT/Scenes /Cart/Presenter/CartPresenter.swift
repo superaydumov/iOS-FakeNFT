@@ -83,11 +83,8 @@ final class CartPresenter: CartPresenterProtocol {
                         image: currency.image,
                         id: currency.id)
                     self.currencyArray.append(loadedCurrency)
-                    
-                    if self.currencyArray.count == currencyNetworkModel.count {
-                        self.paymentViewController?.setLoaderIsHidden(true)
-                    }
                 }
+                self.paymentViewController?.setLoaderIsHidden(true)
             case .failure(let error):
                 assertionFailure(error.localizedDescription)
                 self.paymentViewController?.setLoaderIsHidden(true)

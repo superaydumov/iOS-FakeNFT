@@ -216,10 +216,8 @@ extension PaymentTypeViewController: UICollectionViewDataSource {
         let currencyName = presenter.currencyArray[indexPath.item].title
         let shortCurrencyName = presenter.currencyArray[indexPath.item].id
         
-        //TODO: maintain using plug image
-        let currencyImage = presenter.currencyArray[indexPath.item].image
-        
-        cell.configureCell(fullName: currencyName, shortName: shortCurrencyName, image: UIImage())
+        cell.configureCell(fullName: currencyName, shortName: shortCurrencyName)
+        cell.updateCellImage(at: indexPath, with: presenter as! CartPresenter)
         
         return cell
     }
