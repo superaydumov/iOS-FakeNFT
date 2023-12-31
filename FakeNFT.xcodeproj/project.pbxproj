@@ -57,6 +57,7 @@
 		C975A4AA2B3F3F310009C3EB /* CurrencyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4A92B3F3F310009C3EB /* CurrencyRequest.swift */; };
 		C975A4AC2B3F8AD40009C3EB /* CurrencyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4AB2B3F8AD40009C3EB /* CurrencyModel.swift */; };
 		C975A4AE2B3F9E220009C3EB /* PaymentTypeViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4AD2B3F9E220009C3EB /* PaymentTypeViewControllerProtocol.swift */; };
+		C975A4B02B41D0F20009C3EB /* ProgressHUD+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4AF2B41D0F20009C3EB /* ProgressHUD+extension.swift */; };
 		C9A42D9E2B27ABBC004D85B2 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A42D9D2B27ABBC004D85B2 /* CatalogViewController.swift */; };
 		C9A42DA12B27AD39004D85B2 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A42DA02B27AD39004D85B2 /* ProfileViewController.swift */; };
 		C9A42DA42B27ADBC004D85B2 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A42DA32B27ADBC004D85B2 /* CartViewController.swift */; };
@@ -144,6 +145,7 @@
 		C975A4A92B3F3F310009C3EB /* CurrencyRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyRequest.swift; sourceTree = "<group>"; };
 		C975A4AB2B3F8AD40009C3EB /* CurrencyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyModel.swift; sourceTree = "<group>"; };
 		C975A4AD2B3F9E220009C3EB /* PaymentTypeViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTypeViewControllerProtocol.swift; sourceTree = "<group>"; };
+		C975A4AF2B41D0F20009C3EB /* ProgressHUD+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressHUD+extension.swift"; sourceTree = "<group>"; };
 		C9A42D9D2B27ABBC004D85B2 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
 		C9A42DA02B27AD39004D85B2 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		C9A42DA32B27ADBC004D85B2 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
@@ -471,6 +473,16 @@
 			path = PaymentTypeViewController;
 			sourceTree = "<group>";
 		};
+		C975A4B12B41D7DE0009C3EB /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C9CA12B32B28EA1900E8161C /* CartMockData.swift */,
+				C936BEB12B2B45A5005A687C /* CustomVisualEffectView.swift */,
+				C975A4AF2B41D0F20009C3EB /* ProgressHUD+extension.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		C9A42D9F2B27AD10004D85B2 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -486,8 +498,7 @@
 				C974EA8E2B38D235006485F8 /* Models */,
 				C974EA912B38D29C006485F8 /* Presenter */,
 				C974EA922B38D2D9006485F8 /* View */,
-				C9CA12B32B28EA1900E8161C /* CartMockData.swift */,
-				C936BEB12B2B45A5005A687C /* CustomVisualEffectView.swift */,
+				C975A4B12B41D7DE0009C3EB /* Helpers */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
@@ -718,6 +729,7 @@
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
+				C975A4B02B41D0F20009C3EB /* ProgressHUD+extension.swift in Sources */,
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,
 				C9CA12B62B28F66E00E8161C /* CartTableViewCell.swift in Sources */,
 				C936BEB22B2B45A5005A687C /* CustomVisualEffectView.swift in Sources */,

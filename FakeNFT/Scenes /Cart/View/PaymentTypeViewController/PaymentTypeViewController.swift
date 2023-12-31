@@ -1,4 +1,5 @@
 import UIKit
+import ProgressHUD
 
 final class PaymentTypeViewController: UIViewController, PaymentTypeViewControllerProtocol {
     
@@ -7,7 +8,6 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
     private let params = GeometricParams(cellCount: 2, cellHeight: 46, cellSpacing: 7, lineSpacing: 7)
     private var selectedCell: String? = nil
     private var presenter: CartPresenterProtocol?
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
     weak var delegate: PaymentTypeViewControllerDelegate?
     
     // MARK: - Computed Properties
@@ -78,8 +78,6 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        activityIndicator.layer.zPosition = 50
-        
         presenter = CartPresenter(
             cartViewController: nil,
             paymentViewController: self
@@ -110,8 +108,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
     
     private func addSubviews() {
         [paymentLayerView,
-         collectionView,
-         activityIndicator
+         collectionView
         ].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
@@ -132,9 +129,6 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             collectionView.heightAnchor.constraint(equalToConstant: 205),
-            
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
             paymentLayerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             paymentLayerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -166,9 +160,9 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
     
     func setLoaderIsHidden(_ isHidden: Bool) {
         if isHidden {
-            activityIndicator.stopAnimating()
+            ProgressHUD.hideCustomLoader()
         } else {
-            activityIndicator.startAnimating()
+            ProgressHUD.showCustomLoader()
         }
     }
     

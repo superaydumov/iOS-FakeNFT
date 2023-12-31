@@ -5,7 +5,6 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     // MARK: - Stored Properties
     
     private var presenter: CartPresenterProtocol?
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let refreshControl = UIRefreshControl()
     
     // MARK: - Computed Properties
@@ -81,7 +80,6 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         
         view.backgroundColor = .nftWhite
         
-        activityIndicator.layer.zPosition = 50
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         
         presenter = CartPresenter(
@@ -107,7 +105,6 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     private func addSubviews() {
         [emptyLabel,
-         activityIndicator,
          tableView,
          paymentLayerView
         ].forEach {
@@ -129,9 +126,6 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
             emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             emptyLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             emptyLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
