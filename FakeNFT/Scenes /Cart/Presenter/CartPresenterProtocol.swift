@@ -10,4 +10,5 @@ protocol CartPresenterProtocol: AnyObject {
     func deleteItemFormCart(for index: Int)
     func cleanCart()
     func fetchCurrencies()
+    func fetchCartNFTs()
 }

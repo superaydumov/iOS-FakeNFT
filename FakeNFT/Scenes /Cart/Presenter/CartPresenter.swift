@@ -4,9 +4,9 @@ final class CartPresenter: CartPresenterProtocol {
     
     // MARK: - Stored Properties
     
-    var visibleNFT: [CartNFTModel] = CartMockData.mockNFT {
+    var visibleNFT = [CartNFTModel]() {
         didSet {
-            cartViewController?.tableViewUpdate()
+            cartViewController?.updateCartElements()
         }
     }
     
@@ -34,6 +34,20 @@ final class CartPresenter: CartPresenterProtocol {
         let networkClient = DefaultNetworkClient()
         
         networkClient.send(request: request, type: [CurrencyNetworkModel].self, completionQueue: .main, onResponse: completion)
+    }
+    
+    private func loadCartOrder(completion: @escaping (Result<CartOrderNetworkModel, Error>) -> Void) {
+        let request = CartItemsRequest()
+        let networkClient = DefaultNetworkClient()
+        
+        networkClient.send(request: request, type: CartOrderNetworkModel.self, completionQueue: .main, onResponse: completion)
+    }
+    
+    private func loadNFT(id: String, completion: @escaping (Result<CartNFTNetworkModel, Error>) -> Void) {
+        let request = CartNFTRequest(id: id)
+        let networkClient = DefaultNetworkClient()
+        
+        networkClient.send(request: request, type: CartNFTNetworkModel.self, completionQueue: .main, onResponse: completion)
     }
     
     // MARK: - Public methods
@@ -88,6 +102,37 @@ final class CartPresenter: CartPresenterProtocol {
             case .failure(let error):
                 assertionFailure(error.localizedDescription)
                 self.paymentViewController?.setLoaderIsHidden(true)
+            }
+        }
+    }
+    
+    func fetchCartNFTs() {
+        self.cartViewController?.setLoaderIsHidden(false)
+        loadCartOrder { cartResult in
+            switch cartResult {
+            case .success(let cartNFTNetworkModel):
+                cartNFTNetworkModel.nfts.forEach { nftID in
+                    self.loadNFT(id: nftID) { nftResult in
+                        switch nftResult {
+                        case .success(let nft):
+                            let loadedNFT = CartNFTModel(
+                                id: nft.id,
+                                name: nft.name,
+                                images: nft.images,
+                                rating: nft.rating,
+                                price: nft.price
+                            )
+                            self.visibleNFT.append(loadedNFT)
+                        case .failure(let error):
+                            assertionFailure(error.localizedDescription)
+                            self.cartViewController?.setLoaderIsHidden(true)
+                        }
+                    }
+                }
+                self.cartViewController?.setLoaderIsHidden(true)
+            case .failure(let error):
+                assertionFailure(error.localizedDescription)
+                self.cartViewController?.setLoaderIsHidden(true)
             }
         }
     }

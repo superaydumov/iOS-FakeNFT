@@ -1,4 +1,5 @@
 import UIKit
+import ProgressHUD
 
 final class CartViewController: UIViewController, CartViewControllerProtocol {
     
@@ -86,6 +87,8 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
             cartViewController: self,
             paymentViewController: nil
         )
+        
+        presenter?.fetchCartNFTs()
         
         addSubviews()
         constraintsSetup()
@@ -201,8 +204,18 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     // MARK: - Public methods
 
-    func tableViewUpdate() {
+    func updateCartElements() {
+        elementsSetup()
+        labelsUpdate()
         self.tableView.reloadData()
+    }
+    
+    func setLoaderIsHidden(_ isHidden: Bool) {
+        if isHidden {
+            ProgressHUD.hideCustomLoader()
+        } else {
+            ProgressHUD.showCustomLoader()
+        }
     }
     
     // MARK: - Handlers
@@ -238,7 +251,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     @objc func refreshTableView() {
-        tableViewUpdate()
+        self.tableView.reloadData()
         refreshControl.endRefreshing()
     }
 }

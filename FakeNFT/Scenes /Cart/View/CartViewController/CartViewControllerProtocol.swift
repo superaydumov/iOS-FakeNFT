@@ -1,5 +1,6 @@
 import Foundation
 
 protocol CartViewControllerProtocol: AnyObject {
-    func tableViewUpdate()
+    func updateCartElements()
+    func setLoaderIsHidden(_ isHidden: Bool)
 }

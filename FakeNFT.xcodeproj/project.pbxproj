@@ -58,6 +58,10 @@
 		C975A4AC2B3F8AD40009C3EB /* CurrencyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4AB2B3F8AD40009C3EB /* CurrencyModel.swift */; };
 		C975A4AE2B3F9E220009C3EB /* PaymentTypeViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4AD2B3F9E220009C3EB /* PaymentTypeViewControllerProtocol.swift */; };
 		C975A4B02B41D0F20009C3EB /* ProgressHUD+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4AF2B41D0F20009C3EB /* ProgressHUD+extension.swift */; };
+		C975A4B32B4201960009C3EB /* CartItemsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4B22B4201960009C3EB /* CartItemsRequest.swift */; };
+		C975A4B52B42DC510009C3EB /* CartOrderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4B42B42DC510009C3EB /* CartOrderModel.swift */; };
+		C975A4B72B42E44E0009C3EB /* CartNFTNetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4B62B42E44E0009C3EB /* CartNFTNetworkModel.swift */; };
+		C975A4B92B42E4F70009C3EB /* CartNFTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C975A4B82B42E4F70009C3EB /* CartNFTRequest.swift */; };
 		C9A42D9E2B27ABBC004D85B2 /* CatalogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A42D9D2B27ABBC004D85B2 /* CatalogViewController.swift */; };
 		C9A42DA12B27AD39004D85B2 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A42DA02B27AD39004D85B2 /* ProfileViewController.swift */; };
 		C9A42DA42B27ADBC004D85B2 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A42DA32B27ADBC004D85B2 /* CartViewController.swift */; };
@@ -146,6 +150,10 @@
 		C975A4AB2B3F8AD40009C3EB /* CurrencyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyModel.swift; sourceTree = "<group>"; };
 		C975A4AD2B3F9E220009C3EB /* PaymentTypeViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTypeViewControllerProtocol.swift; sourceTree = "<group>"; };
 		C975A4AF2B41D0F20009C3EB /* ProgressHUD+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressHUD+extension.swift"; sourceTree = "<group>"; };
+		C975A4B22B4201960009C3EB /* CartItemsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemsRequest.swift; sourceTree = "<group>"; };
+		C975A4B42B42DC510009C3EB /* CartOrderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartOrderModel.swift; sourceTree = "<group>"; };
+		C975A4B62B42E44E0009C3EB /* CartNFTNetworkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartNFTNetworkModel.swift; sourceTree = "<group>"; };
+		C975A4B82B42E4F70009C3EB /* CartNFTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartNFTRequest.swift; sourceTree = "<group>"; };
 		C9A42D9D2B27ABBC004D85B2 /* CatalogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewController.swift; sourceTree = "<group>"; };
 		C9A42DA02B27AD39004D85B2 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		C9A42DA32B27ADBC004D85B2 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
@@ -386,10 +394,12 @@
 		3FC8C38F29D245250081F015 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
+				C975A4B22B4201960009C3EB /* CartItemsRequest.swift */,
 				C975A4A92B3F3F310009C3EB /* CurrencyRequest.swift */,
 				3FC8C39029D2453B0081F015 /* ExampleRequest.swift */,
 				0C79EE602A76DCD600EE90EA /* NftByIdRequest.swift */,
 				0C79EE622A76DD1900EE90EA /* RequestConstants.swift */,
+				C975A4B82B42E4F70009C3EB /* CartNFTRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -414,6 +424,8 @@
 			isa = PBXGroup;
 			children = (
 				C9CA12B12B28E3A500E8161C /* CartNFTModel.swift */,
+				C975A4B62B42E44E0009C3EB /* CartNFTNetworkModel.swift */,
+				C975A4B42B42DC510009C3EB /* CartOrderModel.swift */,
 				C9B8DD8D2B35D12100483AFE /* Currency.swift */,
 				C975A4AB2B3F8AD40009C3EB /* CurrencyModel.swift */,
 				C974EA8C2B38CDAB006485F8 /* GeometricParams.swift */,
@@ -723,9 +735,11 @@
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				C974EA8D2B38CDAB006485F8 /* GeometricParams.swift in Sources */,
 				C936BEB92B2C72B5005A687C /* CartPresenter.swift in Sources */,
+				C975A4B72B42E44E0009C3EB /* CartNFTNetworkModel.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
+				C975A4B92B42E4F70009C3EB /* CartNFTRequest.swift in Sources */,
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
@@ -738,6 +752,7 @@
 				C9CA12B22B28E3A500E8161C /* CartNFTModel.swift in Sources */,
 				0C79EE6C2A76DE2E00EE90EA /* ServicesAssemly.swift in Sources */,
 				0CFCB74E2A7817DC0009A829 /* NftStorage.swift in Sources */,
+				C975A4B32B4201960009C3EB /* CartItemsRequest.swift in Sources */,
 				3FC8C39129D2453B0081F015 /* ExampleRequest.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
@@ -758,6 +773,7 @@
 				C9A42D9E2B27ABBC004D85B2 /* CatalogViewController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,
+				C975A4B52B42DC510009C3EB /* CartOrderModel.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
