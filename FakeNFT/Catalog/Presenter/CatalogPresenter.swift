@@ -76,7 +76,7 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     
     // MARK: - Private Methods
     private func loadCollections() {
-        service.fetchCollections { [weak self] result in
+        service.fetchCollections { [ weak self ] result in
             DispatchQueue.main.async {
                 UIBlockingProgressHUD.dismiss()
                 switch result {

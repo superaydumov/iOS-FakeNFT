@@ -66,7 +66,7 @@ final class CollectionViewController: UIViewController, CollectionViewController
     
     private lazy var collectionAuthorLink: UILabel = {
         var label = UILabel()
-        label.textColor = .blue
+        label.textColor = UIColor(hexString: "#0A84FF")
         label.font = .caption1
         label.translatesAutoresizingMaskIntoConstraints = false
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.linkLabelTapped))
@@ -105,7 +105,7 @@ final class CollectionViewController: UIViewController, CollectionViewController
     
     // MARK: - Public methods
     func showErrorAlert(_ message: String, repeatAction: Selector? = nil, target: AnyObject? = nil) {
-        let actionCancel = UIAlertAction(title: "Отменить", style: .cancel) { [weak self] _ in
+        let actionCancel = UIAlertAction(title: "Отменить", style: .cancel) { [ weak self ] _ in
             self?.navigationController?.popViewController(animated: true)
         }
         

@@ -101,7 +101,7 @@ final class CollectionPresenter: CollectionPresenterProtocol {
     }
     
     private func loadNFTS(completion: @escaping () -> Void) {
-        service.loadNFTS(collection.nfts) { [weak self] result in
+        service.loadNFTS(collection.nfts) { [ weak self ] result in
             switch result {
             case .success(let nfts):
                 self?.nfts = nfts
@@ -128,7 +128,7 @@ final class CollectionPresenter: CollectionPresenterProtocol {
     }
     
     private func loadLikes(completion: @escaping () -> Void) {
-        service.loadProfile { [weak self] result in
+        service.loadProfile { [ weak self ] result in
             switch result {
             case .success(let profile):
                 self?.likes = profile.likes

@@ -143,11 +143,11 @@ final class CatalogViewController: UIViewController, CatalogView {
     
     @objc private func displayFilterOptions() {
         let alert = AlertPresenter(delegate: self)
-        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
+        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [ weak self ] _ in
             self?.catalogPresenter?.setUserDefaultsData(by: FilterType.byName.rawValue, for: "CatalogFilterType")
             self?.catalogPresenter?.handleFilterButtonTap()
         }
-        let sortByCountAction = UIAlertAction(title: "По количеству NFT", style: .default) { [weak self] _ in
+        let sortByCountAction = UIAlertAction(title: "По количеству NFT", style: .default) { [ weak self ] _ in
             self?.catalogPresenter?.setUserDefaultsData(by: FilterType.NFTcount.rawValue, for: "CatalogFilterType")
             self?.catalogPresenter?.handleFilterButtonTap()
         }

@@ -31,7 +31,7 @@ final class CatalogServices {
             
             isCurrentlyLoading = true
             
-            defaultNetworkClient.send(request: catalogRequest, type: [NFTCollection].self) { [weak self] result in
+            defaultNetworkClient.send(request: catalogRequest, type: [NFTCollection].self) { [ weak self ] result in
                 switch result {
                 case .success(let collections):
                     self?.handleNetworkResponse(.success(collections), completion: completion)
@@ -68,7 +68,7 @@ final class CatalogServices {
         
         isCurrentlyLoading = true
         
-        defaultNetworkClient.send(request: catalogRequest, type: UserResult.self) { [weak self] result in
+        defaultNetworkClient.send(request: catalogRequest, type: UserResult.self) { [ weak self ] result in
             defer { self?.isCurrentlyLoading = false }
             
             switch result {
@@ -125,7 +125,7 @@ final class CatalogServices {
     private func handleNetworkResponse(_ result: Result<[NFTCollection], Error>,
                                        completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.main.async {
-            [weak self] in
+            [ weak self ] in
             switch result {
             case .success(let collections):
                 self?.updateCollections(collections, completion: completion)
