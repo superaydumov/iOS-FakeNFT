@@ -132,6 +132,15 @@ final class CatalogViewController: UIViewController, CatalogView {
         cell.collectionLabelView.text = "\(collection.name) (\(collection.nfts.count))"
     }
     
+    private func showCollectionInfo(for collection: NFTCollectionInfo) {
+        let vc = CollectionViewController()
+        let presenter = CollectionPresenter(collection: collection)
+        
+        vc.presenter = presenter
+        presenter.view = vc
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     @objc private func displayFilterOptions() {
         let alert = AlertPresenter(delegate: self)
         let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
@@ -175,6 +184,12 @@ extension CatalogViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         catalogPresenter?.willDisplayCell(indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let collection = catalogPresenter?.collections[indexPath.row] {
+            showCollectionInfo(for: collection)
+        }
     }
 }
 
