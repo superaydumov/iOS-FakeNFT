@@ -30,18 +30,17 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     }
     
     func toggleLike(for nftId: String) {
-         if likedNFTs.isEmpty {
-             likedNFTs = nftId
-         } else {
-             if let range = likedNFTs.range(of: nftId) {
-                 likedNFTs.removeSubrange(range)
-             } else {
-                 likedNFTs.append(nftId)
-             }
-         }
-         updateNFTs()
-         sendUpdatedProfileToServer()
-     }
+        var likedNFTsArray = likedNFTs.components(separatedBy: ",").filter { !$0.isEmpty }
+        if let index = likedNFTsArray.firstIndex(of: nftId) {
+            likedNFTsArray.remove(at: index)
+        } else {
+            likedNFTsArray.append(nftId)
+        }
+        likedNFTs = likedNFTsArray.joined(separator: ",")
+
+        updateNFTs()
+        sendUpdatedProfileToServer()
+    }
     
     private func fetchLikedNFTs() {
         _ = defaultNetworkClient.send(request: ProfileRequest(), completionQueue: .main) { [weak self] result in
