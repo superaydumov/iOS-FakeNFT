@@ -1,5 +1,6 @@
 
 import Foundation
+import ProgressHUD
 
 protocol MyNFTPresenterProtocol: AnyObject {
     func loadNFTData()
@@ -20,6 +21,7 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     }
     
     func loadNFTData() {
+        ProgressHUD.show()
         // замоканные данные вместо загрузки из сети
         let mockNFTs = createMockNFTs()
         let nftCount = mockNFTs.count
@@ -44,6 +46,7 @@ final class MyNFTPresenter: MyNFTPresenterProtocol {
     
     private func fetchLikedNFTs() {
         _ = defaultNetworkClient.send(request: ProfileRequest(), completionQueue: .main) { [weak self] result in
+            ProgressHUD.dismiss()
             switch result {
             case .success(let data):
                 do {
