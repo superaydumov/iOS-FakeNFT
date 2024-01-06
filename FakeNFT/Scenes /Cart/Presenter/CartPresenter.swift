@@ -50,6 +50,34 @@ final class CartPresenter: CartPresenterProtocol {
         networkClient.send(request: request, type: CartNFTNetworkModel.self, completionQueue: .main, onResponse: completion)
     }
     
+    private func putCartOrder(id: String, nfts: [String], completion: @escaping (Result<CartOrderUpdateModel, Error>) -> Void) {
+        let request = CartPutOrderRequest(updateModel: CartOrderUpdateModel(id: id, nfts: nfts))
+        let networkClient = DefaultNetworkClient()
+        
+        networkClient.send(request: request, type: CartOrderUpdateModel.self, completionQueue: .main, onResponse: completion)
+    }
+    
+    private func toogleCartOrder() {
+        self.cartViewController?.setLoaderIsHidden(false)
+        
+        var nftArray = [String]()
+        visibleNFT.forEach { nft in
+            if !nftArray.contains(nft.id) {
+                nftArray.append(nft.id)
+            }
+        }
+        
+        putCartOrder(id: "1", nfts: nftArray) { result in
+            switch result {
+            case .success(let data):
+                print("Server nfts: \(data.nfts)")
+            case .failure(let error):
+                assertionFailure(error.localizedDescription)
+            }
+        }
+        self.cartViewController?.setLoaderIsHidden(true)
+    }
+    
     // MARK: - Public methods
     
     func sortByPrice() {
@@ -75,14 +103,17 @@ final class CartPresenter: CartPresenterProtocol {
     
     func deleteItemFormCart(for index: Int) {
         visibleNFT.remove(at: index)
+        toogleCartOrder()
     }
     
     func addItemToCart(_ nft: CartNFTModel) {
         visibleNFT.append(nft)
+        toogleCartOrder()
     }
     
     func cleanCart() {
         visibleNFT.removeAll()
+        toogleCartOrder()
     }
     
     func fetchCurrencies() {
@@ -90,7 +121,8 @@ final class CartPresenter: CartPresenterProtocol {
         loadCurrencies { result in
             switch result {
             case .success(let currencyNetworkModel):
-                currencyNetworkModel.forEach { currency in
+                currencyNetworkModel.forEach { [weak self] currency in
+                    guard let self else { return }
                     let loadedCurrency = CurrencyResultModel(
                         title: currency.title,
                         name: currency.name,
@@ -111,8 +143,15 @@ final class CartPresenter: CartPresenterProtocol {
         loadCartOrder { cartResult in
             switch cartResult {
             case .success(let cartNFTNetworkModel):
-                cartNFTNetworkModel.nfts.forEach { nftID in
-                    self.loadNFT(id: nftID) { nftResult in
+                cartNFTNetworkModel.nfts.forEach { [weak self] nftID in
+                    guard let self else { return }
+                    
+                    if self.visibleNFT.contains(where: { $0.id == nftID }) {
+                        return
+                    }
+                    
+                    self.loadNFT(id: nftID) { [weak self] nftResult in
+                        guard let self else { return } 
                         switch nftResult {
                         case .success(let nft):
                             let loadedNFT = CartNFTModel(
