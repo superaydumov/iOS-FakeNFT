@@ -126,7 +126,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private func constraintsSetup() {
         NSLayoutConstraint.activate([
             emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -30),
             emptyLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             emptyLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
@@ -251,6 +251,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     @objc func refreshTableView() {
+        presenter?.fetchCartNFTs()
         self.tableView.reloadData()
         refreshControl.endRefreshing()
     }
