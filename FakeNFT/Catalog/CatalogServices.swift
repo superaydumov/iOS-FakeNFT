@@ -14,7 +14,7 @@ enum CatalogServiceError: Error {
 
 final class CatalogServices {
     
-    let userId: String = "1"
+    private let userId: String = "1"
     var collections: [NFTCollectionInfo] = []
     
     private let defaultNetworkClient = DefaultNetworkClient()
@@ -31,7 +31,7 @@ final class CatalogServices {
             
             isCurrentlyLoading = true
             
-            defaultNetworkClient.send(request: catalogRequest, type: [NFTCollection].self) { [ weak self ] result in
+            defaultNetworkClient.send(request: catalogRequest, type: [NFTCollection].self) { [weak self] result in
                 switch result {
                 case .success(let collections):
                     self?.handleNetworkResponse(.success(collections), completion: completion)
@@ -39,16 +39,14 @@ final class CatalogServices {
                     if let networkError = error as? NetworkClientError {
                         completion(.failure(CatalogServiceError.networkError(networkError)))
                     } else {
-                        // Обработка случаев, когда ошибка не является NetworkClientError
                         completion(.failure(error))
                     }
                 }
-                self?.isCurrentlyLoading = false // Вызов сброса флага загрузки после завершения запроса
+                self?.isCurrentlyLoading = false
             }
         } else {
-            // Обработка ошибки некорректного URL-адреса
             completion(.failure(CatalogServiceError.invalidURL))
-            self.isCurrentlyLoading = false // Сброс флага загрузки в случае ошибки URL
+            self.isCurrentlyLoading = false
         }
     }
     
@@ -68,17 +66,14 @@ final class CatalogServices {
         
         isCurrentlyLoading = true
         
-        defaultNetworkClient.send(request: catalogRequest, type: UserResult.self) { [ weak self ] result in
+        defaultNetworkClient.send(request: catalogRequest, type: UserResult.self) { [weak self] result in
             defer { self?.isCurrentlyLoading = false }
             
-            switch result {
-            case .success(let data):
-                let authorProfile = UserModel(userResult: data)
-                DispatchQueue.main.async {
-                    completion(.success(authorProfile))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    completion(.success(UserModel(userResult: data)))
+                case .failure(let error):
                     completion(.failure(error))
                 }
             }
@@ -89,32 +84,28 @@ final class CatalogServices {
         let url = URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
         
         defaultNetworkClient.send(request: CatalogRequest(endpoint: url, httpMethod: .get), type: ProfileResult.self) { result in
-            switch result {
-            case .success(let data):
-                let profile = ProfileModel(profileResult: data)
-                DispatchQueue.main.async {
-                    completion(.success(profile))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    completion(.success(ProfileModel(profileResult: data)))
+                case .failure(let error):
                     completion(.failure(error))
                 }
             }
         }
     }
     
-    func loadNFTS(_ ids: [String], completion: @escaping (Result<[NFTInformation], Error>) -> Void) {
+    func fetchNFTS(_ ids: [String], completion: @escaping (Result<[NFTInformation], Error>) -> Void) {
         let url = URL(string: "\(RequestConstants.baseURL)/api/v1/nft")
         
         defaultNetworkClient.send(request: CatalogRequest(endpoint: url), type: [NFTItem].self) { result in
-            switch result {
-            case .success(let data):
-                let filterData = data.filter{ ids.contains($0.id) }.map{ NFTInformation(nft: $0) }
-                DispatchQueue.main.async {
-                    completion(.success(filterData))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    let filteredData = data.filter { ids.contains($0.id) }.map(NFTInformation.init)
+                    completion(.success(filteredData))
+                case .failure(let error):
                     completion(.failure(error))
                 }
             }
@@ -122,10 +113,11 @@ final class CatalogServices {
     }
     
     // MARK: Handle Network Response
-    private func handleNetworkResponse(_ result: Result<[NFTCollection], Error>,
-                                       completion: @escaping (Result<Bool, Error>) -> Void) {
-        DispatchQueue.main.async {
-            [ weak self ] in
+    private func handleNetworkResponse(
+        _ result: Result<[NFTCollection], Error>,
+        completion: @escaping (Result<Bool, Error>) -> Void
+    ) {
+        DispatchQueue.main.async { [weak self] in
             switch result {
             case .success(let collections):
                 self?.updateCollections(collections, completion: completion)
@@ -137,8 +129,10 @@ final class CatalogServices {
     }
     
     // MARK: Update Collections
-    private func updateCollections(_ data: [NFTCollection],
-                                   completion: @escaping (Result<Bool, Error>) -> Void) {
+    private func updateCollections(
+        _ data: [NFTCollection],
+        completion: @escaping (Result<Bool, Error>) -> Void
+    ) {
         let collectionsResult = data.map({ NFTCollectionInfo(fromNFTCollection: $0) })
         if collectionsResult.count < loadLimit {
             areAllCollectionsDownloaded = true

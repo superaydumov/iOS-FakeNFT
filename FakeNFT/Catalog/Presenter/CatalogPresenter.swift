@@ -76,15 +76,13 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     
     // MARK: - Private Methods
     private func loadCollections() {
-        service.fetchCollections { [ weak self ] result in
+        service.fetchCollections { [weak self] result in
             DispatchQueue.main.async {
                 UIBlockingProgressHUD.dismiss()
                 switch result {
                 case .success(_):
-                    // Обработка успешной загрузки
                     self?.view?.reloadCatalogTableView()
                 case .failure(let error):
-                    // Обработка ошибки
                     self?.view?.displayAlert(title: "Error",
                                              message: error.localizedDescription,
                                              actions: [UIAlertAction(title: "OK", style: .default)])

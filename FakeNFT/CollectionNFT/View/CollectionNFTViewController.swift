@@ -89,8 +89,10 @@ final class CollectionViewController: UIViewController, CollectionViewController
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.alwaysBounceVertical = true
+        collectionView.register(NFTCell.self, forCellWithReuseIdentifier: Constants.cellIdentifier)
         collectionView.contentInset = UIEdgeInsets(top: 0, left: Constants.contentInsets, bottom: Constants.contentInsets, right: Constants.contentInsets)
         collectionView.isScrollEnabled = false
         return collectionView
@@ -105,7 +107,7 @@ final class CollectionViewController: UIViewController, CollectionViewController
     
     // MARK: - Public methods
     func showErrorAlert(_ message: String, repeatAction: Selector? = nil, target: AnyObject? = nil) {
-        let actionCancel = UIAlertAction(title: "Отменить", style: .cancel) { [ weak self ] _ in
+        let actionCancel = UIAlertAction(title: "Отменить", style: .cancel) { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
         }
         
@@ -165,18 +167,20 @@ final class CollectionViewController: UIViewController, CollectionViewController
     }
     
     func updateData() {
-        DispatchQueue.main.async {
-            self.collectionAuthorLink.text = self.presenter?.authorProfile?.name
-            self.nftsCollectionView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.collectionAuthorLink.text = strongSelf.presenter?.authorProfile?.name
+            strongSelf.nftsCollectionView.reloadData()
         }
     }
     
     private func setData() {
-        DispatchQueue.main.async {
-            self.collectionName.text = self.presenter?.collection.name
-            self.coverImage.kf.setImage(with: self.presenter?.collection.cover)
-            self.collectionAuthor.text = "Автор коллекции:"
-            self.collectionDescription.text = self.presenter?.collection.description
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.collectionName.text = strongSelf.presenter?.collection.name
+            strongSelf.coverImage.kf.setImage(with: strongSelf.presenter?.collection.cover)
+            strongSelf.collectionAuthor.text = "Автор коллекции:"
+            strongSelf.collectionDescription.text = strongSelf.presenter?.collection.description
         }
     }
     
@@ -187,7 +191,14 @@ final class CollectionViewController: UIViewController, CollectionViewController
         }
     }
     
-    private func createStackView(axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment, distribution: UIStackView.Distribution, spacing: CGFloat, margins: UIEdgeInsets, applyMargins: Bool) -> UIStackView {
+    private func createStackView(
+        axis: NSLayoutConstraint.Axis,
+        alignment: UIStackView.Alignment,
+        distribution: UIStackView.Distribution,
+        spacing: CGFloat,
+        margins: UIEdgeInsets,
+        applyMargins: Bool
+    ) -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = axis
         stackView.alignment = alignment
@@ -206,32 +217,69 @@ final class CollectionViewController: UIViewController, CollectionViewController
     }
     
     private func createAuthorStack() -> UIStackView {
-        let stack = createStackView(axis: .horizontal, alignment: .bottom, distribution: .fill, spacing: 4, margins: .zero, applyMargins: false)
+        let stack = createStackView(
+            axis: .horizontal,
+            alignment: .bottom,
+            distribution: .fill,
+            spacing: 4,
+            margins: .zero,
+            applyMargins: false
+        )
         addArrangedSubviews(stackView: stack, views: [collectionAuthor, collectionAuthorLink])
         return stack
     }
     
     private func createNameAndAuthorStack(with authorStack: UIStackView) -> UIStackView {
-        let stack = createStackView(axis: .vertical, alignment: .leading, distribution: .fill, spacing: 15, margins: .zero, applyMargins: false)
+        let stack = createStackView(
+            axis: .vertical,
+            alignment: .leading,
+            distribution: .fill,
+            spacing: 15,
+            margins: .zero,
+            applyMargins: false
+        )
         addArrangedSubviews(stackView: stack, views: [collectionName, authorStack])
         return stack
     }
     
     private func createInfoStack(with nameAndAuthorStack: UIStackView) -> UIStackView {
-        let stack = createStackView(axis: .vertical, alignment: .leading, distribution: .fill, spacing: 5, margins: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16), applyMargins: true)
+        let stack = createStackView(
+            axis: .vertical,
+            alignment: .leading,
+            distribution: .fill,
+            spacing: 5,
+            margins: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16),
+            applyMargins: true
+        )
         addArrangedSubviews(stackView: stack, views: [nameAndAuthorStack, collectionDescription])
         return stack
     }
     
     private func createMainStack(with views: [UIView]) -> UIStackView {
-        let stack = createStackView(axis: .vertical, alignment: .fill, distribution: .fill, spacing: 16, margins: .zero, applyMargins: false)
-        
-        let authorStack = createAuthorStack()
-        let nameAndAuthorStack = createNameAndAuthorStack(with: authorStack)
-        let infoStack = createInfoStack(with: nameAndAuthorStack)
-        
-        addArrangedSubviews(stackView: stack, views: [coverImage, infoStack, nftsCollectionView])
+        let stack = createStackView(
+            axis: .vertical,
+            alignment: .fill,
+            distribution: .fill,
+            spacing: 16,
+            margins: .zero,
+            applyMargins: false
+        )
+        addArrangedSubviews(stackView: stack, views: views)
         return stack
+    }
+}
+
+extension CollectionViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        presenter?.nfts.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NFTCell", for: indexPath) as! NFTCell
+        if let nft = presenter?.nfts[indexPath.row] {
+            cell.viewModel = nft
+        }
+        return cell
     }
 }
 
@@ -241,7 +289,9 @@ extension CollectionViewController: UICollectionViewDelegate {
 
 extension CollectionViewController: UICollectionViewDelegateFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - Constants.contentInsets * 2 - Constants.spacing * 2) / 3
         return CGSize(width: width,
                       height: width + 90)

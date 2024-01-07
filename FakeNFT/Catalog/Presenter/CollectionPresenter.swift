@@ -50,7 +50,7 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         UIBlockingProgressHUD.show()
         showError = false
         
-        let tasks = [loadCollectionAuthor, loadLikes, loadNFTS]
+        let tasks = [loadCollectionAuthor, loadLikes, fetchNFTS]
         performTasks(tasks, completion: handleLoadCompletion)
     }
     
@@ -64,10 +64,12 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         
     }
     
+    // TODO: для реализации 3 эпика
     func isLikedNFT(_ id: String) -> Bool {
         likes.contains(id)
     }
     
+    // TODO: для реализации 3 эпика
     func isInCart(_ id: String) -> Bool {
         orders.contains(id)
     }
@@ -91,6 +93,7 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         UIBlockingProgressHUD.dismiss()
     }
     
+    // TODO: метод для обновления списка id в будущей реализации добавления в избранное и корзину
     private func updateList(_ list: inout [String], with id: String, errorMessage: String, updateAction: @escaping () -> Void) {
         if list.contains(id) {
             list.removeAll { $0 == id }
@@ -100,13 +103,12 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         updateAction()
     }
     
-    private func loadNFTS(completion: @escaping () -> Void) {
-        service.loadNFTS(collection.nfts) { [ weak self ] result in
+    private func fetchNFTS(completion: @escaping () -> Void) {
+        service.fetchNFTS(collection.nfts) { [weak self] result in
             switch result {
             case .success(let nfts):
                 self?.nfts = nfts
-            case .failure(let error):
-                print("Error loading NFTs: \(error)")
+            case .failure(_):
                 self?.showError = true
             }
             completion()
@@ -127,12 +129,13 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         completion()
     }
     
+    // TODO: реализовать в 3 эпике
     private func loadLikes(completion: @escaping () -> Void) {
-        service.loadProfile { [ weak self ] result in
+        service.loadProfile { [weak self] result in
             switch result {
             case .success(let profile):
                 self?.likes = profile.likes
-            case .failure(let error):
+            case .failure(_):
                 self?.showError = true
             }
             completion()

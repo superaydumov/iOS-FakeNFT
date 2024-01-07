@@ -57,7 +57,7 @@ final class NftDetailPresenterImpl: NftDetailPresenter {
     }
 
     private func loadNft() {
-        service.loadNft(id: input.id) { [ weak self ] result in
+        service.loadNft(id: input.id) { [weak self] result in
             switch result {
             case .success(let nft):
                 self?.state = .data(nft)
@@ -77,7 +77,7 @@ final class NftDetailPresenterImpl: NftDetailPresenter {
         }
 
         let actionText = NSLocalizedString("Error.repeat", comment: "")
-        return ErrorModel(message: message, actionText: actionText) { [ weak self ] in
+        return ErrorModel(message: message, actionText: actionText) { [weak self] in
             self?.state = .loading
         }
     }

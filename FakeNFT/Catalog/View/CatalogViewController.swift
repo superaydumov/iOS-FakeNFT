@@ -9,7 +9,6 @@ import UIKit
 import ProgressHUD
 import Kingfisher
 
-// Протоколы для взаимодействия между View и Presenter
 protocol CatalogView: AnyObject {
     func reloadCatalogTableView()
     func addRowsToCatalogTableView(indexPaths: [IndexPath])
@@ -142,18 +141,20 @@ final class CatalogViewController: UIViewController, CatalogView {
     }
     
     @objc private func displayFilterOptions() {
-        let alert = AlertPresenter(delegate: self)
-        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [ weak self ] _ in
+        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
             self?.catalogPresenter?.setUserDefaultsData(by: FilterType.byName.rawValue, for: "CatalogFilterType")
             self?.catalogPresenter?.handleFilterButtonTap()
         }
-        let sortByCountAction = UIAlertAction(title: "По количеству NFT", style: .default) { [ weak self ] _ in
+        let sortByCountAction = UIAlertAction(title: "По количеству NFT", style: .default) { [weak self] _ in
             self?.catalogPresenter?.setUserDefaultsData(by: FilterType.NFTcount.rawValue, for: "CatalogFilterType")
             self?.catalogPresenter?.handleFilterButtonTap()
         }
-        let closeButton = UIAlertAction(title: "Закрыть", style: .cancel)
-        let model = AlertModel(alertControllerStyle: .actionSheet, alertTitle: "Сортировка", alertMessage: nil, alertActions: [sortByNameAction, sortByCountAction, closeButton])
-        alert.presentAlert(result: model)
+        
+        AlertFactory.shared.showActionSheet(from: self,
+                                            title: "Сортировка",
+                                            message: nil,
+                                            actions: [sortByNameAction, sortByCountAction]
+        )
     }
 }
 

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ResizableCollectionView: UICollectionView {
+final class ResizableCollectionView: UICollectionView {
     
     // MARK: - Override Content Size
     override var contentSize: CGSize {
@@ -19,6 +19,8 @@ class ResizableCollectionView: UICollectionView {
     // MARK: - Override Intrinsic Content Size
     override var intrinsicContentSize: CGSize {
         layoutIfNeeded()
-        return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height + contentInset.top + contentInset.bottom)
+        return CGSize(
+            width: UIView.noIntrinsicMetric,
+            height: contentSize.height + contentInset.top + contentInset.bottom)
     }
 }
