@@ -9,7 +9,6 @@ import UIKit
 import ProgressHUD
 import Kingfisher
 
-// Протоколы для взаимодействия между View и Presenter
 protocol CatalogView: AnyObject {
     func reloadCatalogTableView()
     func addRowsToCatalogTableView(indexPaths: [IndexPath])
@@ -132,8 +131,16 @@ final class CatalogViewController: UIViewController, CatalogView {
         cell.collectionLabelView.text = "\(collection.name) (\(collection.nfts.count))"
     }
     
+    private func showCollectionInfo(for collection: NFTCollectionInfo) {
+        let vc = CollectionViewController()
+        let presenter = CollectionPresenter(collection: collection)
+        
+        vc.presenter = presenter
+        presenter.view = vc
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     @objc private func displayFilterOptions() {
-        let alert = AlertPresenter(delegate: self)
         let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { [weak self] _ in
             self?.catalogPresenter?.setUserDefaultsData(by: FilterType.byName.rawValue, for: "CatalogFilterType")
             self?.catalogPresenter?.handleFilterButtonTap()
@@ -142,9 +149,12 @@ final class CatalogViewController: UIViewController, CatalogView {
             self?.catalogPresenter?.setUserDefaultsData(by: FilterType.NFTcount.rawValue, for: "CatalogFilterType")
             self?.catalogPresenter?.handleFilterButtonTap()
         }
-        let closeButton = UIAlertAction(title: "Закрыть", style: .cancel)
-        let model = AlertModel(alertControllerStyle: .actionSheet, alertTitle: "Сортировка", alertMessage: nil, alertActions: [sortByNameAction, sortByCountAction, closeButton])
-        alert.presentAlert(result: model)
+        
+        AlertFactory.shared.showActionSheet(from: self,
+                                            title: "Сортировка",
+                                            message: nil,
+                                            actions: [sortByNameAction, sortByCountAction]
+        )
     }
 }
 
@@ -175,6 +185,12 @@ extension CatalogViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         catalogPresenter?.willDisplayCell(indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let collection = catalogPresenter?.collections[indexPath.row] {
+            showCollectionInfo(for: collection)
+        }
     }
 }
 

@@ -14,18 +14,13 @@ enum CatalogServiceError: Error {
 
 final class CatalogServices {
     
+    private let userId: String = "1"
     var collections: [NFTCollectionInfo] = []
     
     private let defaultNetworkClient = DefaultNetworkClient()
     private let loadLimit = 10
     private var isCurrentlyLoading: Bool = false
     private var areAllCollectionsDownloaded: Bool = false
-    var isAllCollectionsDownloaded: Bool {
-        return areAllCollectionsDownloaded
-    }
-    var currentlyLoading: Bool {
-        return isCurrentlyLoading
-    }
     
     // MARK: Fetch Collections
     func fetchCollections(completion: @escaping (Result<Bool, Error>) -> Void) {
@@ -44,24 +39,85 @@ final class CatalogServices {
                     if let networkError = error as? NetworkClientError {
                         completion(.failure(CatalogServiceError.networkError(networkError)))
                     } else {
-                        // Обработка случаев, когда ошибка не является NetworkClientError
                         completion(.failure(error))
                     }
                 }
-                self?.isCurrentlyLoading = false // Вызов сброса флага загрузки после завершения запроса
+                self?.isCurrentlyLoading = false
             }
         } else {
-            // Обработка ошибки некорректного URL-адреса
             completion(.failure(CatalogServiceError.invalidURL))
-            self.isCurrentlyLoading = false // Сброс флага загрузки в случае ошибки URL
+            self.isCurrentlyLoading = false
+        }
+    }
+    
+    func loadUser(_ id: String, completion: @escaping (Result<UserModel, Error>) -> Void) {
+        guard !isCurrentlyLoading else {
+            completion(.failure(CatalogServiceError.networkError(.urlSessionError)))
+            return
+        }
+        
+        let url = URL(string: "\(RequestConstants.baseURL)/api/v1/users/\(id)")
+        guard let requestUrl = url else {
+            completion(.failure(CatalogServiceError.invalidURL))
+            return
+        }
+        
+        let catalogRequest = CatalogRequest(endpoint: requestUrl, httpMethod: .get)
+        
+        isCurrentlyLoading = true
+        
+        defaultNetworkClient.send(request: catalogRequest, type: UserResult.self) { [weak self] result in
+            defer { self?.isCurrentlyLoading = false }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    completion(.success(UserModel(userResult: data)))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func loadProfile(completion: @escaping (Result<ProfileModel, Error>) -> Void) {
+        let url = URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
+        
+        defaultNetworkClient.send(request: CatalogRequest(endpoint: url, httpMethod: .get), type: ProfileResult.self) { result in
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    completion(.success(ProfileModel(profileResult: data)))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func fetchNFTS(_ ids: [String], completion: @escaping (Result<[NFTInformation], Error>) -> Void) {
+        let url = URL(string: "\(RequestConstants.baseURL)/api/v1/nft")
+        
+        defaultNetworkClient.send(request: CatalogRequest(endpoint: url), type: [NFTItem].self) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    let filteredData = data.filter { ids.contains($0.id) }.map(NFTInformation.init)
+                    completion(.success(filteredData))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
         }
     }
     
     // MARK: Handle Network Response
-    private func handleNetworkResponse(_ result: Result<[NFTCollection], Error>,
-                                       completion: @escaping (Result<Bool, Error>) -> Void) {
-        DispatchQueue.main.async {
-            [weak self] in
+    private func handleNetworkResponse(
+        _ result: Result<[NFTCollection], Error>,
+        completion: @escaping (Result<Bool, Error>) -> Void
+    ) {
+        DispatchQueue.main.async { [weak self] in
             switch result {
             case .success(let collections):
                 self?.updateCollections(collections, completion: completion)
@@ -73,8 +129,10 @@ final class CatalogServices {
     }
     
     // MARK: Update Collections
-    private func updateCollections(_ data: [NFTCollection],
-                                   completion: @escaping (Result<Bool, Error>) -> Void) {
+    private func updateCollections(
+        _ data: [NFTCollection],
+        completion: @escaping (Result<Bool, Error>) -> Void
+    ) {
         let collectionsResult = data.map({ NFTCollectionInfo(fromNFTCollection: $0) })
         if collectionsResult.count < loadLimit {
             areAllCollectionsDownloaded = true
