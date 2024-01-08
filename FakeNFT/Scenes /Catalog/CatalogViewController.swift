@@ -41,9 +41,9 @@ final class CatalogViewController: UIViewController {
     }
     
     @objc func buttonDidTap() {
-        print("button clicked")
         if let item = sourceArray.randomElement() {
             delegate?.addItemToCart(item)
         }
+        print("button clicked")
     }
 }
