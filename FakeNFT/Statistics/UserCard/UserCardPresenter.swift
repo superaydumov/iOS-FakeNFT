@@ -8,6 +8,8 @@
 protocol UserCardViewOutput {
     func updateUI()
     func getUserInfo() -> UserModel
+    func getNfts() -> [Nft]
+    func getUserId() -> String
 }
 
 import Foundation
@@ -33,5 +35,13 @@ final class UserCardPresenter: UserCardViewOutput {
     
     func getUserInfo() -> UserModel {
         return user
+    }
+    
+    func getNfts() -> [Nft] {
+        return user.nfts ?? []
+    }
+    
+    func getUserId() -> String {
+        return user.id ?? ""
     }
 }
