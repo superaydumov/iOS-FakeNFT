@@ -21,7 +21,10 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     
     // MARK: - Initializer
     init() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCollectionsList), name: CatalogPresenter.didChangeCollectionsListNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateCollectionsList),
+                                               name: CatalogPresenter.didChangeCollectionsListNotification,
+                                               object: nil)
     }
     
     deinit {

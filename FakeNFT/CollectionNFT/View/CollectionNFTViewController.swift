@@ -85,7 +85,10 @@ final class CollectionViewController: UIViewController, CollectionViewController
     }()
     
     private lazy var nftsCollectionView: ResizableCollectionView = {
-        let collectionView = ResizableCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = Constants.spacing
+        layout.minimumLineSpacing = Constants.spacing
+        let collectionView = ResizableCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
@@ -93,8 +96,17 @@ final class CollectionViewController: UIViewController, CollectionViewController
         collectionView.delegate = self
         collectionView.alwaysBounceVertical = true
         collectionView.register(NFTCell.self, forCellWithReuseIdentifier: Constants.cellIdentifier)
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: Constants.contentInsets, bottom: Constants.contentInsets, right: Constants.contentInsets)
+        collectionView.contentInset = UIEdgeInsets(top: 0,
+                                                   left: Constants.contentInsets,
+                                                   bottom: Constants.contentInsets,
+                                                   right: Constants.contentInsets)
         collectionView.isScrollEnabled = false
+        
+        // Добавляем UIRefreshControl
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshCollection(_:)), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+        
         return collectionView
     }()
     
@@ -191,6 +203,12 @@ final class CollectionViewController: UIViewController, CollectionViewController
         }
     }
     
+    @objc private func refreshCollection(_ sender: UIRefreshControl) {
+        presenter?.refreshData()
+        
+        sender.endRefreshing()
+    }
+    
     private func createStackView(
         axis: NSLayoutConstraint.Axis,
         alignment: UIStackView.Alignment,
@@ -278,6 +296,9 @@ extension CollectionViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NFTCell", for: indexPath) as! NFTCell
         if let nft = presenter?.nfts[indexPath.row] {
             cell.viewModel = nft
+            cell.delegate = self
+            cell.isLikedNFT = presenter?.isLikedNFT(nft.id) ?? false
+            cell.isAddedToCart = presenter?.isInCart(nft.id) ?? false
         }
         return cell
     }
@@ -300,5 +321,20 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         
         return Constants.spacing
+    }
+}
+
+extension CollectionViewController: NFTCellDelegate {
+    func didTapLikeButton(_ id: String) {
+        presenter?.setLikeForNFT(id)
+        
+        if let index = presenter?.nfts.firstIndex(where: { $0.id == id }) {
+            let indexPath = IndexPath(item: index, section: 0)
+            nftsCollectionView.reloadItems(at: [indexPath])
+        }
+    }
+    
+    func didTapCartButton(_ id: String) {
+        presenter?.addNFTToCart(id)
     }
 }

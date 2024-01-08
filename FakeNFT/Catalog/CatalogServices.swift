@@ -112,6 +112,76 @@ final class CatalogServices {
         }
     }
     
+    func loadCart(completion: @escaping (Result<CartModel, Error>) -> Void) {
+        let url = URL(string: "\(RequestConstants.baseURL)/api/v1/orders/\(userId)")
+        
+        defaultNetworkClient.send(request: CatalogRequest(endpoint: url), type: CartResult.self) { result in
+            switch result {
+            case .success(let data):
+                let cart = CartModel(cartResult: data)
+                DispatchQueue.main.async {
+                    completion(.success(cart))
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func uploadLikes(likes: [String], completion: @escaping (Result<ProfileModel, Error>) -> Void) {
+        guard let url = URL(string: "\(RequestConstants.baseURL)/api/v1/profile/\(userId)") else {
+            completion(.failure(CatalogServiceError.invalidURL))
+            return
+        }
+        
+        let parameters: [String: [String]] = ["likes": likes]
+        let request = CatalogRequest(endpoint: url, httpMethod: .put, dto: parameters)
+        
+        defaultNetworkClient.send(request: request, type: ProfileResult.self) { result in
+            switch result {
+            case .success(let data):
+                let profile = ProfileModel(profileResult: data)
+                DispatchQueue.main.async {
+                    completion(.success(profile))
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func uploadOrders(orders: [String], completion: @escaping (Result<CartModel, Error>) -> Void) {
+        var components = URLComponents(string: "\(RequestConstants.baseURL)/api/v1/orders/\(userId)")
+        
+        components?.queryItems = orders.map { URLQueryItem(name: "nfts", value: $0) }
+        
+        guard let url = components?.url else {
+            completion(.failure(CatalogServiceError.invalidURL))
+            return
+        }
+        
+        let request = CatalogRequest(endpoint: url, httpMethod: .put)
+        
+        defaultNetworkClient.send(request: request, type: CartResult.self) {
+            result in
+            switch result {
+            case .success(let data):
+                let cart = CartModel(cartResult: data)
+                DispatchQueue.main.async {
+                    completion(.success(cart))
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     // MARK: Handle Network Response
     private func handleNetworkResponse(
         _ result: Result<[NFTCollection], Error>,

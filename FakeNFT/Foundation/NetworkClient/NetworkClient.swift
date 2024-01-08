@@ -123,11 +123,16 @@ struct DefaultNetworkClient: NetworkClient {
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
         
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.httpBody = dtoEncoded
+        if request.httpMethod != .get, let parameters = request.dto as? [String: [String]] {
+            let queryItems = parameters.flatMap { pair in
+                pair.value.map { URLQueryItem(name: pair.key, value: $0) }
+            }
+            let queryString = queryItems.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&")
+            urlRequest.httpBody = queryString.data(using: .utf8)
         }
+        
         urlRequest.setValue(ApiConstants.token, forHTTPHeaderField: ApiConstants.tokenHeaderField)
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         
         return urlRequest
     }

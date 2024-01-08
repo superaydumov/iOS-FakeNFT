@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AlertFactory {
+final class AlertFactory {
     
     static let shared = AlertFactory()
     
@@ -28,7 +28,6 @@ class AlertFactory {
         viewController.present(actionSheetController, animated: true)
     }
     
-    // Функция для создания и отображения UIAlertController
     func showAlert(from viewController: UIViewController,
                    title: String,
                    message: String?,
@@ -41,7 +40,6 @@ class AlertFactory {
         viewController.present(alertController, animated: true)
     }
     
-    // Дефолтный алерт с кнопкой "ОК"
     func showStandardAlert(from viewController: UIViewController,
                            title: String,
                            message: String?
@@ -54,7 +52,6 @@ class AlertFactory {
                   actions: [okAction])
     }
     
-    // Алерт с выбором действий
     func showChoiceAlert(from viewController: UIViewController,
                          title: String,
                          message: String?,
