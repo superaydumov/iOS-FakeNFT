@@ -76,19 +76,22 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     // MARK: - Lifecycle
     
+    init(catalog: CatalogViewController) {
+        super.init(nibName: nil, bundle: nil)
+        catalog.delegate = self
+        presenter = CartPresenter(cartViewController: self)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .nftWhite
         
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
-        
-        presenter = CartPresenter(
-            cartViewController: self,
-            paymentViewController: nil
-        )
-        
-        presenter?.fetchCartNFTs()
         
         addSubviews()
         constraintsSetup()
@@ -98,9 +101,9 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         updateSorting()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter?.fetchCartNFTs()
         elementsSetup()
     }
     
@@ -326,12 +329,22 @@ extension CartViewController: DeleteFromCartViewControllerDelegate {
     }
 }
 
-    // MARK: - DeleteFromCartViewControllerDelegate
+    // MARK: - PaymentTypeViewControllerDelegate
 
 extension CartViewController: PaymentTypeViewControllerDelegate {
     func cleanCart() {
-        presenter?.cleanCart()
+        guard let presenter else { return }
+        presenter.cleanCart()
         labelsUpdate()
         elementsSetup()
+    }
+}
+
+    // MARK: - CartViewControllerDelegate
+
+extension CartViewController: CartViewControllerDelegate {
+    func addItemToCart(_ nft: CartNFTModel) {
+        guard let presenter else { return }
+        presenter.addItemToCart(nft)
     }
 }

@@ -12,10 +12,15 @@ final class TabBarController: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
-        let catalogViewController = UINavigationController(rootViewController: CatalogViewController())
-        let cartViewController = UINavigationController(rootViewController: CartViewController())
-        let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
+        let profileVC = ProfileViewController()
+        let catalogVC = CatalogViewController()
+        let cartVC = CartViewController(catalog: catalogVC)
+        let statisticsVC = StatisticsViewController()
+        
+        let profileViewController = UINavigationController(rootViewController: profileVC)
+        let catalogViewController = UINavigationController(rootViewController: catalogVC)
+        let cartViewController = UINavigationController(rootViewController: cartVC)
+        let statisticsViewController = UINavigationController(rootViewController: statisticsVC)
         
         profileViewController.tabBarItem = UITabBarItem(title: LocalizedStrings.profileTabBarText, image: TabBarImageAssets.profileTabBarOff, selectedImage: TabBarImageAssets.profileTabBarOn)
         catalogViewController.tabBarItem = UITabBarItem(title: LocalizedStrings.catalogTabBarText, image: TabBarImageAssets.catalogTabBarOff, selectedImage: TabBarImageAssets.catalogTabBarOn)

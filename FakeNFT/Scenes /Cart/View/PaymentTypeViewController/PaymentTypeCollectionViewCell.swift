@@ -115,7 +115,7 @@ final class PaymentTypeCollectionViewCell: UICollectionViewCell {
         shortNameLabel.text = shortName
     }
     
-    func updateCellImage(at indexPath: IndexPath, with presenter: CartPresenter) {
+    func updateCellImage(at indexPath: IndexPath, with presenter: PaymentPresenter) {
         if presenter.currencyArray.count > 0 {
             self.activityIndicator.startAnimating()
             let processor = DownsamplingImageProcessor(size: CGSize(width: 36, height: 36))

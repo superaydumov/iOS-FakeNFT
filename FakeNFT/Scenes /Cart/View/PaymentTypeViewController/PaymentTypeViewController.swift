@@ -7,7 +7,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
     
     private let params = GeometricParams(cellCount: 2, cellHeight: 46, cellSpacing: 7, lineSpacing: 7)
     private var selectedCell: String? = nil
-    private var presenter: CartPresenterProtocol?
+    private var presenter: PaymentPresenterProtocol?
     weak var delegate: PaymentTypeViewControllerDelegate?
     
     // MARK: - Computed Properties
@@ -78,11 +78,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        presenter = CartPresenter(
-            cartViewController: nil,
-            paymentViewController: self
-        )
-        
+        presenter = PaymentPresenter(paymentViewController: self)
         presenter?.fetchCurrencies()
         
         addSubviews()
@@ -217,7 +213,7 @@ extension PaymentTypeViewController: UICollectionViewDataSource {
         let shortCurrencyName = presenter.currencyArray[indexPath.item].id
         
         cell.configureCell(fullName: currencyName, shortName: shortCurrencyName)
-        cell.updateCellImage(at: indexPath, with: presenter as! CartPresenter)
+        cell.updateCellImage(at: indexPath, with: presenter as! PaymentPresenter)
         
         return cell
     }

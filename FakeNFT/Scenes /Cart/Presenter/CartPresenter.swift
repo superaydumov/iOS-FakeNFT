@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 final class CartPresenter: CartPresenterProtocol {
     
@@ -10,31 +10,13 @@ final class CartPresenter: CartPresenterProtocol {
         }
     }
     
-    var currencyArray = [CurrencyResultModel]() {
-        didSet {
-            paymentViewController?.collectionViewUpdate()
-        }
-    }
-    
     private weak var cartViewController: CartViewControllerProtocol?
-    private weak var paymentViewController: PaymentTypeViewControllerProtocol?
     
-    init(
-        cartViewController: CartViewControllerProtocol?,
-        paymentViewController: PaymentTypeViewControllerProtocol?
-    ) {
+    init(cartViewController: CartViewControllerProtocol?) {
         self.cartViewController = cartViewController
-        self.paymentViewController = paymentViewController
     }
     
     // MARK: - Private methods
-    
-    private func loadCurrencies(completion: @escaping (Result<[CurrencyNetworkModel], Error>) -> Void) {
-        let request = CurrencyRequest()
-        let networkClient = DefaultNetworkClient()
-        
-        networkClient.send(request: request, type: [CurrencyNetworkModel].self, completionQueue: .main, onResponse: completion)
-    }
     
     private func loadCartOrder(completion: @escaping (Result<CartOrderNetworkModel, Error>) -> Void) {
         let request = CartItemsRequest()
@@ -107,35 +89,15 @@ final class CartPresenter: CartPresenterProtocol {
     }
     
     func addItemToCart(_ nft: CartNFTModel) {
-        visibleNFT.append(nft)
+        if !visibleNFT.contains(where: { $0.id == nft.id }) {
+            visibleNFT.append(nft)
+        }
         toogleCartOrder()
     }
     
     func cleanCart() {
         visibleNFT.removeAll()
         toogleCartOrder()
-    }
-    
-    func fetchCurrencies() {
-        self.paymentViewController?.setLoaderIsHidden(false)
-        loadCurrencies { result in
-            switch result {
-            case .success(let currencyNetworkModel):
-                currencyNetworkModel.forEach { [weak self] currency in
-                    guard let self else { return }
-                    let loadedCurrency = CurrencyResultModel(
-                        title: currency.title,
-                        name: currency.name,
-                        image: currency.image,
-                        id: currency.id)
-                    self.currencyArray.append(loadedCurrency)
-                }
-                self.paymentViewController?.setLoaderIsHidden(true)
-            case .failure(let error):
-                assertionFailure(error.localizedDescription)
-                self.paymentViewController?.setLoaderIsHidden(true)
-            }
-        }
     }
     
     func fetchCartNFTs() {
@@ -151,7 +113,7 @@ final class CartPresenter: CartPresenterProtocol {
                     }
                     
                     self.loadNFT(id: nftID) { [weak self] nftResult in
-                        guard let self else { return } 
+                        guard let self else { return }
                         switch nftResult {
                         case .success(let nft):
                             let loadedNFT = CartNFTModel(
