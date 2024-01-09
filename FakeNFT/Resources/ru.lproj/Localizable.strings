@@ -22,6 +22,7 @@
 "sortByRatingText" = "По рейтингу";
 "sortByNameText" = "По названию";
 "closeSortingText" = "Закрыть";
+"cartErrorAlertTitleText" = "Ошибка загрузки корзины";
 
 //DeleteFromCartViewController
 
@@ -38,6 +39,7 @@
 "alertMessageText" = "Не удалось произвести оплату";
 "alertCancelButtonText" = "Отмена";
 "alertRetryButtonText" = "Повторить";
+"paymentErrorAlertTitleText" = "Ошибка загрузки способов оплаты";
 
 //SuccessPaymentViewController
 

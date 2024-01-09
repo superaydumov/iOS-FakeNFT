@@ -1,11 +1,14 @@
 import UIKit
+import ProgressHUD
 
-final class PaymentTypeViewController: UIViewController {
+final class PaymentTypeViewController: UIViewController, PaymentTypeViewControllerProtocol {
     
     // MARK: - Stored Properties
     
     private let params = GeometricParams(cellCount: 2, cellHeight: 46, cellSpacing: 7, lineSpacing: 7)
     private var selectedCell: String? = nil
+    private var presenter: PaymentPresenterProtocol?
+    private var alertPresenter: AlertPresenterProtocol?
     weak var delegate: PaymentTypeViewControllerDelegate?
     
     // MARK: - Computed Properties
@@ -76,6 +79,10 @@ final class PaymentTypeViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        presenter = PaymentPresenter(paymentViewController: self)
+        alertPresenter = AlertPresenter(delegate: self)
+        presenter?.fetchCurrencies()
+        
         addSubviews()
         constraintsSetup()
         navBarSetup()
@@ -143,6 +150,34 @@ final class PaymentTypeViewController: UIViewController {
         ])
     }
     
+    // MARK: - Public methods
+
+    func collectionViewUpdate() {
+        self.collectionView.reloadData()
+    }
+    
+    func setLoaderIsHidden(_ isHidden: Bool) {
+        if isHidden {
+            ProgressHUD.hideCustomLoader()
+        } else {
+            ProgressHUD.showCustomLoader()
+        }
+    }
+    
+    func showPaymentAlert(with error: String) {
+        let model = AlertModel(
+            title: LocalizedStrings.paymentErrorAlertTitleText,
+            message: error,
+            firstButtonText: LocalizedStrings.alertRetryButtonText,
+            secondButtontext: LocalizedStrings.alertCancelButtonText,
+            firstCompletion: { [weak self] in
+                guard let self else { return }
+                self.presenter?.fetchCurrencies()
+            }
+        )
+        alertPresenter?.showAlert(with: model)
+    }
+    
     // MARK: - Handlers
     
     @objc func backButtonDidTap() {
@@ -181,17 +216,20 @@ final class PaymentTypeViewController: UIViewController {
 
 extension PaymentTypeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Currency.allCases.count
+        guard let presenter else { return .zero }
+        return presenter.currencyArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentTypeCollectionViewCell.reuseIdentifier, for: indexPath) as? PaymentTypeCollectionViewCell else { return UICollectionViewCell() }
-        
-        let currencyName = Currency.allCases[indexPath.item].rawValue
-        let shortCurrencyName = Currency.allCases[indexPath.item].shortNames
-        let currencyImage = Currency.allCases[indexPath.item].currencyImages
-        
-        cell.configureCell(fullName: currencyName, shortName: shortCurrencyName, image: currencyImage)
+    
+        if let presenter {
+            let currencyName = presenter.currencyArray[indexPath.item].title
+            let shortCurrencyName = presenter.currencyArray[indexPath.item].id
+            
+            cell.configureCell(fullName: currencyName, shortName: shortCurrencyName)
+            cell.updateCellImage(at: indexPath, with: presenter)
+        }
         
         return cell
     }
@@ -220,7 +258,7 @@ extension PaymentTypeViewController: UICollectionViewDelegateFlowLayout {
 
 extension PaymentTypeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedCell = Currency.allCases[indexPath.item].rawValue
+        selectedCell = presenter?.currencyArray[indexPath.item].title
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

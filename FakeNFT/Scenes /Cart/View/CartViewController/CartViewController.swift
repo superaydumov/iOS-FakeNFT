@@ -1,11 +1,12 @@
 import UIKit
+import ProgressHUD
 
 final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     // MARK: - Stored Properties
     
     private var presenter: CartPresenterProtocol?
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private var alertPresenter: AlertPresenterProtocol?
     private let refreshControl = UIRefreshControl()
     
     // MARK: - Computed Properties
@@ -76,15 +77,23 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     // MARK: - Lifecycle
     
+    init(catalog: CatalogViewController) {
+        super.init(nibName: nil, bundle: nil)
+        catalog.delegate = self
+        presenter = CartPresenter(cartViewController: self)
+        alertPresenter = AlertPresenter(delegate: self)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .nftWhite
         
-        activityIndicator.layer.zPosition = 50
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
-        
-        presenter = CartPresenter(viewController: self)
         
         addSubviews()
         constraintsSetup()
@@ -94,9 +103,9 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         updateSorting()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter?.fetchCartNFTs()
         elementsSetup()
     }
     
@@ -104,7 +113,6 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     private func addSubviews() {
         [emptyLabel,
-         activityIndicator,
          tableView,
          paymentLayerView
         ].forEach {
@@ -123,12 +131,9 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private func constraintsSetup() {
         NSLayoutConstraint.activate([
             emptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -30),
             emptyLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             emptyLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -204,8 +209,32 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     
     // MARK: - Public methods
 
-    func tableViewUpdate() {
+    func updateCartElements() {
+        elementsSetup()
+        labelsUpdate()
         self.tableView.reloadData()
+    }
+    
+    func setLoaderIsHidden(_ isHidden: Bool) {
+        if isHidden {
+            ProgressHUD.hideCustomLoader()
+        } else {
+            ProgressHUD.showCustomLoader()
+        }
+    }
+    
+    func showCartAlert(with error: String) {
+        let model = AlertModel(
+            title: LocalizedStrings.cartErrorAlertTitleText,
+            message: error,
+            firstButtonText: LocalizedStrings.alertRetryButtonText,
+            secondButtontext: LocalizedStrings.alertCancelButtonText,
+            firstCompletion: { [weak self] in
+                guard let self else { return }
+                self.presenter?.fetchCartNFTs()
+            }
+        )
+        alertPresenter?.showAlert(with: model)
     }
     
     // MARK: - Handlers
@@ -241,7 +270,8 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     }
     
     @objc func refreshTableView() {
-        tableViewUpdate()
+        presenter?.fetchCartNFTs()
+        self.tableView.reloadData()
         refreshControl.endRefreshing()
     }
 }
@@ -315,12 +345,22 @@ extension CartViewController: DeleteFromCartViewControllerDelegate {
     }
 }
 
-// MARK: - DeleteFromCartViewControllerDelegate
+    // MARK: - PaymentTypeViewControllerDelegate
 
 extension CartViewController: PaymentTypeViewControllerDelegate {
     func cleanCart() {
-        presenter?.cleanCart()
+        guard let presenter else { return }
+        presenter.cleanCart()
         labelsUpdate()
         elementsSetup()
+    }
+}
+
+    // MARK: - CartViewControllerDelegate
+
+extension CartViewController: CartViewControllerDelegate {
+    func addItemToCart(_ nft: CartNFTModel) {
+        guard let presenter else { return }
+        presenter.addItemToCart(nft)
     }
 }

@@ -18,6 +18,8 @@ struct LocalizedStrings {
     static let sortByRatingText = NSLocalizedString("sortByRatingText", comment: "")
     static let sortByNameText = NSLocalizedString("sortByNameText", comment: "")
     static let closeSortingText = NSLocalizedString("closeSortingText", comment: "")
+    static let cartErrorAlertTitleText = NSLocalizedString("cartErrorAlertTitleText", comment: "")
+    static let paymentErrorAlertTitleText = NSLocalizedString("paymentErrorAlertTitleText", comment: "")
     
     //MARK: - DeleteFromCartViewController
     

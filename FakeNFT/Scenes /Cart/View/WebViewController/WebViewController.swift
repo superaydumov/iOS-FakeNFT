@@ -30,7 +30,7 @@ final class WebViewController: UIViewController {
         webView.load(request)
         webView.allowsBackForwardNavigationGestures = true
         
-        ProgressHUD.show()
+        ProgressHUD.showCustomLoader()
         estimatedProgress = webView.observe(\.estimatedProgress,
                                              options: [],
                                              changeHandler: { [weak self] _, _ in
@@ -51,12 +51,12 @@ final class WebViewController: UIViewController {
     
     private func progressValueUpdate(_ newValue: Double) {
         if newValue > 0.95 {
-            ProgressHUD.dismiss()
+            ProgressHUD.hideCustomLoader()
         }
     }
     
     @objc func backButtonDidTap() {
-        ProgressHUD.dismiss()
+        ProgressHUD.hideCustomLoader()
         self.navigationController?.popViewController(animated: true)
     }
 }
