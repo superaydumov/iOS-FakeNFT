@@ -115,7 +115,7 @@ final class PaymentTypeCollectionViewCell: UICollectionViewCell {
         shortNameLabel.text = shortName
     }
     
-    func updateCellImage(at indexPath: IndexPath, with presenter: PaymentPresenter) {
+    func updateCellImage(at indexPath: IndexPath, with presenter: PaymentPresenterProtocol) {
         if presenter.currencyArray.count > 0 {
             self.activityIndicator.startAnimating()
             let processor = DownsamplingImageProcessor(size: CGSize(width: 36, height: 36))
@@ -123,6 +123,7 @@ final class PaymentTypeCollectionViewCell: UICollectionViewCell {
                 self.activityIndicator.stopAnimating()
                 switch result {
                 case .success(_):
+                    //TODO: add parsing logic when server starts sending images for currencies
                     return
                 case .failure(_):
                     self.imageView.image = UIImage(systemName: "snowflake.circle") ?? UIImage()

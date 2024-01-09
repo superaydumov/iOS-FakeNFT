@@ -41,11 +41,10 @@ final class PaymentPresenter: PaymentPresenterProtocol {
                         id: currency.id)
                     self.currencyArray.append(loadedCurrency)
                 }
-                self.paymentViewController?.setLoaderIsHidden(true)
             case .failure(let error):
-                assertionFailure(error.localizedDescription)
-                self.paymentViewController?.setLoaderIsHidden(true)
+                self.paymentViewController?.showPaymentAlert(with: error.localizedDescription)
             }
+            self.paymentViewController?.setLoaderIsHidden(true)
         }
     }
 }

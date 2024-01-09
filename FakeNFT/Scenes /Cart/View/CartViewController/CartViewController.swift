@@ -6,6 +6,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     // MARK: - Stored Properties
     
     private var presenter: CartPresenterProtocol?
+    private var alertPresenter: AlertPresenterProtocol?
     private let refreshControl = UIRefreshControl()
     
     // MARK: - Computed Properties
@@ -80,6 +81,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         super.init(nibName: nil, bundle: nil)
         catalog.delegate = self
         presenter = CartPresenter(cartViewController: self)
+        alertPresenter = AlertPresenter(delegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -219,6 +221,20 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         } else {
             ProgressHUD.showCustomLoader()
         }
+    }
+    
+    func showCartAlert(with error: String) {
+        let model = AlertModel(
+            title: LocalizedStrings.cartErrorAlertTitleText,
+            message: error,
+            firstButtonText: LocalizedStrings.alertRetryButtonText,
+            secondButtontext: LocalizedStrings.alertCancelButtonText,
+            firstCompletion: { [weak self] in
+                guard let self else { return }
+                self.presenter?.fetchCartNFTs()
+            }
+        )
+        alertPresenter?.showAlert(with: model)
     }
     
     // MARK: - Handlers

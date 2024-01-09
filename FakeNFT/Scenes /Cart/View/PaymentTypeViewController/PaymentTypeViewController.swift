@@ -8,6 +8,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
     private let params = GeometricParams(cellCount: 2, cellHeight: 46, cellSpacing: 7, lineSpacing: 7)
     private var selectedCell: String? = nil
     private var presenter: PaymentPresenterProtocol?
+    private var alertPresenter: AlertPresenterProtocol?
     weak var delegate: PaymentTypeViewControllerDelegate?
     
     // MARK: - Computed Properties
@@ -79,6 +80,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
         collectionView.delegate = self
         
         presenter = PaymentPresenter(paymentViewController: self)
+        alertPresenter = AlertPresenter(delegate: self)
         presenter?.fetchCurrencies()
         
         addSubviews()
@@ -162,6 +164,20 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
         }
     }
     
+    func showPaymentAlert(with error: String) {
+        let model = AlertModel(
+            title: LocalizedStrings.paymentErrorAlertTitleText,
+            message: error,
+            firstButtonText: LocalizedStrings.alertRetryButtonText,
+            secondButtontext: LocalizedStrings.alertCancelButtonText,
+            firstCompletion: { [weak self] in
+                guard let self else { return }
+                self.presenter?.fetchCurrencies()
+            }
+        )
+        alertPresenter?.showAlert(with: model)
+    }
+    
     // MARK: - Handlers
     
     @objc func backButtonDidTap() {
@@ -206,14 +222,14 @@ extension PaymentTypeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PaymentTypeCollectionViewCell.reuseIdentifier, for: indexPath) as? PaymentTypeCollectionViewCell else { return UICollectionViewCell() }
-        
-        guard let presenter else { return UICollectionViewCell() }
-        
-        let currencyName = presenter.currencyArray[indexPath.item].title
-        let shortCurrencyName = presenter.currencyArray[indexPath.item].id
-        
-        cell.configureCell(fullName: currencyName, shortName: shortCurrencyName)
-        cell.updateCellImage(at: indexPath, with: presenter as! PaymentPresenter)
+    
+        if let presenter {
+            let currencyName = presenter.currencyArray[indexPath.item].title
+            let shortCurrencyName = presenter.currencyArray[indexPath.item].id
+            
+            cell.configureCell(fullName: currencyName, shortName: shortCurrencyName)
+            cell.updateCellImage(at: indexPath, with: presenter)
+        }
         
         return cell
     }

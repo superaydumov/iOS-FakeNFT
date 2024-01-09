@@ -54,7 +54,7 @@ final class CartPresenter: CartPresenterProtocol {
             case .success(let data):
                 print("Server nfts: \(data.nfts)")
             case .failure(let error):
-                assertionFailure(error.localizedDescription)
+                self.cartViewController?.showCartAlert(with: error.localizedDescription)
             }
         }
         self.cartViewController?.setLoaderIsHidden(true)
@@ -125,16 +125,14 @@ final class CartPresenter: CartPresenterProtocol {
                             )
                             self.visibleNFT.append(loadedNFT)
                         case .failure(let error):
-                            assertionFailure(error.localizedDescription)
-                            self.cartViewController?.setLoaderIsHidden(true)
+                            self.cartViewController?.showCartAlert(with: error.localizedDescription)
                         }
                     }
                 }
-                self.cartViewController?.setLoaderIsHidden(true)
             case .failure(let error):
-                assertionFailure(error.localizedDescription)
-                self.cartViewController?.setLoaderIsHidden(true)
+                self.cartViewController?.showCartAlert(with: error.localizedDescription)
             }
+            self.cartViewController?.setLoaderIsHidden(true)
         }
     }
 }

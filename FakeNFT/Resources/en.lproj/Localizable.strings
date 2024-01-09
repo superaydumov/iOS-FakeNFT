@@ -22,6 +22,7 @@
 "sortByRatingText" = "by Rating";
 "sortByNameText" = "by Name";
 "closeSortingText" = "Close";
+"cartErrorAlertTitleText" = "Cart loading error";
 
 //DeleteFromCartViewController
 
@@ -38,6 +39,7 @@
 "alertMessageText" = "Payment failed";
 "alertCancelButtonText" = "Cancel";
 "alertRetryButtonText" = "Retry";
+"paymentErrorAlertTitleText" = "Payment type loading error";
 
 //SuccessPaymentViewController
 
