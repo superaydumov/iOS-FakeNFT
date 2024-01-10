@@ -13,7 +13,7 @@ protocol NFTCellDelegate: AnyObject {
     func didTapCartButton(_ id: String)
 }
 
-class NFTCell: UICollectionViewCell, ReuseIdentifying {
+final class NFTCell: UICollectionViewCell, ReuseIdentifying {
     
     // MARK: - Constants
     private enum Constants {

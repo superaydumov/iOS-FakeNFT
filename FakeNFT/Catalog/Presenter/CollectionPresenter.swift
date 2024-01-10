@@ -178,10 +178,8 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         service.uploadLikes(likes: self.likes) { [weak self] result in
             switch result {
             case .success(let profile):
-                if !profile.likes.isEmpty {
-                    self?.likes = profile.likes
-                } else {
-                }
+                guard !profile.likes.isEmpty  else { return }
+                self?.likes = profile.likes
                 DispatchQueue.main.async {
                     self?.view?.updateData()
                 }
@@ -201,11 +199,9 @@ final class CollectionPresenter: CollectionPresenterProtocol {
             UIBlockingProgressHUD.dismiss()
             switch result {
             case .success(let cart):
+                guard !cart.nfts.isEmpty else { return }
+                self?.orders = cart.nfts
                 DispatchQueue.main.async {
-                    if !cart.nfts.isEmpty {
-                        self?.orders = cart.nfts
-                    } else {
-                    }
                     self?.view?.updateData()
                 }
             case .failure(_):

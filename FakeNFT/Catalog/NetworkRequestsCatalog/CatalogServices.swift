@@ -116,14 +116,12 @@ final class CatalogServices {
         let url = URL(string: "\(RequestConstants.baseURL)/api/v1/orders/\(userId)")
         
         defaultNetworkClient.send(request: CatalogRequest(endpoint: url), type: CartResult.self) { result in
-            switch result {
-            case .success(let data):
-                let cart = CartModel(cartResult: data)
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    let cart = CartModel(cartResult: data)
                     completion(.success(cart))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+                case .failure(let error):
                     completion(.failure(error))
                 }
             }
@@ -140,14 +138,12 @@ final class CatalogServices {
         let request = CatalogRequest(endpoint: url, httpMethod: .put, dto: parameters)
         
         defaultNetworkClient.send(request: request, type: ProfileResult.self) { result in
-            switch result {
-            case .success(let data):
-                let profile = ProfileModel(profileResult: data)
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    let profile = ProfileModel(profileResult: data)
                     completion(.success(profile))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+                case .failure(let error):
                     completion(.failure(error))
                 }
             }
@@ -166,16 +162,13 @@ final class CatalogServices {
         
         let request = CatalogRequest(endpoint: url, httpMethod: .put)
         
-        defaultNetworkClient.send(request: request, type: CartResult.self) {
-            result in
-            switch result {
-            case .success(let data):
-                let cart = CartModel(cartResult: data)
-                DispatchQueue.main.async {
+        defaultNetworkClient.send(request: request, type: CartResult.self) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    let cart = CartModel(cartResult: data)
                     completion(.success(cart))
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+                case .failure(let error):
                     completion(.failure(error))
                 }
             }
