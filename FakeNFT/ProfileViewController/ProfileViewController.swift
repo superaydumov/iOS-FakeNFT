@@ -209,6 +209,7 @@ extension ProfileViewController: UITableViewDataSource {
             cell.textLabel?.text = cellTexts[indexPath.row]
         }
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        cell.selectionStyle = .none
         return cell
     }
 }
