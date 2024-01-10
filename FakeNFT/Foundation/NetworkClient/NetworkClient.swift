@@ -117,7 +117,7 @@ struct DefaultNetworkClient: NetworkClient {
 
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
-        
+
         if urlRequest.httpMethod == HttpMethod.put.rawValue {
             urlRequest.setValue(RequestConstants.putValue, forHTTPHeaderField: RequestConstants.putHeader)
             if let body = request.body {
@@ -125,11 +125,15 @@ struct DefaultNetworkClient: NetworkClient {
             }
         }
 
-        urlRequest.setValue(RequestConstants.connectionValue, forHTTPHeaderField: RequestConstants.connectionHeader)
-        urlRequest.setValue(RequestConstants.acceptValue, forHTTPHeaderField: RequestConstants.acceptHeader)
-        urlRequest.setValue(RequestConstants.acceptEncodingValue, forHTTPHeaderField: RequestConstants.acceptEncodingHeader)
-        
-        urlRequest.setValue(RequestConstants.accessToken, forHTTPHeaderField: RequestConstants.requestHeader)
+        urlRequest.setValue(RequestConstants.connectionValue,
+                            forHTTPHeaderField: RequestConstants.connectionHeader)
+        urlRequest.setValue(RequestConstants.acceptValue,
+                            forHTTPHeaderField: RequestConstants.acceptHeader)
+        urlRequest.setValue(RequestConstants.acceptEncodingValue,
+                            forHTTPHeaderField: RequestConstants.acceptEncodingHeader)
+
+        urlRequest.setValue(RequestConstants.accessToken,
+                            forHTTPHeaderField: RequestConstants.requestHeader)
 
         return urlRequest
     }

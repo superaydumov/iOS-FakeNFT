@@ -9,7 +9,7 @@ enum Currency: String, CaseIterable {
     case etherium = "Etherium"
     case cardano = "Cardano"
     case shibaInu = "Shiba Inu"
-    
+
     var shortNames: String {
         switch self {
         case .bitcoin:
@@ -30,7 +30,7 @@ enum Currency: String, CaseIterable {
             return "SHIB"
         }
     }
-    
+
     var currencyImages: UIImage? {
         switch self {
         case .bitcoin:

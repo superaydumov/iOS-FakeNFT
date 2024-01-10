@@ -9,13 +9,13 @@ struct CartPutOrderRequest: NetworkRequest {
     var httpMethod: HttpMethod {
         .put
     }
-    
+
     var dto: Encodable?
     var body: Data?
 
     init(updateModel: CartOrderUpdateModel) {
         var nfts = ""
-        updateModel.nfts.enumerated().forEach { (index, nft) in
+        updateModel.nfts.enumerated().forEach { (_, nft) in
             nfts += "nfts=\(nft)&"
         }
         nfts += "id=\(updateModel.id)"

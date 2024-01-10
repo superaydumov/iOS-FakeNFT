@@ -1,9 +1,9 @@
 import Foundation
 
 final class PaymentPresenter: PaymentPresenterProtocol {
-    
+
     // MARK: - Stored Properties
-    
+
     var currencyArray = [CurrencyResultModel]() {
         didSet {
             paymentViewController?.collectionViewUpdate()
@@ -11,22 +11,25 @@ final class PaymentPresenter: PaymentPresenterProtocol {
     }
 
     private weak var paymentViewController: PaymentTypeViewControllerProtocol?
-    
+
     init(paymentViewController: PaymentTypeViewControllerProtocol?) {
         self.paymentViewController = paymentViewController
     }
-    
+
     // MARK: - Private methods
-    
+
     private func loadCurrencies(completion: @escaping (Result<[CurrencyNetworkModel], Error>) -> Void) {
         let request = CurrencyRequest()
         let networkClient = DefaultNetworkClient()
-        
-        networkClient.send(request: request, type: [CurrencyNetworkModel].self, completionQueue: .main, onResponse: completion)
+
+        networkClient.send(request: request,
+                           type: [CurrencyNetworkModel].self,
+                           completionQueue: .main,
+                           onResponse: completion)
     }
-    
+
     // MARK: - Public methods
-    
+
     func fetchCurrencies() {
         self.paymentViewController?.setLoaderIsHidden(false)
         loadCurrencies { result in

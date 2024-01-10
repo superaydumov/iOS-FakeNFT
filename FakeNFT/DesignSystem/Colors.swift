@@ -26,11 +26,11 @@ extension UIColor {
     }
 
     // Цвета из Figma
-    
+
     static let nftBlack = UIColor(named: "NFTBlack")
     static let nftWhite = UIColor(named: "NFTWhite")
     static let nftLightGray = UIColor(named: "NFTLightGray")
-    
+
     static let nftGrayUniversal = UIColor(named: "NFTGrayUniversal")
     static let nftRedUniversal = UIColor(named: "NFTRedUniversal")
     static let nftBackgroundUniversal = UIColor(named: "NFTBackgroundUniversal")
@@ -39,7 +39,6 @@ extension UIColor {
     static let nftBlackUniversal = UIColor(named: "NFTBlackUniversal")
     static let nftWhiteUniversal = UIColor(named: "NFTWhiteUniversal")
     static let nftYellowUniversal = UIColor(named: "NFTYellowUniversal")
-    
 
     // Background Colors
     static let background = UIColor.white
