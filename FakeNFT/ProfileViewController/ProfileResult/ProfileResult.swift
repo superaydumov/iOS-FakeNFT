@@ -12,4 +12,3 @@ struct ProfileResult: Codable {
 }
 
 typealias ProfileList = [ProfileResult]
-

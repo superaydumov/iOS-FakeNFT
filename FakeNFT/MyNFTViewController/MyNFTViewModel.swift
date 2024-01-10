@@ -1,7 +1,6 @@
-
 import Foundation
 
-struct MyNFTViewModel:  Decodable, Encodable {
+struct MyNFTViewModel: Decodable, Encodable {
     let images: [URL]?
     let name: String
     let rating: Int
@@ -9,7 +8,7 @@ struct MyNFTViewModel:  Decodable, Encodable {
     let price: Double
     var isFavorite: Bool?
     let id: String
-    
+
     init(images: [URL], name: String, rating: Int, author: URL, price: Double, isFavorite: Bool, id: String) {
         self.images = images
         self.name = name
