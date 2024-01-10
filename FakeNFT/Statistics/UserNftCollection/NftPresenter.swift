@@ -5,12 +5,6 @@
 //  Created by Андрей Асланов on 28.12.23.
 //
 
-enum RequestContext {
-    case like
-    case cart
-    case fetchTftData
-}
-
 import Foundation
 
 protocol NftViewInput: AnyObject {
@@ -49,7 +43,11 @@ final class NftPresenter: NSObject, NftViewOutput {
         super.init()
     }
 
-    convenience init(view: NftViewInput, networkClient: StatisticsNetworkClientProtocol = StatisticsNetworkClient(), userDefaultsManager: UserDefaultsManagerProtocol = UserDefaultsManager()) {
+    convenience init(
+        view: NftViewInput,
+        networkClient: StatisticsNetworkClientProtocol = StatisticsNetworkClient(),
+        userDefaultsManager: UserDefaultsManagerProtocol = UserDefaultsManager()
+    ){
         self.init()
         self.view = view
         self.networkClient = networkClient
@@ -58,7 +56,7 @@ final class NftPresenter: NSObject, NftViewOutput {
     
     func fetchDataForNftArray(_ nftArray: [Nft]) {
         view?.showActivityIndicator()
-        view?.displayNftInfo(mockNftData)
+        view?.displayNftInfo(MockNftData.nft)
         view?.hideActivityIndicator()
     }
     
@@ -72,7 +70,7 @@ final class NftPresenter: NSObject, NftViewOutput {
     }
 
     private func getRequest(_ url: URL, nftId: String, context: RequestContext) {
-        _ = networkClient.fetchData(from: url) { [weak self] result in
+        networkClient.fetchData(from: url) { [weak self] result in
             
             defer {
                 self?.view?.hideActivityIndicator()
@@ -162,7 +160,7 @@ final class NftPresenter: NSObject, NftViewOutput {
     }
 
     private func sendRequestToURL(_ url: URL, bodyData: Data?, nftId: String, context: RequestContext) {
-        _ = networkClient.sendRequest(to: url, body: bodyData) { [weak self] result in
+        networkClient.sendRequest(to: url, body: bodyData) { [weak self] result in
             
             defer {
                 self?.view?.hideActivityIndicator()

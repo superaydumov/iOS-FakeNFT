@@ -171,22 +171,11 @@ final class NftCollectionViewCell: UICollectionViewCell {
         titleLabel.text = nft.name
         priceLabel.text = String(format: "%.2f ETH", nft.price ?? 0)
 
-        let likeButtonOnImage = UIImage(named: "likeButtonOn")
-        let likeButtonOffImage = UIImage(named: "likeButtonOff")
-        let cartButtonAddImage = UIImage(named: "addToBasket")
-        let cartButtonRemoveImage = UIImage(named: "deleteFromBasket")
+        let likeImage: UIImage? = isLiked ? UIImage(named: "likeButtonOn") : UIImage(named: "likeButtonOff")
+        likeButton.setImage(likeImage, for: .normal)
 
-        if isLiked {
-            likeButton.setImage(likeButtonOnImage, for: .normal)
-        } else {
-            likeButton.setImage(likeButtonOffImage, for: .normal)
-        }
-        
-        if isInCart {
-            cartButton.setImage(cartButtonRemoveImage, for: .normal)
-        } else {
-            cartButton.setImage(cartButtonAddImage, for: .normal)
-        }
+        let cartImage: UIImage? = isInCart ? UIImage(named: "deleteFromBasket") : UIImage(named: "addToBasket")
+        cartButton.setImage(cartImage, for: .normal)
     }
     
     private func setupRatingStars(rating: Int) {

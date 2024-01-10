@@ -8,12 +8,12 @@
 import Foundation
 
 protocol StatisticsNetworkClientProtocol {
-    func fetchData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask?
-    func sendRequest(to url: URL, body: Data?, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask?
+    func fetchData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void)
+    func sendRequest(to url: URL, body: Data?, completion: @escaping (Result<Data, Error>) -> Void)
 }
 
 final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
-    func fetchData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask? {
+    func fetchData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
@@ -24,9 +24,7 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
                 return
             }
             
-            if let httpResponse = response as? HTTPURLResponse {
-                print("HTTP Status Code: \(httpResponse.statusCode)")
-            }
+            let httpResponse = response as? HTTPURLResponse
             
             if let data = data {
                 completion(.success(data))
@@ -36,10 +34,9 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
             }
         }
         task.resume()
-        return task
     }
     
-    func sendRequest(to url: URL, body: Data?, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask? {
+    func sendRequest(to url: URL, body: Data?, completion: @escaping (Result<Data, Error>) -> Void) {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "PUT"
         urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
@@ -48,7 +45,6 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
         if let bodyData = body {
             let bodyString = String(data: bodyData, encoding: .utf8)
             urlRequest.httpBody = bodyString?.data(using: .utf8)
-            print("Request Body: \(bodyString ?? "")")
         }
 
         let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
@@ -57,9 +53,7 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
                 return
             }
 
-            if let httpResponse = response as? HTTPURLResponse {
-                print("HTTP Status Code: \(httpResponse.statusCode)")
-            }
+            let httpResponse = response as? HTTPURLResponse
 
             if let data = data {
                 completion(.success(data))
@@ -69,6 +63,5 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
             }
         }
         task.resume()
-        return task
     }
 }

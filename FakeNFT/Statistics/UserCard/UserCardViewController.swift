@@ -166,13 +166,18 @@ final class UserCardViewController: UIViewController, UserCardViewInput {
                 self?.nftButton.alpha = 1.0
             }
             
-            if let userId = self?.presenter?.getUserId() {
-                if let nftArray = self?.presenter?.getNfts() {
-                    let userNftCollectionVC = UserNftCollectionViewController(userId: userId, nftArray: nftArray)
-                    self?.navigationController?.pushViewController(userNftCollectionVC, animated: true)
-                }
-            } else {
-                print("Unable to get user ID")
+//            if let userId = self?.presenter?.getUserId() {
+//                if let nftArray = self?.presenter?.getNfts() {
+//                    let userNftCollectionVC = UserNftCollectionViewController(userId: userId, nftArray: nftArray)
+//                    self?.navigationController?.pushViewController(userNftCollectionVC, animated: true)
+//                }
+//            } else {
+//                print("Unable to get user ID")
+//            }
+            
+            if let userId = self?.presenter?.getUserId(), let nftArray = self?.presenter?.getNfts() {
+                let userNftCollectionVC = UserNftCollectionViewController(userId: userId, nftArray: nftArray)
+                self?.navigationController?.pushViewController(userNftCollectionVC, animated: true)
             }
         }
     }

@@ -8,16 +8,25 @@
 import Foundation
 
 struct NftModel: Codable {
-    var createdAt: String?
-    var name: String?
-    var images: [URL]?
-    var rating: Int?
-    var description: String?
-    var price: Float?
-    var author: URL?
-    var id: String?
+    let createdAt: String?
+    let name: String?
+    let images: [URL]?
+    let rating: Int?
+    let description: String?
+    let price: Float?
+    let author: URL?
+    let id: String?
 
-    init(createdAt: String? = nil, name: String? = nil, images: [URL]? = nil, rating: Int? = nil, description: String? = nil, price: Float? = nil, author: URL? = nil, id: String? = nil) {
+    init(
+        createdAt: String? = nil,
+        name: String? = nil,
+        images: [URL]? = nil,
+        rating: Int? = nil,
+        description: String? = nil,
+        price: Float? = nil,
+        author: URL? = nil,
+        id: String? = nil
+    ) {
         self.createdAt = createdAt
         self.name = name
         self.images = images
