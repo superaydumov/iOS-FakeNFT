@@ -8,17 +8,17 @@
 import UIKit
 
 final class CatalogPresenter: CatalogPresenterProtocol {
-    
+
     // MARK: - Public Properties
     weak var view: CatalogView?
     private (set) var collections: [NFTCollectionInfo] = []
     static let didChangeCollectionsListNotification = Notification.Name(rawValue: "ChangeCollectionsList")
-    
+
     // MARK: - Private Properties
     private let service = CatalogServices()
     private let userDefaults = UserDefaults.standard
     private let catalogFilterTypeKey = "CatalogFilterType"
-    
+
     // MARK: - Initializer
     init() {
         NotificationCenter.default.addObserver(self,
@@ -26,23 +26,23 @@ final class CatalogPresenter: CatalogPresenterProtocol {
                                                name: CatalogPresenter.didChangeCollectionsListNotification,
                                                object: nil)
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     // MARK: - Public Methods
     func onViewDidLoad() {
         UIBlockingProgressHUD.show()
         loadCollections()
     }
-    
+
     func viewDidDisappear() {
         NotificationCenter.default.removeObserver(self,
                                                   name: CatalogPresenter.didChangeCollectionsListNotification,
                                                   object: nil)
     }
-    
+
     func applyFiltering() {
         let filterTypeInt = userDefaults.integer(forKey: catalogFilterTypeKey)
         let filterType = FilterType(rawValue: filterTypeInt)
@@ -58,32 +58,31 @@ final class CatalogPresenter: CatalogPresenterProtocol {
             alertController.addAction(UIAlertAction(title: "OK",
                                                     style: .default,
                                                     handler: nil))
-            break
         }
         view?.reloadCatalogTableView()
     }
-    
+
     func handleFilterButtonTap() {
         applyFiltering()
     }
-    
+
     func willDisplayCell(_ indexPath: IndexPath) {
         if indexPath.row == (collections.count - 1) {
             loadCollections()
         }
     }
-    
+
     func setUserDefaultsData(by type: Int, for key: String) {
         userDefaults.set(type, forKey: catalogFilterTypeKey)
     }
-    
+
     // MARK: - Private Methods
     private func loadCollections() {
         service.fetchCollections { [weak self] result in
             DispatchQueue.main.async {
                 UIBlockingProgressHUD.dismiss()
                 switch result {
-                case .success(_):
+                case .success:
                     self?.view?.reloadCatalogTableView()
                 case .failure(let error):
                     self?.view?.displayAlert(title: "Error",
@@ -93,7 +92,7 @@ final class CatalogPresenter: CatalogPresenterProtocol {
             }
         }
     }
-    
+
     @objc private func updateCollectionsList() {
         collections = service.collections
         view?.reloadCatalogTableView()

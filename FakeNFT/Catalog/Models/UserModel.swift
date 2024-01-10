@@ -11,7 +11,7 @@ struct UserModel {
     let id: String
     let name: String
     let website: URL?
-    
+
     init(userResult: UserResult) {
         self.id = userResult.id
         self.name = userResult.name

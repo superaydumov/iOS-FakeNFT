@@ -12,7 +12,7 @@ struct CatalogRequest: NetworkRequest {
     var httpMethod: HttpMethod
     var dto: Encodable?
     var headers: [String: String]?
-    
+
     init(endpoint: URL? = nil,
          httpMethod: HttpMethod = .get,
          dto: Encodable? = nil,

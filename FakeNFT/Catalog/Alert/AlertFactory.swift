@@ -8,11 +8,11 @@
 import UIKit
 
 final class AlertFactory {
-    
+
     static let shared = AlertFactory()
-    
+
     private init() {}
-    
+
     func showActionSheet(from viewController: UIViewController,
                          title: String?,
                          message: String?,
@@ -27,7 +27,7 @@ final class AlertFactory {
         actionSheetController.addAction(cancelAction)
         viewController.present(actionSheetController, animated: true)
     }
-    
+
     func showAlert(from viewController: UIViewController,
                    title: String,
                    message: String?,
@@ -39,7 +39,7 @@ final class AlertFactory {
         actions.forEach { alertController.addAction($0) }
         viewController.present(alertController, animated: true)
     }
-    
+
     func showStandardAlert(from viewController: UIViewController,
                            title: String,
                            message: String?
@@ -51,7 +51,7 @@ final class AlertFactory {
                   message: message,
                   actions: [okAction])
     }
-    
+
     func showChoiceAlert(from viewController: UIViewController,
                          title: String,
                          message: String?,

@@ -14,7 +14,7 @@ struct NFTCollectionInfo {
     let description: String
     let author: String
     let id: String
-    
+
     init(fromNFTCollection collection: NFTCollection) {
         self.name = collection.name
         self.cover = collection.cover.convertedURL()

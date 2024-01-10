@@ -13,7 +13,7 @@ struct NFTInformation {
     let image: URL?
     let rating: Int
     let price: Double
-    
+
     init(nft: NFTItem) {
         self.id = nft.id
         self.name = nft.name

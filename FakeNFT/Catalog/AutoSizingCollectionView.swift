@@ -8,14 +8,14 @@
 import UIKit
 
 final class ResizableCollectionView: UICollectionView {
-    
+
     // MARK: - Override Content Size
     override var contentSize: CGSize {
         didSet {
             invalidateIntrinsicContentSize()
         }
     }
-    
+
     // MARK: - Override Intrinsic Content Size
     override var intrinsicContentSize: CGSize {
         layoutIfNeeded()

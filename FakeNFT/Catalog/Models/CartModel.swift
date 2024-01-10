@@ -10,7 +10,7 @@ import Foundation
 struct CartModel {
     let id: String
     let nfts: [String]
-    
+
     init(cartResult: CartResult) {
         self.id = cartResult.id
         self.nfts = cartResult.nfts

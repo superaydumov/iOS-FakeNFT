@@ -12,12 +12,12 @@ extension String {
         if let url = URL(string: self) {
             return url
         }
-        
+
         guard let encodedString = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedString) else {
             return nil
         }
-        
+
         return url
     }
 }
