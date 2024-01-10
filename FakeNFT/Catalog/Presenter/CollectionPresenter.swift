@@ -12,7 +12,9 @@ protocol CollectionPresenterProtocol {
     var collection: NFTCollectionInfo { get }
     var authorProfile: UserModel? { get }
     var nfts: [NFTInformation] { get }
+    
     func viewDidLoad()
+    func refreshData()
     func isLikedNFT(_ id: String) -> Bool
     func isInCart(_ id: String) -> Bool
     func setLikeForNFT(_ id: String)
@@ -49,27 +51,45 @@ final class CollectionPresenter: CollectionPresenterProtocol {
     @objc func viewDidLoad() {
         UIBlockingProgressHUD.show()
         showError = false
-        
-        let tasks = [loadCollectionAuthor, loadLikes, fetchNFTS]
+        refreshData()
+    }
+    
+    func refreshData() {
+        showError = false
+        let tasks = [loadCollectionAuthor, loadLikes, fetchNFTS, loadOrders]
         performTasks(tasks, completion: handleLoadCompletion)
     }
     
-    // TODO: реализовать в 3 эпике
     func setLikeForNFT(_ id: String) {
+        var updatedLikes = self.likes
+        if updatedLikes.contains(id) {
+            updatedLikes.removeAll { $0 == id }
+        } else {
+            updatedLikes.append(id)
+        }
+        self.likes = updatedLikes
+        uploadLikes()
         
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.updateData()
+        }
     }
     
-    // TODO: реализовать в 3 эпике
     func addNFTToCart(_ id: String) {
-        
+        var updatedCart = self.orders
+        if updatedCart.contains(id) {
+            updatedCart.removeAll { $0 == id }
+        } else {
+            updatedCart.append(id)
+        }
+        self.orders = updatedCart
+        uploadCart()
     }
     
-    // TODO: для реализации 3 эпика
     func isLikedNFT(_ id: String) -> Bool {
         likes.contains(id)
     }
     
-    // TODO: для реализации 3 эпика
     func isInCart(_ id: String) -> Bool {
         orders.contains(id)
     }
@@ -93,7 +113,6 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         UIBlockingProgressHUD.dismiss()
     }
     
-    // TODO: метод для обновления списка id в будущей реализации добавления в избранное и корзину
     private func updateList(_ list: inout [String], with id: String, errorMessage: String, updateAction: @escaping () -> Void) {
         if list.contains(id) {
             list.removeAll { $0 == id }
@@ -129,7 +148,6 @@ final class CollectionPresenter: CollectionPresenterProtocol {
         completion()
     }
     
-    // TODO: реализовать в 3 эпике
     private func loadLikes(completion: @escaping () -> Void) {
         service.loadProfile { [weak self] result in
             switch result {
@@ -139,6 +157,58 @@ final class CollectionPresenter: CollectionPresenterProtocol {
                 self?.showError = true
             }
             completion()
+        }
+    }
+    
+    private func loadOrders(completion: @escaping () -> Void) {
+        service.loadCart { [weak self] result in
+            switch result {
+            case .success(let cart):
+                self?.orders = cart.nfts
+            case .failure(_):
+                self?.showError = true
+            }
+            completion()
+        }
+    }
+    
+    @objc private func uploadLikes() {
+        UIBlockingProgressHUD.show()
+        
+        service.uploadLikes(likes: self.likes) { [weak self] result in
+            switch result {
+            case .success(let profile):
+                guard !profile.likes.isEmpty  else { return }
+                self?.likes = profile.likes
+                DispatchQueue.main.async {
+                    self?.view?.updateData()
+                }
+            case .failure(_):
+                DispatchQueue.main.async {
+                    self?.view?.showErrorAlert(ErrorMessages.likeError, repeatAction: #selector(self?.uploadLikes), target: self)
+                }
+            }
+            UIBlockingProgressHUD.dismiss()
+        }
+    }
+    
+    @objc private func uploadCart() {
+        UIBlockingProgressHUD.show()
+        
+        service.uploadOrders(orders: self.orders) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            switch result {
+            case .success(let cart):
+                guard !cart.nfts.isEmpty else { return }
+                self?.orders = cart.nfts
+                DispatchQueue.main.async {
+                    self?.view?.updateData()
+                }
+            case .failure(_):
+                DispatchQueue.main.async {
+                    self?.view?.showErrorAlert(ErrorMessages.cartError, repeatAction: #selector(self?.uploadCart), target: self)
+                }
+            }
         }
     }
 }
