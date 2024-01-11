@@ -8,7 +8,7 @@
 import Foundation
 
 protocol StatisticsViewInput: AnyObject {
-    func updateUsers(users: [UserModel])
+    func updateUsers(users: [StatisticsUserModel])
     func showActivityIndicator(isFirstLoad: Bool)
     func hideActivityIndicator()
     func showErrorAlert()
@@ -16,7 +16,7 @@ protocol StatisticsViewInput: AnyObject {
 
 final class StatisticsPresenter: StatisticsViewOutput {
     private weak var view: StatisticsViewInput?
-    private var users: [UserModel] = []
+    private var users: [StatisticsUserModel] = []
     private var networkClient: StatisticsNetworkClientProtocol
     
     init(view: StatisticsViewInput, networkClient: StatisticsNetworkClientProtocol = StatisticsNetworkClient()) {
@@ -54,7 +54,7 @@ final class StatisticsPresenter: StatisticsViewOutput {
         do {
             let usersList = try JSONDecoder().decode(UsersList.self, from: data)
             let dummyUsers = usersList.enumerated().map { index, element in
-                let userModel = UserModel(
+                let userModel = StatisticsUserModel(
                     avatar: element.avatar,
                     username: element.name,
                     nfts: element.nfts,
@@ -109,7 +109,7 @@ final class StatisticsPresenter: StatisticsViewOutput {
         view?.updateUsers(users: users)
     }
     
-    func updateUsers(users: [UserModel]) {
+    func updateUsers(users: [StatisticsUserModel]) {
         self.users = users
     }
     
@@ -117,7 +117,7 @@ final class StatisticsPresenter: StatisticsViewOutput {
         return users.count
     }
     
-    func user(at index: Int) -> UserModel {
+    func user(at index: Int) -> StatisticsUserModel {
         return users[index]
     }
 }

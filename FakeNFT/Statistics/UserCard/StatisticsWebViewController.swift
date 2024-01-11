@@ -1,5 +1,5 @@
 //
-//  WebViewController.swift
+//  StatisticsWebViewController.swift
 //  FakeNFT
 //
 //  Created by Андрей Асланов on 12.12.23.
@@ -8,7 +8,7 @@
 import UIKit
 import WebKit
 
-final class WebViewController: UIViewController, WKNavigationDelegate {
+final class StatisticsWebViewController: UIViewController, WKNavigationDelegate {
     
     var url: URL?
     

@@ -50,13 +50,13 @@
 		E73031482B4B6863000C7BBB /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E73031472B4B6863000C7BBB /* UserDefaultsManager.swift */; };
 		E730314A2B4EE5B5000C7BBB /* RequestContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E73031492B4EE5B5000C7BBB /* RequestContext.swift */; };
 		E730314C2B4EE819000C7BBB /* MockNftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E730314B2B4EE819000C7BBB /* MockNftData.swift */; };
-		E75E85C62B2621F800208AAE /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85C52B2621F800208AAE /* UserModel.swift */; };
+		E75E85C62B2621F800208AAE /* StatisticsUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85C52B2621F800208AAE /* StatisticsUserModel.swift */; };
 		E75E85C82B26224200208AAE /* StatisticsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85C72B26224200208AAE /* StatisticsTableViewCell.swift */; };
 		E75E85CA2B2622BC00208AAE /* StatisticsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85C92B2622BC00208AAE /* StatisticsPresenter.swift */; };
 		E75E85CC2B2622E700208AAE /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85CB2B2622E700208AAE /* StatisticsViewController.swift */; };
 		E75E85D32B27ABAF00208AAE /* UsersListDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85D22B27ABAF00208AAE /* UsersListDecoding.swift */; };
 		E75E85D72B28C23500208AAE /* UserCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85D62B28C23500208AAE /* UserCardViewController.swift */; };
-		E75E85D92B28DF1E00208AAE /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85D82B28DF1E00208AAE /* WebViewController.swift */; };
+		E75E85D92B28DF1E00208AAE /* StatisticsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85D82B28DF1E00208AAE /* StatisticsWebViewController.swift */; };
 		E75E85E82B2CB3CD00208AAE /* StatisticsDecomposition.md in Resources */ = {isa = PBXBuildFile; fileRef = E75E85E72B2CB3CD00208AAE /* StatisticsDecomposition.md */; };
 		E75E85EA2B32F89300208AAE /* TabBarImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85E92B32F89300208AAE /* TabBarImages.swift */; };
 		E75E85EC2B3319A500208AAE /* StatisticsNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75E85EB2B3319A500208AAE /* StatisticsNetworkClient.swift */; };
@@ -131,13 +131,13 @@
 		E73031472B4B6863000C7BBB /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		E73031492B4EE5B5000C7BBB /* RequestContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestContext.swift; sourceTree = "<group>"; };
 		E730314B2B4EE819000C7BBB /* MockNftData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNftData.swift; sourceTree = "<group>"; };
-		E75E85C52B2621F800208AAE /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		E75E85C52B2621F800208AAE /* StatisticsUserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsUserModel.swift; sourceTree = "<group>"; };
 		E75E85C72B26224200208AAE /* StatisticsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsTableViewCell.swift; sourceTree = "<group>"; };
 		E75E85C92B2622BC00208AAE /* StatisticsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPresenter.swift; sourceTree = "<group>"; };
 		E75E85CB2B2622E700208AAE /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		E75E85D22B27ABAF00208AAE /* UsersListDecoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListDecoding.swift; sourceTree = "<group>"; };
 		E75E85D62B28C23500208AAE /* UserCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCardViewController.swift; sourceTree = "<group>"; };
-		E75E85D82B28DF1E00208AAE /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		E75E85D82B28DF1E00208AAE /* StatisticsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsWebViewController.swift; sourceTree = "<group>"; };
 		E75E85E72B2CB3CD00208AAE /* StatisticsDecomposition.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = StatisticsDecomposition.md; sourceTree = "<group>"; };
 		E75E85E92B32F89300208AAE /* TabBarImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarImages.swift; sourceTree = "<group>"; };
 		E75E85EB2B3319A500208AAE /* StatisticsNetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsNetworkClient.swift; sourceTree = "<group>"; };
@@ -426,7 +426,7 @@
 				E75E85ED2B34E18200208AAE /* UserNftCollection */,
 				E75E85DB2B28E27F00208AAE /* UserCard */,
 				E75E85DA2B28E23E00208AAE /* StatisticScreen */,
-				E75E85C52B2621F800208AAE /* UserModel.swift */,
+				E75E85C52B2621F800208AAE /* StatisticsUserModel.swift */,
 				E75E85D22B27ABAF00208AAE /* UsersListDecoding.swift */,
 				E75E85EB2B3319A500208AAE /* StatisticsNetworkClient.swift */,
 			);
@@ -446,7 +446,7 @@
 		E75E85DB2B28E27F00208AAE /* UserCard */ = {
 			isa = PBXGroup;
 			children = (
-				E75E85D82B28DF1E00208AAE /* WebViewController.swift */,
+				E75E85D82B28DF1E00208AAE /* StatisticsWebViewController.swift */,
 				E75E85D62B28C23500208AAE /* UserCardViewController.swift */,
 				E75E85F22B34EBE400208AAE /* UserCardPresenter.swift */,
 			);
@@ -636,7 +636,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E75E85D92B28DF1E00208AAE /* WebViewController.swift in Sources */,
+				E75E85D92B28DF1E00208AAE /* StatisticsWebViewController.swift in Sources */,
 				E75E85F12B34E53100208AAE /* NftCollectionViewCell.swift in Sources */,
 				E75E85CA2B2622BC00208AAE /* StatisticsPresenter.swift in Sources */,
 				3FC8C38B29D242E90081F015 /* ProductDetailsTableViewCell.swift in Sources */,
@@ -667,7 +667,7 @@
 				E75E85D72B28C23500208AAE /* UserCardViewController.swift in Sources */,
 				E75E85F92B3CD6A000208AAE /* NftPresenter.swift in Sources */,
 				E75E85C82B26224200208AAE /* StatisticsTableViewCell.swift in Sources */,
-				E75E85C62B2621F800208AAE /* UserModel.swift in Sources */,
+				E75E85C62B2621F800208AAE /* StatisticsUserModel.swift in Sources */,
 				E73031482B4B6863000C7BBB /* UserDefaultsManager.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				E730314A2B4EE5B5000C7BBB /* RequestContext.swift in Sources */,

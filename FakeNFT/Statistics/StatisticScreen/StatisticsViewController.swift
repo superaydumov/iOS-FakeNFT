@@ -10,8 +10,8 @@ protocol StatisticsViewOutput: AnyObject {
     func sortUsersByRating()
     func sortUsersByName()
     func numberOfUsers() -> Int
-    func user(at index: Int) -> UserModel
-    func updateUsers(users: [UserModel])
+    func user(at index: Int) -> StatisticsUserModel
+    func updateUsers(users: [StatisticsUserModel])
 }
 
 import UIKit
@@ -70,7 +70,7 @@ final class StatisticsViewController: UIViewController, UINavigationControllerDe
         }
     }
     
-    func updateUsers(users: [UserModel]) {
+    func updateUsers(users: [StatisticsUserModel]) {
         output?.updateUsers(users: users)
         tableView.reloadData()
     }

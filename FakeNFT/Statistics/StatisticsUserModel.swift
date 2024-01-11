@@ -1,5 +1,5 @@
 //
-//  UserModel.swift
+//  StatisticsUserModel.swift
 //  FakeNFT
 //
 //  Created by Андрей Асланов on 10.12.23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserModel: Decodable {
+struct StatisticsUserModel: Decodable {
     let avatar: String?
     let username: String?
     let nfts: [Nft]?

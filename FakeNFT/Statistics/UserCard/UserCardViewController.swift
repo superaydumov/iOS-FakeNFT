@@ -14,7 +14,7 @@ import UIKit
 final class UserCardViewController: UIViewController, UserCardViewInput {
     private var presenter: UserCardViewOutput?
     
-    init(user: UserModel) {
+    init(user: StatisticsUserModel) {
         super.init(nibName: nil, bundle: nil)
         self.presenter = UserCardPresenter(user: user, view: self)
     }
@@ -150,7 +150,7 @@ final class UserCardViewController: UIViewController, UserCardViewInput {
     
     @objc private func websiteButtonTapped() {
         if let websiteString = presenter?.getUserInfo().website, let websiteURL = URL(string: websiteString) {
-            let webViewController = WebViewController()
+            let webViewController = StatisticsWebViewController()
             webViewController.url = websiteURL
             navigationController?.pushViewController(webViewController, animated: true)
         } else {

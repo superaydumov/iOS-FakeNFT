@@ -7,7 +7,7 @@
 
 protocol UserCardViewOutput {
     func updateUI()
-    func getUserInfo() -> UserModel
+    func getUserInfo() -> StatisticsUserModel
     func getNfts() -> [Nft]
     func getUserId() -> String
 }
@@ -17,9 +17,9 @@ import Foundation
 final class UserCardPresenter: UserCardViewOutput {
     
     private weak var view: UserCardViewInput?
-    private let user: UserModel
+    private let user: StatisticsUserModel
     
-    init(user: UserModel, view: UserCardViewInput) {
+    init(user: StatisticsUserModel, view: UserCardViewInput) {
         self.user = user
         self.view = view
         self.updateUI()
@@ -33,7 +33,7 @@ final class UserCardPresenter: UserCardViewOutput {
         )
     }
     
-    func getUserInfo() -> UserModel {
+    func getUserInfo() -> StatisticsUserModel {
         return user
     }
     

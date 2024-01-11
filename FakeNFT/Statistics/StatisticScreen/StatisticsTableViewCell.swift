@@ -96,7 +96,7 @@ final class StatisticsTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(with user: UserModel, at index: Int) {
+    func configure(with user: StatisticsUserModel, at index: Int) {
         rankLabel.text = "\(index + 1)"
         
         if let avatarURL = URL(string: user.avatar ?? "") {
