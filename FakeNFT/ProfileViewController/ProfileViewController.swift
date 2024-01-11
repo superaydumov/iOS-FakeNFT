@@ -1,15 +1,14 @@
-
 import UIKit
 import SafariServices
 
 final class ProfileViewController: UIViewController, ProfilePresenter {
-    
+
     // MARK: - Private Properties
-    private var presenter:  ProfilePresenterImpl!
+    private var presenter: ProfilePresenterImpl!
     private var cellTexts = ["Мои NFT", "Избранные NFT", "О разработчике"]
     private var nftCount: Int?
     private var currentDisplayedUser: Profile?
-    
+
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -18,7 +17,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-    
+
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .textPrimary
@@ -26,7 +25,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private lazy var bioLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -35,7 +34,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         return label
     }()
-    
+
     private lazy var linkLabel: UILabel = {
         let label = UILabel()
         label.isUserInteractionEnabled = true
@@ -47,7 +46,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         label.addGestureRecognizer(tapGesture)
         return label
     }()
-    
+
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -66,26 +65,39 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         barButtonItem.target = self
         return barButtonItem
     }()
-    
+
     // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
+
         navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.topItem?.rightBarButtonItem = editButton
-        
+
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        
+
         presenter = ProfilePresenterImpl(view: self)
-        
+
         setupUI()
         setupConstraints()
         presenter.fetchData()
+
+        setupNFTPresenter()
     }
-    
+
+    private func setupNFTPresenter() {
+        let updateNFTCountClosure: (Int) -> Void = { [weak self] count in
+            self?.nftCount = count
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
+        }
+        let myNFTPresenter = MyNFTPresenter(onNFTCountUpdate: updateNFTCountClosure)
+        myNFTPresenter.loadNFTData()
+    }
+
     // MARK: - Public Methods
     func updateUser(user: Profile?) {
         guard let currentUser = user else { return }
@@ -98,13 +110,10 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         if let imageURL = URL(string: currentUser.avatar ?? "") {
             avatarImageView.kf.setImage(with: imageURL)
         }
-        
-        if let nftsCount = currentUser.nfts?.count {
-            nftCount = nftsCount
-        }
+
         tableView.reloadData()
     }
-    
+
     // MARK: - Private Methods
     private func setupUI() {
         view.addSubview(tableView)
@@ -113,7 +122,7 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
         view.addSubview(bioLabel)
         view.addSubview(linkLabel)
     }
-    
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
@@ -121,40 +130,39 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             avatarImageView.bottomAnchor.constraint(equalTo: bioLabel.topAnchor, constant: -20),
-            
+
             nameLabel.heightAnchor.constraint(equalToConstant: 28),
             nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
             nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 41),
-            
+
             bioLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 20),
             bioLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             bioLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             bioLabel.bottomAnchor.constraint(equalTo: linkLabel.topAnchor, constant: -8),
-            
+
             linkLabel.topAnchor.constraint(equalTo: bioLabel.bottomAnchor, constant: 8),
             linkLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             linkLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             linkLabel.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: -40),
-            
+
             tableView.topAnchor.constraint(equalTo: linkLabel.bottomAnchor, constant: 40),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
-    
-    
+
     private func createChevronImageView() -> UIImageView {
         let chevronImage = UIImage(systemName: "chevron.right")?.withTintColor(.black, renderingMode: .alwaysOriginal)
         let chevronImageView = UIImageView(image: chevronImage)
         return chevronImageView
     }
-    
+
     @objc private func editButtonTapped() {
         let profileEditViewController = ProfileEditViewController()
         profileEditViewController.currentUser = currentDisplayedUser
         profileEditViewController.avatarImageURL = URL(string: currentDisplayedUser?.avatar ?? "")
-        
+
         profileEditViewController.onProfileUpdate = { [weak self] name, description, website in
             self?.currentDisplayedUser?.name = name
             self?.currentDisplayedUser?.description = description
@@ -165,11 +173,11 @@ final class ProfileViewController: UIViewController, ProfilePresenter {
                 self?.linkLabel.text = website
             }
         }
-        
+
         let navigationController = UINavigationController(rootViewController: profileEditViewController)
         present(navigationController, animated: true, completion: nil)
     }
-    
+
     @objc private func linkLabelTapped() {
         if let websiteURL = linkLabel.text, !websiteURL.isEmpty,
            let url = URL(string: websiteURL) {
@@ -184,10 +192,10 @@ extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellTexts.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
+
         let chevronImageView = createChevronImageView()
         cell.accessoryView = chevronImageView
         cell.textLabel?.text = cellTexts[indexPath.row]
@@ -201,6 +209,7 @@ extension ProfileViewController: UITableViewDataSource {
             cell.textLabel?.text = cellTexts[indexPath.row]
         }
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        cell.selectionStyle = .none
         return cell
     }
 }
@@ -210,12 +219,13 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 54
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
             // "Мои NFT"
-            break
+            let myNFTViewController = MyNFTViewController()
+            navigationController?.pushViewController(myNFTViewController, animated: true)
         case 1:
             // "Избранные NFT"
             break
