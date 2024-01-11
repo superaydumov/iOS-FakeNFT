@@ -77,11 +77,8 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
 
     // MARK: - Lifecycle
 
-    init(
-//        catalog: CatalogViewController
-    ) {
+    init() {
         super.init(nibName: nil, bundle: nil)
-//        catalog.delegate = self
         presenter = CartPresenter(cartViewController: self)
         alertPresenter = CartAlertPresenter(delegate: self)
     }

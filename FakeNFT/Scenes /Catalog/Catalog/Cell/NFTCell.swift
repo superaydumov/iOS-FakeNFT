@@ -195,7 +195,7 @@ final class NFTCell: UICollectionViewCell, ReuseIdentifying {
     }
 
     private func updateCartButton() {
-        let imageName = isAddedToCart ? Constants.cartIcon : Constants.cartDeleteIcon
+        let imageName = isAddedToCart ? Constants.cartDeleteIcon : Constants.cartIcon
         cartButton.setImage(UIImage(named: imageName), for: .normal)
     }
 

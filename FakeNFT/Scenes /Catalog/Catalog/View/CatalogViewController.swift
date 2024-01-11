@@ -135,12 +135,12 @@ final class CatalogViewController: UIViewController, CatalogView {
     }
 
     private func showCollectionInfo(for collection: NFTCollectionInfo) {
-        let vc = CollectionViewController()
+        let viewController = CollectionViewController()
         let presenter = CollectionPresenter(collection: collection)
 
-        vc.presenter = presenter
-        presenter.view = vc
-        navigationController?.pushViewController(vc, animated: true)
+        viewController.presenter = presenter
+        presenter.view = viewController
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     @objc private func displayFilterOptions() {
