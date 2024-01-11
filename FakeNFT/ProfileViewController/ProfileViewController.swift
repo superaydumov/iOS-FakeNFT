@@ -228,7 +228,8 @@ extension ProfileViewController: UITableViewDelegate {
             navigationController?.pushViewController(myNFTViewController, animated: true)
         case 1:
             // "Избранные NFT"
-            break
+            let favoriteViewController = FavoriteViewController()
+            navigationController?.pushViewController(favoriteViewController, animated: true)
         case 2:
             // "О разработчике"
             linkLabelTapped()
