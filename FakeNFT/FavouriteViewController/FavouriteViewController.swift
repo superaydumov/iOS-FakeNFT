@@ -12,7 +12,7 @@ final class FavoriteViewController: UIViewController, FavoriteViewProtocol {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.textAlignment = .center
         label.text = "У Вас еще нет избранных NFT"
         label.isHidden = true
@@ -58,9 +58,11 @@ final class FavoriteViewController: UIViewController, FavoriteViewProtocol {
         if viewModel.isEmpty {
             noFavNFTLabel.isHidden = false
             favoriteNFTCollectionView.isHidden = true
+            navigationController?.navigationBar.topItem?.title = ""
         } else {
             noFavNFTLabel.isHidden = true
             favoriteNFTCollectionView.isHidden = false
+            navigationController?.navigationBar.topItem?.title = "Избранные NFT"
         }
     }
 

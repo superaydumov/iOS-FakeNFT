@@ -23,7 +23,7 @@ final class FavoriteNFTCell: UICollectionViewCell {
     private lazy var nftName: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .black
+        label.textColor = .textPrimary
         return label
     }()
 
@@ -38,7 +38,7 @@ final class FavoriteNFTCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        label.textColor = .black
+        label.textColor = .textPrimary
         label.text = "0 ETH"
         let attributedString = NSMutableAttributedString(string: label.text ?? "")
         attributedString.addAttribute(NSAttributedString.Key.kern,

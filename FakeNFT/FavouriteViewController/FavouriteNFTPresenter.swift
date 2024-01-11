@@ -7,9 +7,8 @@ protocol FavoritePresenterProtocol: AnyObject {
 
 final class FavoriteNFTPresenter {
     private weak var view: FavoriteViewProtocol?
-    var defaultNetworkClient = DefaultNetworkClient()
+    private let defaultNetworkClient = DefaultNetworkClient()
     private var onNFTCountUpdate: ((Int) -> Void)?
-
     private var likedNFTIds: String = ""
 
     init(view: FavoriteViewProtocol) {
