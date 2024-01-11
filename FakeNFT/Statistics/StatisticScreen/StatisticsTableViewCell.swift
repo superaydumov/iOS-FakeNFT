@@ -91,7 +91,6 @@ final class StatisticsTableViewCell: UITableViewCell {
             usernameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 8),
             usernameLabel.centerYAnchor.constraint(equalTo: grayBackgroundView.centerYAnchor),
             
-            nftCountLabel.leadingAnchor.constraint(equalTo: usernameLabel.trailingAnchor, constant: 8),
             nftCountLabel.trailingAnchor.constraint(equalTo: grayBackgroundView.trailingAnchor, constant: -16),
             nftCountLabel.centerYAnchor.constraint(equalTo: grayBackgroundView.centerYAnchor),
         ])
@@ -107,11 +106,11 @@ final class StatisticsTableViewCell: UITableViewCell {
         }
         
         usernameLabel.text = user.username
+        
         if let nftCount = user.nftCount {
             nftCountLabel.text = "\(nftCount)"
         } else {
             nftCountLabel.text = "N/A"
-            
         }
     }
 }

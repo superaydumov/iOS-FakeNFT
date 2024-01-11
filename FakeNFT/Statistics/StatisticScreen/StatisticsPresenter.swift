@@ -57,10 +57,12 @@ final class StatisticsPresenter: StatisticsViewOutput {
                 let userModel = UserModel(
                     avatar: element.avatar,
                     username: element.name,
+                    nfts: element.nfts,
                     nftCount: "\(element.nfts.count)",
                     description: element.description,
                     website: element.website,
-                    rating: element.rating
+                    rating: element.rating,
+                    id: element.id
                 )
                 return userModel
             }
