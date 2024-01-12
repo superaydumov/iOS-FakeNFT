@@ -16,7 +16,7 @@ struct StatisticsUserModel: Decodable {
     let website: String?
     let rating: String?
     let id: String?
-    
+
     private enum CodingKeys: String, CodingKey {
         case avatar
         case username
@@ -27,8 +27,16 @@ struct StatisticsUserModel: Decodable {
         case rating
         case id
     }
-    
-    init(avatar: String?, username: String?, nfts: [Nft]?, nftCount: String?, description: String?, website: String?, rating: String?, id: String?) {
+
+    init(avatar: String? = nil,
+         username: String? = nil,
+         nfts: [Nft]? = nil,
+         nftCount: String? = nil,
+         description: String? = nil,
+         website: String? = nil,
+         rating: String? = nil,
+         id: String? = nil
+    ) {
         self.avatar = avatar
         self.username = username
         self.nfts = nfts

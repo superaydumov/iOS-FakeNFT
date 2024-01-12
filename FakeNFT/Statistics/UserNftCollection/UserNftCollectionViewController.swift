@@ -16,13 +16,13 @@ protocol NftViewOutput: AnyObject {
 import UIKit
 
 final class UserNftCollectionViewController: UIViewController {
-    
+
     private var nftArray: [Nft] = []
     private var nftsInfo: [NftModel] = []
     private var networkClient: StatisticsNetworkClientProtocol
     private var presenter: NftViewOutput?
     private var userId: String
-    
+
     init(userId: String, nftArray: [Nft], networkClient: StatisticsNetworkClientProtocol = StatisticsNetworkClient()) {
         self.userId = userId
         self.nftArray = nftArray
@@ -34,7 +34,7 @@ final class UserNftCollectionViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private lazy var backButton: UIBarButtonItem = {
         let button = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"),
                                      style: .plain, target: self,
@@ -42,7 +42,7 @@ final class UserNftCollectionViewController: UIViewController {
         button.tintColor = .black
         return button
     }()
-    
+
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(
             frame: .zero,
@@ -55,29 +55,29 @@ final class UserNftCollectionViewController: UIViewController {
         collectionView.backgroundColor = .white
         return collectionView
     }()
-    
+
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = .black
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+
         setupNavigationBar()
         setupUI()
-        
+
         presenter?.fetchDataForNftArray(nftArray)
     }
-    
+
     func displayNftInfo(_ nftInfo: [NftModel]) {
         nftsInfo = nftInfo
         collectionView.reloadData()
     }
-    
+
     private func setupNavigationBar() {
         navigationItem.title = "Коллекция NFT"
         navigationController?.navigationBar.titleTextAttributes = [
@@ -85,22 +85,22 @@ final class UserNftCollectionViewController: UIViewController {
         ]
         navigationItem.leftBarButtonItem = backButton
     }
-    
+
     private func setupUI() {
         view.addSubview(collectionView)
         view.addSubview(activityIndicator)
-        
+
         NSLayoutConstraint.activate([
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
+
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-    
+
     @objc private func leftBarButtonItemTapped() {
         navigationController?.popViewController(animated: true)
     }
@@ -110,9 +110,12 @@ extension UserNftCollectionViewController: UICollectionViewDelegate, UICollectio
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return nftsInfo.count
     }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NftCollectionViewCell", for: indexPath) as? NftCollectionViewCell else {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NftCollectionViewCell",
+                                                            for: indexPath) as? NftCollectionViewCell
+        else {
             return UICollectionViewCell()
         }
 
@@ -139,21 +142,29 @@ extension UserNftCollectionViewController: UICollectionViewDelegate, UICollectio
 }
 
 extension UserNftCollectionViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - 16 * 2 - 9 * 2
         let itemWidth = availableWidth / 3
         return CGSize(width: itemWidth, height: 192)
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 8
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 20, left: 16, bottom: 16, right: 16)
     }
 }
@@ -175,7 +186,7 @@ extension UserNftCollectionViewController: NftViewInput {
 
             let retryAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
                 guard let self = self else { return }
-                
+
                 switch context {
                 case .like:
                     self.presenter?.handleLikeButtonTap(for: nftId)
@@ -191,7 +202,7 @@ extension UserNftCollectionViewController: NftViewInput {
             self.present(alertController, animated: true, completion: nil)
         }
     }
-    
+
     func showActivityIndicator() {
         DispatchQueue.main.async { [weak self] in
             self?.activityIndicator.startAnimating()

@@ -18,9 +18,7 @@ final class TabBarController: UITabBarController {
 
         let profileVC = ProfileViewController()
         let catalogVC = CatalogViewController(presenter: catalogPresenter)
-        let cartVC = CartViewController(
-//            catalog: catalogVC
-        )
+        let cartVC = CartViewController()
         let statisticsVC = StatisticsViewController()
 
         let profileViewController = UINavigationController(rootViewController: profileVC)

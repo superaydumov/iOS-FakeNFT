@@ -17,15 +17,15 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
-        
+
         let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            
-            let httpResponse = response as? HTTPURLResponse
-            
+
+            _ = response as? HTTPURLResponse
+
             if let data = data {
                 completion(.success(data))
             } else {
@@ -35,13 +35,13 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
         }
         task.resume()
     }
-    
+
     func sendRequest(to url: URL, body: Data?, completion: @escaping (Result<Data, Error>) -> Void) {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "PUT"
         urlRequest.setValue("\(RequestConstants.accessToken)", forHTTPHeaderField: "X-Practicum-Mobile-Token")
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        
+
         if let bodyData = body {
             let bodyString = String(data: bodyData, encoding: .utf8)
             urlRequest.httpBody = bodyString?.data(using: .utf8)
@@ -53,7 +53,7 @@ final class StatisticsNetworkClient: StatisticsNetworkClientProtocol {
                 return
             }
 
-            let httpResponse = response as? HTTPURLResponse
+            _ = response as? HTTPURLResponse
 
             if let data = data {
                 completion(.success(data))

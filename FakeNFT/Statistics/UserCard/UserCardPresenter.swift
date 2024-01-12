@@ -15,16 +15,16 @@ protocol UserCardViewOutput {
 import Foundation
 
 final class UserCardPresenter: UserCardViewOutput {
-    
+
     private weak var view: UserCardViewInput?
     private let user: StatisticsUserModel
-    
+
     init(user: StatisticsUserModel, view: UserCardViewInput) {
         self.user = user
         self.view = view
         self.updateUI()
     }
-    
+
     func updateUI() {
         view?.updateUI(
             avatarURL: getUserInfo().avatar ?? "",
@@ -32,15 +32,15 @@ final class UserCardPresenter: UserCardViewOutput {
             description: getUserInfo().description ?? ""
         )
     }
-    
+
     func getUserInfo() -> StatisticsUserModel {
         return user
     }
-    
+
     func getNfts() -> [Nft] {
         return user.nfts ?? []
     }
-    
+
     func getUserId() -> String {
         return user.id ?? ""
     }

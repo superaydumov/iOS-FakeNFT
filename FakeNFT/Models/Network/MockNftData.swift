@@ -8,7 +8,7 @@
 import Foundation
 
 enum MockNftData {
-    
+
     static let nft: [NftModel] = [
         NftModel(
             createdAt: "2023-06-22T07:37:31.777Z[GMT]",
