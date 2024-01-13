@@ -226,5 +226,9 @@ final class NFTCell: UICollectionViewCell, ReuseIdentifying {
         guard let viewModel = viewModel else { return }
         isAddedToCart.toggle()
         delegate?.didTapCartButton(viewModel.id)
+
+        if isAddedToCart == false {
+            NotificationCenter.default.post(name: .catalogItemRemoved, object: nil)
+        }
     }
 }

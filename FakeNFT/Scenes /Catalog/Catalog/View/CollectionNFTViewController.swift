@@ -115,6 +115,22 @@ final class CollectionViewController: UIViewController, CollectionViewController
         super.viewDidLoad()
         setupScreen()
         presenter?.viewDidLoad()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(cartDeleteButtonTapped),
+            name: .cartItemRemoved,
+            object: nil
+        )
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        presenter?.refreshData()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - Public methods
@@ -207,6 +223,10 @@ final class CollectionViewController: UIViewController, CollectionViewController
         presenter?.refreshData()
 
         sender.endRefreshing()
+    }
+
+    @objc private func cartDeleteButtonTapped() {
+        presenter?.refreshData()
     }
 
     private func createStackView(

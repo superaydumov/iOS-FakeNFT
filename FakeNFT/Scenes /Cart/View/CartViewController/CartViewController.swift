@@ -8,6 +8,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
     private var presenter: CartPresenterProtocol?
     private var alertPresenter: AlertPresenterProtocol?
     private let refreshControl = UIRefreshControl()
+    private var deleteIndex = 0
 
     // MARK: - Computed Properties
 
@@ -94,6 +95,13 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
 
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(externalDeleteButtonTapped),
+            name: .catalogItemRemoved,
+            object: nil
+        )
+
         addSubviews()
         constraintsSetup()
         navBarSetup()
@@ -106,6 +114,10 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         super.viewDidAppear(animated)
         presenter?.fetchCartNFTs()
         elementsSetup()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - Private methods
@@ -238,7 +250,7 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
 
     // MARK: - Handlers
 
-    @objc func sortButtonDidTap() {
+    @objc private func sortButtonDidTap() {
         guard let presenter else { return }
         let alert = UIAlertController(title: nil, message: LocalizedStrings.sortingText, preferredStyle: .actionSheet)
 
@@ -261,17 +273,21 @@ final class CartViewController: UIViewController, CartViewControllerProtocol {
         self.present(alert, animated: true, completion: nil)
     }
 
-    @objc func paymentButtonDidTap() {
+    @objc private func paymentButtonDidTap() {
         let viewController = PaymentTypeViewController()
         viewController.hidesBottomBarWhenPushed = true
         viewController.delegate = self
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 
-    @objc func refreshTableView() {
+    @objc private func refreshTableView() {
         presenter?.fetchCartNFTs()
         self.tableView.reloadData()
         refreshControl.endRefreshing()
+    }
+
+    @objc private func externalDeleteButtonTapped() {
+        presenter?.deleteItemFormCart(for: deleteIndex)
     }
 }
 
@@ -294,6 +310,10 @@ extension CartViewController: UITableViewDataSource {
         cell.configureCell(with: nft)
         cell.cellIndex = indexPath.row
         cell.delegate = self
+
+        if let index = cell.cellIndex {
+            deleteIndex = index
+        }
 
         return cell
     }
@@ -341,6 +361,8 @@ extension CartViewController: DeleteFromCartViewControllerDelegate {
         presenter.deleteItemFormCart(for: index)
         labelsUpdate()
         elementsSetup()
+
+        NotificationCenter.default.post(name: .cartItemRemoved, object: nil)
     }
 
     func showTabBar() {
