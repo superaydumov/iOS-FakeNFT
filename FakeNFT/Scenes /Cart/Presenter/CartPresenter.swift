@@ -95,6 +95,7 @@ final class CartPresenter: CartPresenterProtocol {
     }
 
     func deleteItemFormCart(for index: Int) {
+        guard index >= 0 && index < visibleNFT.count else { return }
         visibleNFT.remove(at: index)
         toogleCartOrder()
     }
