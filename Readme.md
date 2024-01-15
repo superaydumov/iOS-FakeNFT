@@ -1,6 +1,7 @@
 # ТЗ мобильного приложения FakeNFT
 
 Скринкаст с демонстрацией эпика каталог - https://disk.yandex.ru/i/A3imKXlD6Ry2Ew
+
 Скринкаст с демонстрацией эпика профиль - https://disk.yandex.ru/i/jlZ8tK0uK8Y4ow
 
 # Ссылки
