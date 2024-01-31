@@ -118,11 +118,30 @@ struct DefaultNetworkClient: NetworkClient {
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
 
-        if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = dtoEncoded
+        if request.httpMethod != .get, let parameters = request.dto as? [String: [String]] {
+            let queryItems = parameters.flatMap { pair in
+                pair.value.map { URLQueryItem(name: pair.key, value: $0) }
+            }
+            let queryString = queryItems.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&")
+            urlRequest.httpBody = queryString.data(using: .utf8)
         }
+
+        if urlRequest.httpMethod == HttpMethod.put.rawValue {
+            urlRequest.setValue(RequestConstants.putValue, forHTTPHeaderField: RequestConstants.putHeader)
+            if let body = request.body {
+                urlRequest.httpBody = body
+            }
+        }
+
+        urlRequest.setValue(RequestConstants.connectionValue,
+                            forHTTPHeaderField: RequestConstants.connectionHeader)
+        urlRequest.setValue(RequestConstants.acceptValue,
+                            forHTTPHeaderField: RequestConstants.acceptHeader)
+        urlRequest.setValue(RequestConstants.acceptEncodingValue,
+                            forHTTPHeaderField: RequestConstants.acceptEncodingHeader)
+
+        urlRequest.setValue(RequestConstants.accessToken,
+                            forHTTPHeaderField: RequestConstants.requestHeader)
 
         return urlRequest
     }

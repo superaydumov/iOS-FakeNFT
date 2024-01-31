@@ -25,13 +25,20 @@ extension UIColor {
         )
     }
 
-    // Ниже приведены примеры цветов, настоящие цвета надо взять из фигмы
+    // Цвета из Figma
 
-    // Primary Colors
-    static let primary = UIColor(red: 0 / 255, green: 122 / 255, blue: 255 / 255, alpha: 1.0)
+    static let nftBlack = UIColor(named: "NFTBlack")
+    static let nftWhite = UIColor(named: "NFTWhite")
+    static let nftLightGray = UIColor(named: "NFTLightGray")
 
-    // Secondary Colors
-    static let secondary = UIColor(red: 255 / 255, green: 193 / 255, blue: 7 / 255, alpha: 1.0)
+    static let nftGrayUniversal = UIColor(named: "NFTGrayUniversal")
+    static let nftRedUniversal = UIColor(named: "NFTRedUniversal")
+    static let nftBackgroundUniversal = UIColor(named: "NFTBackgroundUniversal")
+    static let nftGreenUniversal = UIColor(named: "NFTGreenUniversal")
+    static let nftBlueUniversal = UIColor(named: "NFTBlueUniversal")
+    static let nftBlackUniversal = UIColor(named: "NFTBlackUniversal")
+    static let nftWhiteUniversal = UIColor(named: "NFTWhiteUniversal")
+    static let nftYellowUniversal = UIColor(named: "NFTYellowUniversal")
 
     // Background Colors
     static let background = UIColor.white
@@ -41,10 +48,11 @@ extension UIColor {
     static let textSecondary = UIColor.gray
     static let textOnPrimary = UIColor.white
     static let textOnSecondary = UIColor.black
+    static let blueUniversal = UIColor(hexString: "#0A84FF")
 
     private static let yaBlackLight = UIColor(hexString: "1A1B22")
     private static let yaBlackDark = UIColor.white
-    private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
+    static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
     private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
 
     static let segmentActive = UIColor { traits in
