@@ -5,6 +5,9 @@ protocol FavoriteViewProtocol: AnyObject {
 }
 
 final class FavoriteViewController: UIViewController, FavoriteViewProtocol {
+
+    // MARK: - Private Properties
+
     private var presenter: FavoriteNFTPresenter!
     private var viewModel: [FavoriteNFTViewModel] = []
 
@@ -32,6 +35,8 @@ final class FavoriteViewController: UIViewController, FavoriteViewProtocol {
         return collectionView
     }()
 
+    // MARK: - View Life Cycles
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -51,6 +56,8 @@ final class FavoriteViewController: UIViewController, FavoriteViewProtocol {
         self.tabBarController?.tabBar.isHidden = false
     }
 
+    // MARK: - Public Methods
+
     func updateFavNFT(viewModel: [FavoriteNFTViewModel]) {
         self.viewModel = viewModel
         favoriteNFTCollectionView.reloadData()
@@ -65,6 +72,8 @@ final class FavoriteViewController: UIViewController, FavoriteViewProtocol {
             navigationController?.navigationBar.topItem?.title = "Избранные NFT"
         }
     }
+
+    // MARK: - Private Methods
 
     private func setupConstraints() {
         view.addSubview(noFavNFTLabel)
