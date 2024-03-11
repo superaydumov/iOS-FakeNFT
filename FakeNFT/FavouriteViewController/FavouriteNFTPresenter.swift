@@ -6,13 +6,13 @@ protocol FavoritePresenterProtocol: AnyObject {
 }
 
 final class FavoriteNFTPresenter {
-    
+
     // MARK: - Public Properties
-    
+
     var user: Profile?
 
     // MARK: - Private Properties
-    
+
     private weak var view: FavoriteViewProtocol?
     private let defaultNetworkClient = DefaultNetworkClient()
     private var onNFTCountUpdate: ((Int) -> Void)?
@@ -28,7 +28,7 @@ final class FavoriteNFTPresenter {
     }
 
     // MARK: - Public Methods
-    
+
     func toggleLike(for nftId: String) {
         ProgressHUD.show()
         var likedNFTsArray = likedNFTIds
@@ -44,7 +44,7 @@ final class FavoriteNFTPresenter {
     }
 
     // MARK: - Private Methods
-    
+
     private func fetchLikedNFTs() {
         _ = defaultNetworkClient.send(request: ProfileRequest(), completionQueue: .main) { [weak self] result in
             ProgressHUD.dismiss()
