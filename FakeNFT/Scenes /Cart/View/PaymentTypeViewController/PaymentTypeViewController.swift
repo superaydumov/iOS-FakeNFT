@@ -21,6 +21,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
         collectionView.isUserInteractionEnabled = true
         collectionView.isScrollEnabled = false
         collectionView.allowsMultipleSelection = false
+        collectionView.accessibilityIdentifier = "cartCollection"
 
         return collectionView
     }()
@@ -42,6 +43,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
         button.backgroundColor = .nftBlack
         button.layer.cornerRadius = 16
         button.addTarget(nil, action: #selector(paymentButtonDidTap), for: .touchUpInside)
+        button.accessibilityIdentifier = "paymentButton"
 
         return button
     }()
@@ -99,6 +101,7 @@ final class PaymentTypeViewController: UIViewController, PaymentTypeViewControll
             backButton.setImage(UIImage(named: "chevronBackward"), for: .normal)
             backButton.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
             backButton.addTarget(self, action: #selector(backButtonDidTap), for: .touchUpInside)
+            backButton.accessibilityIdentifier = "backButton"
 
             let imageBarButtonItem = UIBarButtonItem(customView: backButton)
             self.navigationItem.leftBarButtonItem = imageBarButtonItem
