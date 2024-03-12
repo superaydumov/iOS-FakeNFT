@@ -64,6 +64,7 @@ final class NFTCell: UICollectionViewCell, ReuseIdentifying {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(addToFavourites), for: .touchUpInside)
         button.accessibilityLabel = "Add to Favourites"
+        button.accessibilityIdentifier = "likeButton"
         return button
     }()
 
@@ -106,6 +107,7 @@ final class NFTCell: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: - Private Methods
     private func setupView() {
+        self.accessibilityIdentifier = "NFTCell"
         backgroundColor = .white
         addSubviews()
         updateLikedButton()
